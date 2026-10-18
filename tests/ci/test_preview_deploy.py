@@ -35,6 +35,67 @@ class Gates(unittest.TestCase):
             with self.subTest(key=key), self.assertRaises(p.Refuse):
                 p.validate_context({**ENV, key: value})
 
+    def test_auto_requires_successful_main_push_workflow_payload(self):
+        run = {**RUN, 'name': 'Verify synthetic slice', 'id': 123,
+               'head_repository': {'full_name': p.REPO}}
+        payload = {'action': 'completed', 'repository': {'full_name': p.REPO},
+                   'workflow_run': run}
+        with tempfile.TemporaryDirectory() as folder:
+            event_file = Path(folder) / 'event.json'
+            auto = {**ENV, 'GITHUB_EVENT_NAME': 'workflow_run',
+                    'PREVIEW_APPROVAL': '',
+                    'GITHUB_EVENT_PATH': str(event_file)}
+            event_file.write_text(json.dumps(payload))
+            self.assertEqual(p.validate_context(auto), SHA)
+            for change in [{'conclusion': 'failure'}, {'status': 'in_progress'},
+                           {'event': 'pull_request'}, {'head_branch': 'feature'},
+                           {'head_sha': 'b' * 40}, {'name': 'Other workflow'},
+                           {'path': '.github/workflows/preview-deploy.yml'},
+                           {'head_repository': {'full_name': 'fork/repo'}}]:
+                with self.subTest(change=change), self.assertRaises(p.Refuse):
+                    event_file.write_text(json.dumps({**payload, 'workflow_run': {**run, **change}}))
+                    p.validate_context(auto)
+            event_file.write_text(json.dumps(payload))
+            with self.assertRaises(p.Refuse):
+                p.validate_context({**auto, 'GITHUB_SHA': 'b' * 40})
+            with self.assertRaises(p.Refuse):
+                p.validate_context({**auto, 'GITHUB_REF': 'refs/heads/feature'})
+            with self.assertRaises(p.Refuse):
+                p.validate_context({**auto, 'GITHUB_EVENT_PATH': ''})
+            event_file.write_text(json.dumps({**payload, 'action': 'requested'}))
+            with self.assertRaises(p.Refuse):
+                p.validate_context(auto)
+
+    def test_auto_gate_rejects_mismatched_or_stale_verification_run(self):
+        run = {**RUN, 'name': 'Verify synthetic slice', 'id': 123,
+               'head_repository': {'full_name': p.REPO}}
+        payload = {'action': 'completed', 'repository': {'full_name': p.REPO},
+                   'workflow_run': run}
+        base_responses = [
+            {'object': {'sha': SHA}},
+            [{'merged_at': '2026-10-18', 'merge_commit_sha': SHA,
+              'base': {'ref': 'main', 'repo': {'full_name': p.REPO}}}],
+        ]
+        tail_responses = [
+            {'deployment_branch_policy': {'custom_branch_policies': True, 'protected_branches': False}},
+            {'branch_policies': [{'name': 'main', 'type': 'branch'}]},
+        ]
+        with tempfile.TemporaryDirectory() as folder:
+            event_file = Path(folder) / 'event.json'
+            event_file.write_text(json.dumps(payload))
+            auto = {**ENV, 'GITHUB_EVENT_NAME': 'workflow_run',
+                    'PREVIEW_APPROVAL': '', 'GITHUB_EVENT_PATH': str(event_file)}
+            for latest_id, expect_ok in [(123, True), (124, False)]:
+                responses = base_responses + [{'workflow_runs': [{**RUN, 'id': latest_id}]}] + tail_responses
+                with self.subTest(latest_id=latest_id), patch.dict(os.environ, auto, clear=True), \\
+                     patch.object(p, 'git', side_effect=[SHA, '']), \\
+                     patch.object(p, 'gh', side_effect=responses):
+                    if expect_ok:
+                        self.assertEqual(p.gate(), SHA)
+                    else:
+                        with self.assertRaises(p.Refuse):
+                            p.gate()
+
     def test_latest_main_ci_only(self):
         p.validate_ci([RUN], SHA)
         for change in [{'head_sha': 'b' * 40}, {'event': 'pull_request'},
