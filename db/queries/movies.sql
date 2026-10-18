@@ -21,7 +21,11 @@ AND NOT EXISTS (
 AND (sqlc.narg(year_min)::integer IS NULL OR m.year >= sqlc.narg(year_min)::integer)
 AND (sqlc.narg(year_max)::integer IS NULL OR m.year <= sqlc.narg(year_max)::integer)
 AND (sqlc.narg(runtime_min)::integer IS NULL OR m.runtime >= sqlc.narg(runtime_min)::integer)
-AND (sqlc.narg(runtime_max)::integer IS NULL OR m.runtime <= sqlc.narg(runtime_max)::integer);
+AND (sqlc.narg(runtime_max)::integer IS NULL OR m.runtime <= sqlc.narg(runtime_max)::integer)
+AND (COALESCE(cardinality(sqlc.arg(languages)::text[]), 0) = 0 OR m.original_language = ANY(sqlc.arg(languages)::text[]))
+AND (COALESCE(cardinality(sqlc.arg(countries)::text[]), 0) = 0 OR m.countries && sqlc.arg(countries)::text[])
+AND (sqlc.narg(rating_min)::double precision IS NULL OR m.rating >= sqlc.narg(rating_min)::double precision)
+AND (sqlc.narg(vote_count_min)::integer IS NULL OR m.vote_count >= sqlc.narg(vote_count_min)::integer);
 
 -- name: ListMovies :many
 SELECT sqlc.embed(m), ARRAY(
@@ -50,6 +54,10 @@ AND (sqlc.narg(year_min)::integer IS NULL OR m.year >= sqlc.narg(year_min)::inte
 AND (sqlc.narg(year_max)::integer IS NULL OR m.year <= sqlc.narg(year_max)::integer)
 AND (sqlc.narg(runtime_min)::integer IS NULL OR m.runtime >= sqlc.narg(runtime_min)::integer)
 AND (sqlc.narg(runtime_max)::integer IS NULL OR m.runtime <= sqlc.narg(runtime_max)::integer)
+AND (COALESCE(cardinality(sqlc.arg(languages)::text[]), 0) = 0 OR m.original_language = ANY(sqlc.arg(languages)::text[]))
+AND (COALESCE(cardinality(sqlc.arg(countries)::text[]), 0) = 0 OR m.countries && sqlc.arg(countries)::text[])
+AND (sqlc.narg(rating_min)::double precision IS NULL OR m.rating >= sqlc.narg(rating_min)::double precision)
+AND (sqlc.narg(vote_count_min)::integer IS NULL OR m.vote_count >= sqlc.narg(vote_count_min)::integer)
 ORDER BY
     CASE WHEN sqlc.arg(sort_key)::text = 'popularity' THEN m.popularity END DESC NULLS LAST,
     CASE WHEN sqlc.arg(sort_key)::text = 'rating' THEN m.rating END DESC NULLS LAST,

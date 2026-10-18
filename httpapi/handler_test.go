@@ -31,6 +31,7 @@ func (b *stubBackend) Detail(context.Context, string) (catalog.Detail, error) {
 
 func TestInvalidFiltersNeverReachTheDatabase(t *testing.T) {
 	for _, query := range []string{
+		"languages=xx", "languages=en,en", "languages=en&languages=fa", "languages=", "languages=EN", "countries=ZZ", "countries=ir", "countries=IR,", "countries=IR,IR", "countries=IR&countries=US", "ratingMin=NaN", "ratingMin=Infinity", "ratingMin=1e1", "ratingMin=-1", "ratingMin=10.01", "ratingMin=", "ratingMin=7&ratingMin=8", "voteCountMin=-1", "voteCountMin=2.5", "voteCountMin=2147483648", "voteCountMin=0&voteCountMin=1", "ratingMin=" + strings.Repeat("0", 4097),
 		"title=hello", "country=IR", "language=en", "pageSize=100", "scoreMin=8", "genres=western",
 		"genres=drama&excludeGenres=drama", "genreMode=either", "sort=random", "v=2", "v=1&v=1",
 		"page=1&page=2", "genres=drama&genres=comedy", "genres=drama,drama", "genres=drama,", "genres=",
@@ -148,5 +149,21 @@ func TestTitleLookupHTTPStates(t *testing.T) {
 		if response.Code != 200 || backend.calls != 1 || response.Header().Get("Cache-Control") != "no-store" || !strings.Contains(response.Body.String(), `"items":[]`) {
 			t.Fatalf("lookup: %d %s", response.Code, response.Body)
 		}
+	}
+}
+
+func TestAdvancedFilterHTTPBoundaries(t *testing.T) {
+	for _, score := range []string{"0", "10", "7.25"} {
+		backend := &stubBackend{}
+		response := httptest.NewRecorder()
+		New(backend).ServeHTTP(response, httptest.NewRequest("GET", "/api/movies?v=1&languages=fa,en&countries=IR,US&ratingMin="+score+"&voteCountMin=0", nil))
+		if response.Code != 200 || backend.calls != 1 || len(backend.last.Languages) != 2 || len(backend.last.Countries) != 2 || backend.last.RatingMin == nil || backend.last.VoteCountMin == nil || *backend.last.VoteCountMin != 0 {
+			t.Fatalf("advanced filters lost: %d %#v", response.Code, backend.last)
+		}
+	}
+	backend := &stubBackend{}
+	New(backend).ServeHTTP(httptest.NewRecorder(), httptest.NewRequest("GET", "/api/movies?ratingMin=8", nil))
+	if backend.last.VoteCountMin != nil {
+		t.Fatal("rating silently introduced a vote threshold")
 	}
 }

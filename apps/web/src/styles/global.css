@@ -240,3 +240,16 @@ summary::-webkit-details-marker { display: none; }
 .title-suggestion-text strong { font-size: 14px; font-weight: 600; }
 .title-suggestion-text > span, .title-suggestion-year { font-size: 12px; color: var(--muted); }
 .title-suggestion > svg { flex: 0 0 16px; color: var(--accent); }
+
+.advanced-filters { margin-block-start: 1.2rem; }
+.advanced-options { border-block-end: 1px solid var(--line); padding-block: .65rem; }
+.advanced-options fieldset { min-inline-size: 0; border: 0; padding: 0; }
+.advanced-filters .text-button { min-block-size: 48px; }
+.advanced-number { display: grid; gap: .45rem; margin-block: .9rem; font-size: .85rem; }
+.advanced-number input { inline-size: 100%; min-inline-size: 0; min-block-size: 48px; border: 1px solid var(--line); border-radius: 5px; padding-inline: .75rem; background: var(--surface); color: var(--text); }
+.advanced-filters summary:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+.advanced-filters .range-form { display: block; }
+.advanced-filters summary { min-block-size: 48px; }
+.advanced-filters .genre-option > span { min-block-size: 48px; display: inline-flex; align-items: center; }
+.advanced-options > summary { display: flex; align-items: center; justify-content: space-between; gap: .75rem; font-size: 13px; font-weight: 600; list-style: none; }
+.advanced-options > summary > span { color: var(--accent); }

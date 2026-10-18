@@ -2,6 +2,7 @@ package catalog
 
 import (
 	"errors"
+	"math"
 	"slices"
 )
 
@@ -12,7 +13,14 @@ var genreSlugs = []string{
 
 func KnownGenre(slug string) bool { return slices.Contains(genreSlugs, slug) }
 
+var LanguageCodes = []string{"de", "en", "es", "fa", "fr", "it", "ja", "ko", "no", "sv", "tr"}
+var CountryCodes = []string{"AU", "BE", "CA", "DE", "ES", "FR", "GB", "IR", "IT", "JP", "KR", "MX", "NO", "SE", "TR", "US"}
+
 type Filter struct {
+	Languages     []string
+	Countries     []string
+	RatingMin     *float64
+	VoteCountMin  *int32
 	Genres        []string
 	ExcludeGenres []string
 	GenreMode     string
@@ -55,6 +63,21 @@ func (f Filter) Validate() error {
 	}
 	if !validRange(f.RuntimeMin, f.RuntimeMax, 1, 600) {
 		return errors.New("Runtime must be within 1 through 600, with minimum no greater than maximum.")
+	}
+	for _, group := range []struct{ values, supported []string }{{f.Languages, LanguageCodes}, {f.Countries, CountryCodes}} {
+		seen := map[string]bool{}
+		for _, code := range group.values {
+			if !slices.Contains(group.supported, code) || seen[code] {
+				return errors.New("Language and country lists must contain unique supported codes.")
+			}
+			seen[code] = true
+		}
+	}
+	if f.RatingMin != nil && (math.IsNaN(*f.RatingMin) || math.IsInf(*f.RatingMin, 0) || *f.RatingMin < 0 || *f.RatingMin > 10) {
+		return errors.New("ratingMin must be between 0 and 10 inclusive.")
+	}
+	if f.VoteCountMin != nil && *f.VoteCountMin < 0 {
+		return errors.New("voteCountMin cannot be negative.")
 	}
 	switch f.Sort {
 	case "popularity", "rating", "newest", "runtime":

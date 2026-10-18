@@ -37,3 +37,19 @@ The lookup cache uses its own `titles` family, 30-second freshness, 60-second ga
 No schema migration or extension is necessary. With 32 movies, scanning three title fields per row avoids storing a second mutable normalized projection. The work grows linearly with catalog size and normalization is repeated per lookup. A normal B-tree index cannot accelerate arbitrary infix `strpos` matching; adding one now would not solve that query. For a modest larger catalog, measure warm/cold plans and latency first. If scans become material, consider a versioned normalized title projection and `pg_trgm` index with matching predicates in a separately reviewed migration. No index, extension, provider, paid service or additional cache is introduced in this milestone. The hard result and query-time bounds remain essential but do not make scans constant-time.
 
 See [title lookup verification](../verification/title-lookup.md) for local measurements and limitations.
+
+## Advanced discovery filters
+
+Language/country changes commit immediately; score and optional vote-count drafts
+commit together through an explicit Apply button. These controls send discovery
+requests only, using the existing canonical `movies` cache family and cancellation.
+Title lookup, debounce and cache ownership are unchanged. Never prune synchronously
+inside QueryCache events: observer transfers are incomplete at `observerRemoved`.
+The existing coalesced microtask cleanup and zero-observer predicate must remain.
+
+The filter vocabulary is bounded to 11 original languages and 16 production
+countries for the owned fixture. Native disclosures and checkbox chips avoid an
+external dropdown library or locale-data dependency. Both locales share the same
+stable codes and query keys. The UI does not fetch filter options per selection.
+See [advanced filter verification](../verification/advanced-filters.md) for build,
+SQL and browser regression evidence; these remain local lab measurements.

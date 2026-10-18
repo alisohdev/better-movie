@@ -1,7 +1,8 @@
 import { prefetch } from 'astro:prefetch';
 import { z } from 'zod';
+import { disclosureSchema } from './discovery-state';
 
-const storedSelection = z.object({ url: z.string(), scroll: z.number().nonnegative() }).strict();
+const storedSelection = z.object({ url: z.string(), scroll: z.number().nonnegative(), disclosures: disclosureSchema.optional() }).strict();
 const started = new Set<string>();
 try {
   const previous = z.array(z.string()).max(2).safeParse(JSON.parse(sessionStorage.getItem('frame:document-intents') ?? '[]'));
@@ -56,8 +57,12 @@ export function rememberDiscovery() {
   const locale = match?.[1];
   if (!locale) return;
   try {
-    sessionStorage.setItem(`frame:selection:${locale}`, JSON.stringify({ url: location.pathname + location.search, scroll: window.scrollY }));
-    history.replaceState({ ...history.state, frameScroll: window.scrollY }, '', location.href);
+    const disclosures = {
+      panel: document.querySelector('.filter-disclosure')?.getAttribute('data-open') === 'true',
+      details: [...document.querySelectorAll<HTMLDetailsElement>('details[data-filter-disclosure][open]')].map((element) => element.dataset.filterDisclosure),
+    };
+    sessionStorage.setItem(`frame:selection:${locale}`, JSON.stringify({ url: location.pathname + location.search, scroll: window.scrollY, disclosures }));
+    history.replaceState({ ...history.state, frameScroll: window.scrollY, frameDisclosures: disclosures }, '', location.href);
   } catch { /* Navigation remains available when session storage is disabled. */ }
 }
 

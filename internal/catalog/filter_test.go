@@ -1,6 +1,7 @@
 package catalog_test
 
 import (
+	"math"
 	"testing"
 
 	"bettermovie/internal/catalog"
@@ -45,5 +46,51 @@ func TestFilterDomain(t *testing.T) {
 				t.Fatal("filter domain did not enforce the published boundary")
 			}
 		})
+	}
+}
+
+func TestAdvancedFilterDomain(t *testing.T) {
+	for _, n := range []float64{0, 10, 8.25, -0.1, 10.1, math.NaN(), math.Inf(1), math.Inf(-1)} {
+		f := catalog.DefaultFilter()
+		f.RatingMin = &n
+		want := !math.IsNaN(n) && !math.IsInf(n, 0) && n >= 0 && n <= 10
+		if (f.Validate() == nil) != want {
+			t.Fatalf("invalid score boundary %v", n)
+		}
+	}
+	for _, test := range []struct {
+		codes []string
+		valid bool
+	}{
+		{[]string{"en", "fa"}, true}, {[]string{"en", "en"}, false}, {[]string{""}, false}, {[]string{"xx"}, false},
+	} {
+		f := catalog.DefaultFilter()
+		f.Languages = test.codes
+		if (f.Validate() == nil) != test.valid {
+			t.Fatalf("invalid languages %v", test.codes)
+		}
+	}
+	for _, test := range []struct {
+		codes []string
+		valid bool
+	}{
+		{[]string{"IR", "US"}, true}, {[]string{"IR", "IR"}, false}, {[]string{""}, false}, {[]string{"ZZ"}, false},
+	} {
+		f := catalog.DefaultFilter()
+		f.Countries = test.codes
+		if (f.Validate() == nil) != test.valid {
+			t.Fatalf("invalid countries %v", test.codes)
+		}
+	}
+	f := catalog.DefaultFilter()
+	f.VoteCountMin = number(-1)
+	if f.Validate() == nil {
+		t.Fatal("negative votes accepted")
+	}
+	for _, n := range []int32{0, 2147483647} {
+		f.VoteCountMin = &n
+		if f.Validate() != nil {
+			t.Fatal("inclusive votes rejected")
+		}
 	}
 }

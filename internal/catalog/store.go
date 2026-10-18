@@ -89,6 +89,7 @@ func (s *Store) read(ctx context.Context, fn func(context.Context, *dbgen.Querie
 func (s *Store) Search(ctx context.Context, f Filter) (Page, error) {
 	page := Page{Items: []Movie{}, Page: f.Page, PageSize: PageSize, CatalogRevision: Revision}
 	params := dbgen.CountMoviesParams{
+		Languages: append([]string{}, f.Languages...), Countries: append([]string{}, f.Countries...), RatingMin: floatParam(f.RatingMin), VoteCountMin: intParam(f.VoteCountMin),
 		IncludeGenres: append([]string{}, f.Genres...), GenreMode: f.GenreMode,
 		ExcludeGenres: append([]string{}, f.ExcludeGenres...),
 		YearMin:       intParam(f.YearMin), YearMax: intParam(f.YearMax),
@@ -101,6 +102,7 @@ func (s *Store) Search(ctx context.Context, f Filter) (Page, error) {
 			return err
 		}
 		rows, err := queries.ListMovies(ctx, dbgen.ListMoviesParams{
+			Languages: params.Languages, Countries: params.Countries, RatingMin: params.RatingMin, VoteCountMin: params.VoteCountMin,
 			IncludeGenres: params.IncludeGenres, GenreMode: params.GenreMode,
 			ExcludeGenres: params.ExcludeGenres, YearMin: params.YearMin, YearMax: params.YearMax,
 			RuntimeMin: params.RuntimeMin, RuntimeMax: params.RuntimeMax,

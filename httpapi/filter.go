@@ -10,6 +10,8 @@ import (
 	"bettermovie/internal/catalog"
 )
 
+var scoreValue = regexp.MustCompile(`^[0-9]+(?:\.[0-9]+)?$`)
+
 var integerValue = regexp.MustCompile(`^[0-9]+$`)
 
 func parseFilter(rawQuery string) (catalog.Filter, error) {
@@ -24,6 +26,19 @@ func parseFilter(rawQuery string) (catalog.Filter, error) {
 		}
 		value := entries[0]
 		switch key {
+		case "languages":
+			f.Languages = strings.Split(value, ",")
+		case "countries":
+			f.Countries = strings.Split(value, ",")
+		case "ratingMin":
+			if !scoreValue.MatchString(value) {
+				return f, errors.New("ratingMin must be a decimal score between 0 and 10.")
+			}
+			n, err := strconv.ParseFloat(value, 64)
+			if err != nil {
+				return f, errors.New("ratingMin is outside the supported range.")
+			}
+			f.RatingMin = &n
 		case "genres":
 			f.Genres = strings.Split(value, ",")
 		case "excludeGenres":
@@ -36,7 +51,7 @@ func parseFilter(rawQuery string) (catalog.Filter, error) {
 			if value != "1" {
 				return f, errors.New("Only URL version 1 is supported.")
 			}
-		case "yearMin", "yearMax", "runtimeMin", "runtimeMax", "page":
+		case "yearMin", "yearMax", "runtimeMin", "runtimeMax", "voteCountMin", "page":
 			if !integerValue.MatchString(value) {
 				return f, errors.New("Numeric filters must be whole positive integers.")
 			}
@@ -54,6 +69,8 @@ func parseFilter(rawQuery string) (catalog.Filter, error) {
 				f.RuntimeMin = &number
 			case "runtimeMax":
 				f.RuntimeMax = &number
+			case "voteCountMin":
+				f.VoteCountMin = &number
 			case "page":
 				f.Page = number
 			}
