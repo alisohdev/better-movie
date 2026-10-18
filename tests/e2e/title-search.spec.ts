@@ -151,3 +151,66 @@ test('composition waits for committed input and offline lookup explains the conn
   await context.setOffline(false);
   await expect(page.getByRole('listbox').getByRole('option')).toContainText('Paper Skies');
 });
+
+for (const locale of ['en', 'fa']) {
+  for (const warmCache of [false, true]) {
+    test(`${locale}: unchanged title stays quiet ${warmCache ? 'with a full cache' : 'with a fresh cache'}`, async ({ page }) => {
+      const input = await open(page, locale, '?v=1&runtimeMax=100');
+      const url = page.url();
+      const errors: string[] = [];
+      const orbitRequests: string[] = [];
+      page.on('pageerror', (error) => errors.push(error.message));
+      page.on('request', (request) => {
+        const target = new URL(request.url());
+        if (target.pathname === '/api/titles' && target.searchParams.get('q') === 'orbit') orbitRequests.push(request.url());
+      });
+      // Seven settled title keys plus the disabled empty key reach the old
+      // eviction boundary. A cold-cache-only test misses the observer race.
+      if (warmCache) {
+        for (const title of ['paper', 'last', 'space', 'sea', 'silence', 'orange', 'train']) {
+          const result = page.waitForResponse((response) => new URL(response.url()).pathname === '/api/titles' && new URL(response.url()).searchParams.get('q') === title);
+          await input.fill(title);
+          expect((await result).ok()).toBe(true);
+          await expect(page.getByRole('listbox')).toHaveAttribute('aria-busy', 'false');
+        }
+      }
+      await input.fill('orbit');
+      const option = page.getByRole('listbox').getByRole('option');
+      await expect(option).toHaveCount(1);
+      await expect(option).toContainText(locale === 'fa' ? 'مدار دو نفر' : 'Orbit of Two');
+      await expect(input).toBeFocused();
+      await page.waitForTimeout(5_100);
+      expect(orbitRequests).toHaveLength(1);
+
+      // Pointer/keyboard state and a parent state change rerender the island.
+      await option.dispatchEvent('pointermove');
+      await input.press('ArrowDown');
+      await input.press('ArrowUp');
+      if ((page.viewportSize()?.width ?? 1440) < 600) {
+        await page.getByRole('button', { name: locale === 'fa' ? /^سلیقه/ : /^Your preferences/ }).click();
+      } else {
+        await page.getByLabel(locale === 'fa' ? 'حداکثر زمان فیلم' : 'Runtime maximum', { exact: true }).fill('99');
+      }
+      await input.focus();
+      await expect(option).toHaveCount(1);
+      await input.press('Escape');
+      await input.press('ArrowDown');
+      await expect(option).toHaveCount(1);
+      await page.waitForTimeout(350);
+      expect(orbitRequests).toHaveLength(1);
+      expect(page.url()).toBe(url);
+
+      await input.fill('paper');
+      await expect(option).toContainText(locale === 'fa' ? 'آسمان کاغذی' : 'Paper Skies');
+      await input.press('Enter');
+      await expect(page).toHaveURL(new RegExp(`/${locale}/movies/paper-skies/`));
+      await page.goBack();
+      await expect(page).toHaveURL(url);
+      await expect(page.locator('astro-island[ssr]')).toHaveCount(0);
+      await expect(input).toHaveValue('');
+      await page.waitForTimeout(350);
+      expect(orbitRequests).toHaveLength(1);
+      expect(errors).toEqual([]);
+    });
+  }
+}

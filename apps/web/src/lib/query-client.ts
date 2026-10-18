@@ -10,13 +10,25 @@ export function getQueryClient() {
   const client = new QueryClient({ defaultOptions: { queries: { staleTime: 60_000, gcTime: 300_000, retry: false, refetchOnWindowFocus: false } } });
   if (typeof window !== 'undefined') {
     browserClient = client;
+    let pruneQueued = false;
     client.getQueryCache().subscribe((event) => {
       if (event.type !== 'updated' && event.type !== 'observerRemoved') return;
-      for (const family of ['movies', 'titles']) {
-        const inactive = client.getQueryCache().findAll({ queryKey: [family, CATALOG_REVISION], type: 'inactive', fetchStatus: 'idle' })
-          .sort((a, b) => b.state.dataUpdatedAt - a.state.dataUpdatedAt);
-        for (const query of inactive.slice(MAX_INACTIVE_RESULTS)) client.removeQueries({ queryKey: query.queryKey, exact: true });
-      }
+      if (pruneQueued) return;
+      pruneQueued = true;
+      // Observer transfers remove the old observer before adding the new one.
+      // Pruning synchronously here can evict that destination and orphan its
+      // observer, making every render recreate and refetch the same query key.
+      queueMicrotask(() => {
+        pruneQueued = false;
+        for (const family of ['movies', 'titles']) {
+          const unused = client.getQueryCache().findAll({
+            queryKey: [family, CATALOG_REVISION], fetchStatus: 'idle',
+            // React Query's "inactive" also includes disabled observers.
+            predicate: (query) => query.getObserversCount() === 0,
+          }).sort((a, b) => b.state.dataUpdatedAt - a.state.dataUpdatedAt);
+          for (const query of unused.slice(MAX_INACTIVE_RESULTS)) client.removeQueries({ queryKey: query.queryKey, exact: true });
+        }
+      });
     });
   }
   return client;

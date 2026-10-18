@@ -57,7 +57,51 @@ it('bounds lookup cache independently without evicting discovery results', async
   for (let index = 0; index < 16; index++) {
     client.setQueryData(['titles', CATALOG_REVISION, `title-${index}`], { items: [item], catalogRevision: CATALOG_REVISION });
   }
+  await Promise.resolve(); // Cache trimming runs after observer transfers settle.
   expect(client.getQueryCache().findAll({ queryKey: ['titles', CATALOG_REVISION] })).toHaveLength(8);
   expect(client.getQueryData(discoveryKey)).toEqual({ marker: 'discovery' });
   client.clear();
+});
+
+it('keeps the destination query cached across a mounted observer transfer at capacity', async () => {
+  vi.stubGlobal('window', {});
+  vi.stubGlobal('fetch', vi.fn<typeof fetch>().mockImplementation(async () => new Response(JSON.stringify({ items: [item], catalogRevision: CATALOG_REVISION }))));
+  const { getQueryClient } = await import('./query-client');
+  const { QueryObserver } = await import('@tanstack/react-query');
+  const client = getQueryClient();
+  for (let index = 0; index < 8; index++) client.setQueryData(['titles', CATALOG_REVISION, `cached-${index}`], { items: [item], catalogRevision: CATALOG_REVISION });
+  const observer = new QueryObserver(client, { ...titleQuery(''), enabled: false });
+  const unsubscribe = observer.subscribe(() => {});
+  try {
+    observer.setOptions({ ...titleQuery('orbit'), enabled: true });
+    await Promise.resolve();
+    expect(client.getQueryCache().find({ queryKey: titleQuery('orbit').queryKey, exact: true })).toBe(observer.getCurrentQuery());
+    await vi.waitFor(() => expect(observer.getCurrentResult().isSuccess).toBe(true));
+    for (let index = 0; index < 5; index++) observer.setOptions({ ...titleQuery('orbit'), enabled: true });
+    await Promise.resolve();
+    expect(fetch).toHaveBeenCalledTimes(1);
+  } finally {
+    unsubscribe();
+    client.clear();
+  }
+});
+
+it('protects a disabled but still observed query from cache eviction', async () => {
+  vi.stubGlobal('window', {});
+  const { getQueryClient } = await import('./query-client');
+  const { QueryObserver } = await import('@tanstack/react-query');
+  const client = getQueryClient();
+  const options = { ...titleQuery('orbit'), enabled: false, initialData: titleLookupSchema.parse({ items: [item], catalogRevision: CATALOG_REVISION }), initialDataUpdatedAt: 1 };
+  const observer = new QueryObserver(client, options);
+  const unsubscribe = observer.subscribe(() => {});
+  try {
+    for (let index = 0; index < 16; index++) client.setQueryData(['titles', CATALOG_REVISION, `cached-${index}`], { items: [item], catalogRevision: CATALOG_REVISION });
+    await Promise.resolve();
+    expect(observer.getCurrentQuery().getObserversCount()).toBe(1);
+    expect(client.getQueryCache().find({ queryKey: options.queryKey, exact: true })).toBe(observer.getCurrentQuery());
+    expect(client.getQueryCache().findAll({ queryKey: ['titles', CATALOG_REVISION], predicate: (query) => query.getObserversCount() === 0 })).toHaveLength(8);
+  } finally {
+    unsubscribe();
+    client.clear();
+  }
 });
