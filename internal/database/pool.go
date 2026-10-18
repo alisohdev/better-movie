@@ -25,10 +25,17 @@ func Config(rawURL string) (*pgxpool.Config, error) {
 		return nil, ErrConfiguration
 	}
 	mode := values.Get("sslmode")
+	if mode == "require" {
+		// Provider-generated URLs may request TLS without certificate checks.
+		// Strengthen that request instead of accepting an unverified connection.
+		mode = "verify-full"
+		values.Set("sslmode", mode)
+		u.RawQuery = values.Encode()
+	}
 	if mode != "verify-full" && mode != "disable" {
 		return nil, ErrConfiguration
 	}
-	config, err := pgxpool.ParseConfig(rawURL)
+	config, err := pgxpool.ParseConfig(u.String())
 	if err != nil {
 		return nil, ErrConfiguration
 	}

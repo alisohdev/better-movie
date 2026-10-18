@@ -19,7 +19,7 @@ func TestDatabaseTransportPolicy(t *testing.T) {
 		{"wrong scheme", "https://db.example.test/movie?sslmode=verify-full", false},
 		{"missing TLS policy", "postgres://movie@db.example.test/movie", false},
 		{"remote plaintext", "postgres://movie@db.example.test/movie?sslmode=disable", false},
-		{"unverified remote", "postgres://movie@db.example.test/movie?sslmode=require", false},
+		{"remote TLS request upgraded to verified", "postgres://movie@db.example.test/movie?sslmode=require", true},
 		{"opportunistic local", "postgres://movie@localhost/movie?sslmode=prefer", false},
 		{"duplicate TLS policy", "postgres://movie@localhost/movie?sslmode=disable&sslmode=verify-full", false},
 		{"remote host override", "postgres://movie@localhost/movie?sslmode=disable&host=db.example.test", false},
@@ -35,7 +35,7 @@ func TestDatabaseTransportPolicy(t *testing.T) {
 				if config.MaxConns != 2 || config.MinConns != 0 || config.MinIdleConns != 0 {
 					t.Fatal("serverless connection budget is not bounded")
 				}
-				if strings.Contains(test.connection, "verify-full") &&
+				if strings.Contains(test.connection, "@db.example.test") &&
 					(config.ConnConfig.TLSConfig == nil || config.ConnConfig.TLSConfig.InsecureSkipVerify || config.ConnConfig.TLSConfig.ServerName == "") {
 					t.Fatal("remote TLS does not verify the server")
 				}
