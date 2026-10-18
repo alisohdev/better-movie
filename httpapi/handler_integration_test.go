@@ -24,6 +24,9 @@ func TestPostgresHTTP(t *testing.T) {
 		status       int
 	}{
 		{"GET", "/api/health", 200},
+		{"GET", "/api/titles?q=THE+SPACE+BETWEEN", 200},
+		{"HEAD", "/api/titles?q=orbit", 200},
+		{"POST", "/api/titles?q=orbit", 405},
 		{"GET", "/api/movies", 200},
 		{"GET", "/api/movies?genres=drama,romance&genreMode=all", 200},
 		{"GET", "/api/movies/the-space-between", 200},
@@ -50,6 +53,12 @@ func TestPostgresHTTP(t *testing.T) {
 			}
 			if test.method == "HEAD" && len(body) != 0 {
 				t.Fatal("HEAD returned a response body")
+			}
+			if test.path == "/api/titles?q=THE+SPACE+BETWEEN" {
+				var lookup catalog.TitleLookup
+				if json.Unmarshal(body, &lookup) != nil || len(lookup.Items) != 1 || lookup.Items[0].ID != "the-space-between" {
+					t.Fatal("lookup did not reach PostgreSQL")
+				}
 			}
 			if test.path == "/api/movies?genres=drama,romance&genreMode=all" {
 				var page catalog.Page

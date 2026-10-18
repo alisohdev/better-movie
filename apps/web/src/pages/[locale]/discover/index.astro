@@ -9,5 +9,5 @@ const { locale } = Astro.props;
 ---
 <Shell locale={locale} title={copy(locale, 'Discover your next film — Frame', 'فیلم بعدی‌ات را کشف کن — فریم')}>
   <Discovery client:load locale={locale} genres={genres} initialResults={initialResults} />
-  <noscript><p class="feedback">{copy(locale, 'This is the starting sample. Interactive filters require JavaScript; every film detail opens as a full page.', 'این نمونهٔ آغازین است. فیلترهای تعاملی به جاوااسکریپت نیاز دارند؛ صفحهٔ جزئیات هر فیلم مستقل باز می‌شود.')}</p></noscript>
+  <noscript><p class="feedback">{copy(locale, 'This is the starting sample. Title search and interactive filters require JavaScript; every film detail opens as a full page.', 'این نمونهٔ آغازین است. جست‌وجوی عنوان و فیلترهای تعاملی به جاوااسکریپت نیاز دارند؛ صفحهٔ جزئیات هر فیلم مستقل باز می‌شود.')}</p></noscript>
 </Shell>

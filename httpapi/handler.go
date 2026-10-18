@@ -14,6 +14,7 @@ import (
 type Backend interface {
 	Health(context.Context) error
 	Search(context.Context, catalog.Filter) (catalog.Page, error)
+	Lookup(context.Context, string) (catalog.TitleLookup, error)
 	Detail(context.Context, string) (catalog.Detail, error)
 }
 
@@ -26,7 +27,7 @@ func New(backend Backend) http.Handler { return &Handler{backend: backend} }
 func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path
 	isDetail := strings.HasPrefix(path, "/api/movies/") && len(path) > len("/api/movies/") && !strings.Contains(strings.TrimPrefix(path, "/api/movies/"), "/")
-	if path != "/api/health" && path != "/api/movies" && !isDetail {
+	if path != "/api/health" && path != "/api/movies" && path != "/api/titles" && !isDetail {
 		writeError(w, r, http.StatusNotFound, "not_found", "The requested resource was not found.")
 		return
 	}
@@ -36,7 +37,15 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if len(r.URL.RawQuery) > 4096 {
-		writeError(w, r, http.StatusBadRequest, "invalid_filters", "The query string is too long.")
+		code := "invalid_filters"
+		if path == "/api/titles" {
+			code = "invalid_query"
+		}
+		writeError(w, r, http.StatusBadRequest, code, "The query string is too long.")
+		return
+	}
+	if path == "/api/titles" {
+		h.lookup(w, r)
 		return
 	}
 	filter, err := parseFilter(r.URL.RawQuery)
@@ -108,4 +117,30 @@ func writeError(w http.ResponseWriter, r *http.Request, status int, code, messag
 	writeJSON(w, r, status, struct {
 		Error publicError `json:"error"`
 	}{Error: publicError{Code: code, Message: message}})
+}
+
+func (h *Handler) lookup(w http.ResponseWriter, r *http.Request) {
+	values, err := url.ParseQuery(r.URL.RawQuery)
+	if err != nil || len(values["q"]) != 1 {
+		writeError(w, r, 400, "invalid_query", "Supply one q title query.")
+		return
+	}
+	for key, entries := range values {
+		if (key != "q" && key != "v") || len(entries) != 1 || (key == "v" && entries[0] != "1") {
+			writeError(w, r, 400, "invalid_query", "Only q and optional v=1 are accepted.")
+			return
+		}
+	}
+	if err := catalog.ValidateLookup(values.Get("q")); err != nil {
+		writeError(w, r, 400, "invalid_query", err.Error())
+		return
+	}
+	result, err := h.backend.Lookup(r.Context(), values.Get("q"))
+	if err != nil {
+		unavailable(w, r)
+		return
+	}
+	// Search text is not retained in intermediary HTTP caches.
+	w.Header().Set("Cache-Control", "no-store")
+	writeJSON(w, r, http.StatusOK, result)
 }

@@ -51,3 +51,7 @@ The production build passed on Vercel after narrowing `.vercelignore` so require
 ## Remote follow-up
 
 The earlier remote limitations describe the original local milestone. See [October 18 remote verification](remote-2026-10-18.md) for the subsequent committed Preview, Actions, browser checks, measurements, and remaining gaps.
+
+## Bilingual title lookup milestone
+
+See [title lookup verification](title-lookup.md) for the subsequent implementation, local PostgreSQL and browser checks, JavaScript budget, indexing tradeoffs and remaining measurement limits. It supersedes the original first-slice statement that title lookup is unimplemented.

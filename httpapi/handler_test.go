@@ -71,7 +71,7 @@ func TestValidFiltersReachBackendWithBounds(t *testing.T) {
 }
 
 func TestMethodsAndUnknownRoutes(t *testing.T) {
-	for _, route := range []string{"/api/health", "/api/movies", "/api/movies/the-space-between"} {
+	for _, route := range []string{"/api/health", "/api/movies", "/api/movies/the-space-between", "/api/titles?q=orbit"} {
 		for _, method := range []string{http.MethodPost, http.MethodPut, http.MethodDelete, http.MethodPatch, http.MethodOptions} {
 			backend := &stubBackend{}
 			response := httptest.NewRecorder()
@@ -97,7 +97,7 @@ func TestMethodsAndUnknownRoutes(t *testing.T) {
 }
 
 func TestErrorsAreSanitizedAndNeverReturnFixtureFallback(t *testing.T) {
-	for _, route := range []string{"/api/health", "/api/movies", "/api/movies/the-space-between"} {
+	for _, route := range []string{"/api/health", "/api/movies", "/api/movies/the-space-between", "/api/titles?q=orbit"} {
 		backend := &stubBackend{err: errors.New("postgres://movie:private-secret@db.example.test connection failed")}
 		response := httptest.NewRecorder()
 		New(backend).ServeHTTP(response, httptest.NewRequest(http.MethodGet, route, nil))
@@ -120,6 +120,33 @@ func TestTechnicalAndResourceSpecificQueriesAreRejected(t *testing.T) {
 		New(backend).ServeHTTP(response, httptest.NewRequest(http.MethodGet, route, nil))
 		if response.Code != 400 || backend.calls != 0 {
 			t.Fatal("technical or ignored resource-specific query reached the backend")
+		}
+	}
+}
+
+func (b *stubBackend) Lookup(_ context.Context, query string) (catalog.TitleLookup, error) {
+	b.calls++
+	return catalog.TitleLookup{Items: []catalog.TitleSuggestion{}, CatalogRevision: catalog.Revision}, b.err
+}
+
+func TestInvalidTitleQueriesNeverReachDatabase(t *testing.T) {
+	for _, query := range []string{"", "q=a&q=b", "q=a&genres=drama", "q=a&v=2", "q=a&v=1&v=1", "q=%zz", "q=%00", "q=%FF", "q=%E2%80%AE", "q=" + strings.Repeat("a", 121), "q=" + strings.Repeat("a", 4097)} {
+		backend := &stubBackend{}
+		response := httptest.NewRecorder()
+		New(backend).ServeHTTP(response, httptest.NewRequest("GET", "/api/titles?"+query, nil))
+		if response.Code != 400 || backend.calls != 0 {
+			t.Fatalf("invalid %q: %d, %d calls", query, response.Code, backend.calls)
+		}
+	}
+}
+
+func TestTitleLookupHTTPStates(t *testing.T) {
+	for _, query := range []string{"q=", "q=Orbit", "q=Orbit+%D9%85%D8%AF%D8%A7%D8%B1&v=1", "q=%25_%27"} {
+		backend := &stubBackend{}
+		response := httptest.NewRecorder()
+		New(backend).ServeHTTP(response, httptest.NewRequest("GET", "/api/titles?"+query, nil))
+		if response.Code != 200 || backend.calls != 1 || response.Header().Get("Cache-Control") != "no-store" || !strings.Contains(response.Body.String(), `"items":[]`) {
+			t.Fatalf("lookup: %d %s", response.Code, response.Body)
 		}
 	}
 }
