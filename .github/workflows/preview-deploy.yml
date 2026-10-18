@@ -1,0 +1,77 @@
+name: Manual protected Preview
+run-name: Preview reviewed main ${{ inputs.reviewed_sha }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      reviewed_sha:
+        description: 'Full 40-character SHA: current main commit you have reviewed and approve for Preview'
+        required: true
+        type: string
+      approval:
+        description: 'Type REVIEWED_PREVIEW_ONLY to approve this SHA for Preview (never Production)'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+  pull-requests: read
+
+concurrency:
+  group: better-movie-manual-preview
+  cancel-in-progress: false
+
+env:
+  VERCEL_PROJECT_ID: prj_K1VfRwHsmRpTpvNsNCDJNhWM8dNT
+  VERCEL_ORG_ID: team_zTb0ZL2P3xsTKB8S0J25ytnZ
+  VERCEL_CLI_VERSION: '64.5.0'
+  VERCEL_TELEMETRY_DISABLED: '1'
+  NO_UPDATE_NOTIFIER: '1'
+
+jobs:
+  gate:
+    if: github.repository == 'alisohdev/better-movie' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Validate reviewed main commit and successful CI (no Vercel secret)
+        run: python3 scripts/ci/preview_deploy.py gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REVIEWED_SHA: ${{ inputs.reviewed_sha }}
+          PREVIEW_APPROVAL: ${{ inputs.approval }}
+
+  preview:
+    needs: gate
+    if: github.repository == 'alisohdev/better-movie' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    # Configure this Environment with a deployment branch rule allowing only main.
+    environment: preview-deploy
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '24.19.0'
+      - name: Install exact reviewed CLI (no deployment secret)
+        run: npm install --global --ignore-scripts "vercel@$VERCEL_CLI_VERSION"
+      - name: Recheck gates, deploy Preview, record result, and smoke test
+        run: python3 scripts/ci/preview_deploy.py deploy
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REVIEWED_SHA: ${{ inputs.reviewed_sha }}
+          PREVIEW_APPROVAL: ${{ inputs.approval }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          # Optional existing credential; do not change Vercel protection to obtain it.
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+      - name: Remove transient CLI project state
+        if: always()
+        run: rm -rf .vercel
