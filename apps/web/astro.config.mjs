@@ -4,7 +4,6 @@ import tailwind from '@tailwindcss/vite';
 
 export default defineConfig({
   output: 'static',
-  build: { inlineStylesheets: 'always' },
   server: { host: '127.0.0.1', port: 4321 },
   integrations: [react()],
   prefetch: { prefetchAll: false, defaultStrategy: 'hover' },
