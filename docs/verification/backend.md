@@ -26,3 +26,7 @@ These are single warm post-seed observations of a 32-film functional fixture on 
 ## Limits
 
 Remote Vercel routing, the actual Go runtime limit, Neon TLS and connection reuse, cloud cold starts, free-account eligibility, GitHub Actions execution, and Iranian-network access remain unverified. The Go adapter tests cannot prove the hosting platform's rewrite behavior. Reproduce the remote checks in the [deployment instructions](../deployment/vercel-neon.md) before claiming deployed compatibility.
+
+## Remote follow-up
+
+The earlier remote limitations describe the original local milestone. See [October 18 remote verification](remote-2026-10-18.md) for the subsequent committed Preview, Actions, browser checks, measurements, and remaining gaps.

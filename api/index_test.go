@@ -47,6 +47,7 @@ func TestMalformedTechnicalRoutesAreRejectedBeforeDispatch(t *testing.T) {
 		"/api/index?__route=", "/api/index?__route=movies&__route=health", "/api/index?__route=../health",
 		"/api/index?__route=/health", "/api/index?__route=movies/", "/api/index?__route=movies//film",
 		"/api/index?__route=movies%5Cfilm", "/api/index?__route=movies%00film", "/api/index?__route=%zz",
+		"/api/health?__route=health&path=movies", "/api/health?__route=health&path=health&path=health",
 		"/api/index?__route=" + strings.Repeat("a", 201), "/api/movies?__route=health",
 	} {
 		t.Run(target, func(t *testing.T) {
@@ -72,5 +73,23 @@ func TestDirectPortablePathDoesNotRequireRewriteState(t *testing.T) {
 	}), httptest.NewRecorder(), request)
 	if !called {
 		t.Fatal("direct public request was not dispatched")
+	}
+}
+
+func TestRewriteWithPreservedPublicPath(t *testing.T) {
+	for _, path := range []string{"health", "movies", "movies/the-space-between"} {
+		t.Run(path, func(t *testing.T) {
+			request := httptest.NewRequest(http.MethodGet, "/api/"+path+"?__route="+path+"&path="+path+"&v=1", nil)
+			response := httptest.NewRecorder()
+			routeRequest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				if r.URL.Path != "/api/"+path || r.URL.Query().Has("__route") || r.URL.Query().Has("path") || r.URL.Query().Get("v") != "1" {
+					t.Fatal("preserved route lost public query or leaked rewrite state")
+				}
+				w.WriteHeader(http.StatusNoContent)
+			}), response, request)
+			if response.Code != http.StatusNoContent {
+				t.Fatalf("status=%d, want 204", response.Code)
+			}
+		})
 	}
 }

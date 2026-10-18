@@ -2,13 +2,13 @@
 
 Checked on 2026-10-18 against first-party documentation. Target: $0 monthly infrastructure for a personal, noncommercial pilot.
 
-The recommended candidate is one Vercel Hobby project containing static Astro pages and Go functions, plus one Neon Free PostgreSQL project. This preserves Go portability and gives the browser one origin. Provider eligibility and the remote proof of concept remain unresolved.
+The recommended candidate is one Vercel Hobby project containing static Astro pages and Go functions, plus one Neon Free PostgreSQL project. This preserves Go portability and gives the browser one origin. The protected remote slice is now verified on the committed revision recorded in [remote results](../verification/remote-2026-10-18.md). Provider eligibility and regional access remain unresolved.
 
 | Evidence level | Current conclusion |
 | --- | --- |
 | Documentation-supported | Vercel documents static Astro, Go handlers, and internal rewrites. Neon documents pgx and pooled PostgreSQL connections. |
 | Locally tested | The static build, portable Go handler, real local PostgreSQL queries, and browser checks are recorded separately in [verification results](../verification/results.md). These do not establish remote compatibility. |
-| Remotely unverified | No deployed Go-to-Neon path, production React island, regional accessibility, or cold-start measurement is established here. Cached Vercel CLI authentication alone proves none of these. |
+| Remotely tested | The protected Hobby Preview builds with Go 1.25, reaches the existing Neon database with verified TLS, and passes both browser projects. See the [dated evidence](../verification/remote-2026-10-18.md) for measurements and limits. Regional accessibility, field p75, and isolated Go initialization duration remain unverified. |
 
 ## One project is the first candidate
 
@@ -18,7 +18,7 @@ The Vercel project root must remain the repository root. Proposed settings are `
 
 Vercel's Go runtime is beta on all plans. An exported `func Handler(http.ResponseWriter, *http.Request)` in `api/index.go` is supported. Dependencies come from root `go.mod`; commit `go.sum`. The runtime selects the `go` version or overriding `toolchain` directive. Current documentation also offers a full Go server preset, but combining that server with a frontend uses Services. The spike uses the documented function path. [Go runtime](https://vercel.com/docs/functions/runtimes/go)
 
-The configured rewrite sends `/api/:path*` to `/api/index?__route=:path*`. The thin Go adapter validates and removes that reserved parameter, then restores the portable `/api/...` route while preserving public query parameters. Vercel documents same-application rewrites to functions. Local tests verify the adapter; the remote spike must verify the platform's resolved URL and path, including query parameters and unknown routes. The exact hosted Astro-and-Go combination remains a deployment hypothesis. [Rewrites](https://vercel.com/docs/routing/rewrites#same-application-rewrites)
+The configured rewrite sends `/api/:path*` to `/api/index?__route=:path*`. The thin Go adapter validates and removes that reserved parameter, then restores the portable `/api/...` route while preserving public query parameters. Vercel documents same-application rewrites to functions. Local tests verify the adapter; the remote spike must verify the platform's resolved URL and path, including query parameters and unknown routes. The dated remote record verifies this combination, including Vercel preserving the public path and injecting both `__route` and wildcard `path` query values. The adapter validates and removes those technical values before public filter validation. [Rewrites](https://vercel.com/docs/routing/rewrites#same-application-rewrites)
 
 Two Vercel projects add separate environment scopes and deployment coordination. Direct cross-origin API requests also need CORS. They offer little benefit for this slice, so keep them as a fallback for a demonstrated routing or build blocker.
 
@@ -50,7 +50,7 @@ Recommended starting settings are one lazily initialized pgxpool per function in
 
 Neon supports protocol-level prepared statements with a nonzero PgBouncer limit; SQL `PREPARE` is unsupported. [Prepared statements](https://neon.com/docs/connect/connection-pooling#protocol-level-prepared-statements) pgx documents compatible cached statements and `QueryExecModeExec` as an alternative when support is unavailable. Avoid `QueryExecModeDescribeExec` with transaction pooling. Test the pinned driver rather than disabling all prepared statements by assumption. [pgx PgBouncer guidance](https://pkg.go.dev/github.com/jackc/pgx/v5#hdr-PgBouncer)
 
-Neon requires TLS and recommends `sslmode=verify-full`. Keep `DATABASE_URL` server-side and verify the deployed Go certificate validation. No Neon database credential is available for this assessment. [Secure connections](https://neon.com/docs/connect/connect-securely)
+Neon requires TLS and recommends `sslmode=verify-full`. Keep `DATABASE_URL` server-side and verify the deployed Go certificate validation. The current Preview has a private Neon database credential; it is excluded from Git and frontend output. [Secure connections](https://neon.com/docs/connect/connect-securely)
 
 Local development can use PostgreSQL 18 in a dedicated scratch cluster or optional Docker container, the conventional Go server on port 8080, and Astro on port 4321. Astro's Vite configuration can proxy `/api` to Go. This tests the browser contract without requiring cloud credentials. [Vite development proxy](https://vite.dev/config/server-options#server-proxy)
 
@@ -71,4 +71,4 @@ Record the commit, toolchain, configuration, region, plan, timestamps, and obser
 5. Measure static delivery, cold API, warm API, cold database connection, warm query, and mobile discovery separately.
 6. Confirm free-plan meters and eligible account ownership. Test representative Iranian networks and record failures as well as successes.
 
-No item above is a recorded pass.
+This list originally described unverified checks. The [dated remote record](../verification/remote-2026-10-18.md) now establishes the committed build, API, bilingual UI, and lab performance results. Regional access, field metrics, isolated cold-function duration, connection counts under load, and missing-environment deployment behavior remain open.

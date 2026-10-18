@@ -6,8 +6,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"bettermovie/httpapi"
 	"bettermovie/internal/catalog"
-	"bettermovie/internal/httpapi"
 	"bettermovie/internal/testdb"
 )
 

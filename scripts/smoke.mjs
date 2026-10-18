@@ -1,10 +1,11 @@
+import { testHeaders } from './test-headers.mjs';
 import assert from 'node:assert/strict';
 
 const base = process.argv[2] ?? 'http://127.0.0.1:4321';
 const results = [];
 async function check(path, expectedStatus, verify) {
   const start = performance.now();
-  const response = await fetch(new URL(path, base), { signal: AbortSignal.timeout(10000) });
+  const response = await fetch(new URL(path, base), { headers: testHeaders, signal: AbortSignal.timeout(10000) });
   const value = await response.json();
   assert.equal(response.status, expectedStatus, path);
   verify(value);
