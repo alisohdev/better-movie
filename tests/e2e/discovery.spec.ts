@@ -85,6 +85,7 @@ test('cached filter results are reused without a duplicate request', async ({ pa
   await page.getByLabel('Include Drama', { exact: true }).click();
   await expect.poll(() => dramaRequests).toBe(1);
   await expect(page).toHaveURL(/genres=drama/);
+  await expect(page.getByRole('status')).toContainText(/^Showing /);
   await expect(page.getByTestId('movie-card').first()).toContainText('The Space Between');
   await page.getByLabel('Include Drama', { exact: true }).click();
   await expect(page).not.toHaveURL(/genres=drama/);
@@ -170,6 +171,8 @@ test('rapid filter changes keep the latest result when an earlier request is del
 });
 
 test('filter history Back and Forward restore controls without replacing the document', async ({ page }) => {
+  const browserErrors: string[] = [];
+  page.on('pageerror', (error) => browserErrors.push(error.message));
   await page.goto('/en/discover/');
   await openFilters(page);
   await page.evaluate(() => { document.documentElement.dataset.filterHistory = 'preserved'; });
@@ -188,4 +191,5 @@ test('filter history Back and Forward restore controls without replacing the doc
   await expect(page.getByLabel('Include Comedy', { exact: true })).toBeChecked();
   await expect(page.getByLabel('Include Drama', { exact: true })).toBeChecked();
   await expect(page.locator('html')).toHaveAttribute('data-filter-history', 'preserved');
+  expect(browserErrors).toEqual([]);
 });

@@ -1,3 +1,4 @@
+import { testHeaders } from './test-headers.mjs';
 import { chromium, expect } from '@playwright/test';
 import { mkdir, writeFile } from 'node:fs/promises';
 
@@ -5,7 +6,7 @@ const base = process.argv[2] ?? 'http://127.0.0.1:4321';
 const discovery = '/en/discover/?v=1&genres=drama&runtimeMax=110';
 const browser = await chromium.launch({ channel: process.env.PLAYWRIGHT_CHANNEL });
 try {
-  const context = await browser.newContext({ reducedMotion: 'reduce' });
+  const context = await browser.newContext({ reducedMotion: 'reduce', extraHTTPHeaders: testHeaders });
   const page = await context.newPage();
   const errors = [];
   const apiRequests = [];
@@ -42,7 +43,7 @@ try {
     const values = samples.map((sample) => sample[key]).toSorted((a, b) => a - b);
     return { medianMs: values[2], rangeMs: [values[0], values.at(-1)] };
   };
-  const report = { timestamp: new Date().toISOString(), browser: browser.version(), base, fixture: 'synthetic-v1, 32 movies', scope: 'Local production preview; one completed intentional prefetch, five warm detail/Back cycles, reduced motion, no throttling.', prefetchMs: Math.round(prefetchMs), samples, detail: summary('detailMs'), back: summary('backMs'), apiRequests: apiRequests.length, errors, limitations: ['Browser-driver and assertion overhead is included.', 'No comparative speedup, throughput, or field INP claim.', 'Cloud cold starts, target networks, and large catalogs are not represented.', 'Prefetch body reuse and Save-Data suppression have separate browser regression tests.'] };
+  const report = { timestamp: new Date().toISOString(), browser: browser.version(), base, fixture: 'synthetic-v1, 32 movies', scope: 'Production deployment or local preview selected by base; one completed intentional prefetch, five warm detail/Back cycles, reduced motion, no throttling.', prefetchMs: Math.round(prefetchMs), samples, detail: summary('detailMs'), back: summary('backMs'), apiRequests: apiRequests.length, errors, limitations: ['Browser-driver and assertion overhead is included.', 'No comparative speedup, throughput, or field INP claim; remote timings include network RTT.', 'Cold starts and database wake-up are not isolated; the catalog has 32 records.', 'Prefetch body reuse and Save-Data suppression have separate browser regression tests.'] };
   await mkdir('.local', { recursive: true });
   await writeFile('.local/navigation.json', JSON.stringify(report, null, 2) + '\n');
   process.stdout.write(JSON.stringify(report, null, 2) + '\n');

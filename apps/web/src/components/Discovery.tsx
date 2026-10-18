@@ -59,6 +59,8 @@ function DiscoveryBody({ locale, genres, initialResults }: Props) {
     const swap = (event: TransitionBeforeSwapEvent) => {
       if (!isFilterNavigation(event)) return;
       event.swap = () => {};
+      // Skipping native animation rejects ready; the document update still runs.
+      void event.viewTransition.ready.catch(() => {});
       event.viewTransition.skipTransition();
     };
     const afterSwap = () => {

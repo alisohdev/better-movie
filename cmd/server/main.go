@@ -10,7 +10,7 @@ import (
 	"syscall"
 	"time"
 
-	"bettermovie/internal/httpapi"
+	"bettermovie/httpapi"
 )
 
 func main() {

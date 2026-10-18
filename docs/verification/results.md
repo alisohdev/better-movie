@@ -47,3 +47,7 @@ First verify eligible free hosting with a privately configured Neon database. In
 Vercel project creation and Neon Free provisioning completed. The integration attached preview environment variables; migration and seed were run through the Vercel environment without printing the database URL. The 32 synthetic fixture rows are present in Neon. `sslmode=require` from the provider is strengthened to certificate and hostname verification in `internal/database/pool.go`.
 
 The production build passed on Vercel after narrowing `.vercelignore` so required Astro scripts remained included. Vercel then blocked the deployment because the repository commit author lacks deployment permission for the account. There is no ready preview deployment to test, so remote HTTP routing, React hydration, and end-to-end Vercel-to-Neon requests remain unverified. See the [deployment handoff](../deployment/vercel-neon.md).
+
+## Remote follow-up
+
+The earlier remote limitations describe the original local milestone. See [October 18 remote verification](remote-2026-10-18.md) for the subsequent committed Preview, Actions, browser checks, measurements, and remaining gaps.

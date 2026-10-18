@@ -1,0 +1,823 @@
+{
+  "deployedCommit": "ccd8d0607e7ce04161c5843a60a35574f4481170",
+  "deploymentId": "dpl_89Zo45sSWx4HCHaNV7tc8FoFvvEg",
+  "plan": "hobby",
+  "region": "iad1",
+  "protection": "all_except_custom_domains",
+  "ci": {
+    "conclusion": "success",
+    "url": "https://github.com/alisohdev/better-movie/actions/runs/39132791736"
+  },
+  "performance": {
+    "timestamp": "2026-10-18T13:46:48.677Z",
+    "base": "https://frame-movie-discovery-2fklc3yxk-alirezaconstantins-projects.vercel.app",
+    "build": "Astro production static output; endpoint selected by base",
+    "fixture": "32 owned synthetic movies, synthetic-v1",
+    "environment": {
+      "platform": "win32",
+      "architecture": "x64",
+      "cpu": "Intel(R) Core(TM) i3-10100 CPU @ 3.60GHz",
+      "logicalCores": 8,
+      "memoryGiB": 24,
+      "node": "v24.19.0"
+    },
+    "observations": [
+      {
+        "sample": 1,
+        "surface": "desktop-en",
+        "scope": "fresh browser context, unthrottled",
+        "errors": [],
+        "lcpMs": 1448,
+        "cls": 0,
+        "horizontalOverflow": false,
+        "resourceRequests": 24,
+        "jsResources": 10
+      },
+      {
+        "sample": 1,
+        "surface": "mobile-fa",
+        "scope": "fresh browser context, 4x CPU, 150ms latency, 1.6Mbps down",
+        "errors": [],
+        "lcpMs": 3340,
+        "cls": 0.0005045721117670485,
+        "horizontalOverflow": false,
+        "resourceRequests": 20,
+        "jsResources": 10
+      },
+      {
+        "sample": 2,
+        "surface": "desktop-en",
+        "scope": "fresh browser context, unthrottled",
+        "errors": [],
+        "lcpMs": 1512,
+        "cls": 0,
+        "horizontalOverflow": false,
+        "resourceRequests": 24,
+        "jsResources": 10
+      },
+      {
+        "sample": 2,
+        "surface": "mobile-fa",
+        "scope": "fresh browser context, 4x CPU, 150ms latency, 1.6Mbps down",
+        "errors": [],
+        "lcpMs": 2844,
+        "cls": 0.0005045721117670485,
+        "horizontalOverflow": false,
+        "resourceRequests": 20,
+        "jsResources": 10
+      },
+      {
+        "sample": 3,
+        "surface": "desktop-en",
+        "scope": "fresh browser context, unthrottled",
+        "errors": [],
+        "lcpMs": 1424,
+        "cls": 0,
+        "horizontalOverflow": false,
+        "resourceRequests": 24,
+        "jsResources": 10
+      },
+      {
+        "sample": 3,
+        "surface": "mobile-fa",
+        "scope": "fresh browser context, 4x CPU, 150ms latency, 1.6Mbps down",
+        "errors": [],
+        "lcpMs": 2692,
+        "cls": 0.0005045721117670485,
+        "horizontalOverflow": false,
+        "resourceRequests": 20,
+        "jsResources": 10
+      },
+      {
+        "sample": 4,
+        "surface": "desktop-en",
+        "scope": "fresh browser context, unthrottled",
+        "errors": [],
+        "lcpMs": 1484,
+        "cls": 0,
+        "horizontalOverflow": false,
+        "resourceRequests": 24,
+        "jsResources": 10
+      },
+      {
+        "sample": 4,
+        "surface": "mobile-fa",
+        "scope": "fresh browser context, 4x CPU, 150ms latency, 1.6Mbps down",
+        "errors": [],
+        "lcpMs": 3052,
+        "cls": 0.0005045721117670485,
+        "horizontalOverflow": false,
+        "resourceRequests": 20,
+        "jsResources": 10
+      },
+      {
+        "sample": 5,
+        "surface": "desktop-en",
+        "scope": "fresh browser context, unthrottled",
+        "errors": [],
+        "lcpMs": 1424,
+        "cls": 0,
+        "horizontalOverflow": false,
+        "resourceRequests": 24,
+        "jsResources": 10
+      },
+      {
+        "sample": 5,
+        "surface": "mobile-fa",
+        "scope": "fresh browser context, 4x CPU, 150ms latency, 1.6Mbps down",
+        "errors": [],
+        "lcpMs": 2544,
+        "cls": 0.0005045721117670485,
+        "horizontalOverflow": false,
+        "resourceRequests": 20,
+        "jsResources": 10
+      }
+    ],
+    "js": [
+      {
+        "name": "client.92D5l9pD.js",
+        "bytes": 212865,
+        "gzipBytes": 65818
+      },
+      {
+        "name": "client.ChiJXsfH.js",
+        "bytes": 24,
+        "gzipBytes": 44
+      },
+      {
+        "name": "client.kiYKGtcZ.js",
+        "bytes": 12378,
+        "gzipBytes": 4298
+      },
+      {
+        "name": "ClientRouter.astro_astro_type_script_index_0_lang.C1UGImjx.js",
+        "bytes": 1634,
+        "gzipBytes": 812
+      },
+      {
+        "name": "Discovery.DGdCtgKO.js",
+        "bytes": 59605,
+        "gzipBytes": 18276
+      },
+      {
+        "name": "page.sRBh_WEB.js",
+        "bytes": 47,
+        "gzipBytes": 67
+      },
+      {
+        "name": "prefetch.Ck1a_4eV.js",
+        "bytes": 2529,
+        "gzipBytes": 1153
+      },
+      {
+        "name": "react.DvXU6kJ2.js",
+        "bytes": 8412,
+        "gzipBytes": 3228
+      },
+      {
+        "name": "schemas.RRvgXBdS.js",
+        "bytes": 84996,
+        "gzipBytes": 24058
+      },
+      {
+        "name": "Shell.astro_astro_type_script_index_0_lang.DmtDzEt5.js",
+        "bytes": 3034,
+        "gzipBytes": 1225
+      }
+    ],
+    "totalBuiltJsGzipBytes": 118979,
+    "filter": {
+      "successfulSamples": 5,
+      "failures": 0,
+      "elapsedMs": [
+        495.56,
+        119.4,
+        112.6,
+        102.35,
+        107.67
+      ],
+      "medianMs": 112.6,
+      "rangeMs": [
+        102.35,
+        495.56
+      ]
+    },
+    "limitations": [
+      "Lab only, not field p75. Five fresh-context samples per viewport; host may remain warm.",
+      "INP not established by this capture.",
+      "Function cold starts and Neon wake-up cannot be isolated by this script. Iranian network and catalog scalability not established.",
+      "Timing includes HTTP, network, possible edge cache, SQL and JSON; bottleneck not profiled, so no comparative speedup claim.",
+      "Other development processes may share this workstation."
+    ]
+  },
+  "navigation": {
+    "timestamp": "2026-10-18T13:46:21.668Z",
+    "browser": "155.0.8059.80",
+    "base": "https://frame-movie-discovery-2fklc3yxk-alirezaconstantins-projects.vercel.app",
+    "fixture": "synthetic-v1, 32 movies",
+    "scope": "Production deployment or local preview selected by base; one completed intentional prefetch, five warm detail/Back cycles, reduced motion, no throttling.",
+    "prefetchMs": 263,
+    "samples": [
+      {
+        "detailMs": 258,
+        "backMs": 221
+      },
+      {
+        "detailMs": 382,
+        "backMs": 218
+      },
+      {
+        "detailMs": 394,
+        "backMs": 114
+      },
+      {
+        "detailMs": 386,
+        "backMs": 222
+      },
+      {
+        "detailMs": 388,
+        "backMs": 218
+      }
+    ],
+    "detail": {
+      "medianMs": 386,
+      "rangeMs": [
+        258,
+        394
+      ]
+    },
+    "back": {
+      "medianMs": 218,
+      "rangeMs": [
+        114,
+        222
+      ]
+    },
+    "apiRequests": 1,
+    "errors": [],
+    "limitations": [
+      "Browser-driver and assertion overhead is included.",
+      "No comparative speedup, throughput, or field INP claim; remote timings include network RTT.",
+      "Cold starts and database wake-up are not isolated; the catalog has 32 records.",
+      "Prefetch body reuse and Save-Data suppression have separate browser regression tests."
+    ]
+  },
+  "remote-api": {
+    "timestamp": "2026-10-18T13:44:20.751Z",
+    "base": "https://frame-movie-discovery-2fklc3yxk-alirezaconstantins-projects.vercel.app",
+    "environment": {
+      "platform": "win32",
+      "node": "v24.19.0"
+    },
+    "samples": [
+      {
+        "kind": "health",
+        "index": 0,
+        "elapsedMs": 755,
+        "status": 200,
+        "cache": "MISS",
+        "age": "0",
+        "vercelId": "fra1::iad1::vb78z-1792331057650-f26db153faa7",
+        "serverTiming": null
+      },
+      {
+        "kind": "health",
+        "index": 1,
+        "elapsedMs": 497,
+        "status": 200,
+        "cache": "MISS",
+        "age": "0",
+        "vercelId": "fra1::iad1::gsbs5-1792331058267-77c89232b637",
+        "serverTiming": null
+      },
+      {
+        "kind": "health",
+        "index": 2,
+        "elapsedMs": 347,
+        "status": 200,
+        "cache": "MISS",
+        "age": "0",
+        "vercelId": "fra1::iad1::8smf8-1792331058616-3f2c88171140",
+        "serverTiming": null
+      },
+      {
+        "kind": "health",
+        "index": 3,
+        "elapsedMs": 230,
+        "status": 200,
+        "cache": "MISS",
+        "age": "0",
+        "vercelId": "fra1::iad1::gsbs5-1792331058967-59925cd52ec6",
+        "serverTiming": null
+      },
+      {
+        "kind": "health",
+        "index": 4,
+        "elapsedMs": 369,
+        "status": 200,
+        "cache": "MISS",
+        "age": "0",
+        "vercelId": "fra1::iad1::96hbx-1792331059188-607d226dda08",
+        "serverTiming": null
+      },
+      {
+        "kind": "health",
+        "index": 5,
+        "elapsedMs": 204,
+        "status": 200,
+        "cache": "MISS",
+        "age": "0",
+        "vercelId": "fra1::iad1::gsbs5-1792331059549-13ac2760f6a0",
+        "serverTiming": null
+      },
+      {
+        "kind": "filter",
+        "index": 0,
+        "elapsedMs": 227,
+        "status": 200,
+        "cache": "MISS",
+        "age": "0",
+        "vercelId": "fra1::iad1::8smf8-1792331059754-dff7410907ca",
+        "serverTiming": null
+      },
+      {
+        "kind": "filter",
+        "index": 1,
+        "elapsedMs": 243,
+        "status": 200,
+        "cache": "HIT",
+        "age": "1",
+        "vercelId": "fra1::iad1::5srz9-1792331059982-1f46127e09c3",
+        "serverTiming": null
+      },
+      {
+        "kind": "filter",
+        "index": 2,
+        "elapsedMs": 105,
+        "status": 200,
+        "cache": "HIT",
+        "age": "0",
+        "vercelId": "fra1::iad1::8smf8-1792331060233-2baed728baa5",
+        "serverTiming": null
+      },
+      {
+        "kind": "filter",
+        "index": 3,
+        "elapsedMs": 247,
+        "status": 200,
+        "cache": "HIT",
+        "age": "1",
+        "vercelId": "fra1::iad1::nr8sh-1792331060343-92bba3d13b19",
+        "serverTiming": null
+      },
+      {
+        "kind": "filter",
+        "index": 4,
+        "elapsedMs": 109,
+        "status": 200,
+        "cache": "HIT",
+        "age": "1",
+        "vercelId": "fra1::iad1::rc888-1792331060582-28323e32002f",
+        "serverTiming": null
+      },
+      {
+        "kind": "filter",
+        "index": 5,
+        "elapsedMs": 116,
+        "status": 200,
+        "cache": "HIT",
+        "age": "1",
+        "vercelId": "fra1::iad1::4hmnw-1792331060696-9bbb996a7a05",
+        "serverTiming": null
+      }
+    ],
+    "errors": 0,
+    "scope": "Client end-to-end, sequential, unthrottled. First health sample is first observed request; remaining five health requests are warm candidates. Filter includes edge caching when reported. No server instrumentation isolates Go initialization, SQL, or Neon wake-up."
+  },
+  "remote-assets": {
+    "base": "https://frame-movie-discovery-2fklc3yxk-alirezaconstantins-projects.vercel.app",
+    "files": [
+      {
+        "name": "client.92D5l9pD.js",
+        "bytes": 212865,
+        "gzipBytes": 65818,
+        "sha256": "a6993b77c5d3b24fc38cbb6ec1002ed782b154aa7caa31d92125f4dfd965be9f",
+        "cache": "public, max-age=31536000, immutable"
+      },
+      {
+        "name": "client.ChiJXsfH.js",
+        "bytes": 24,
+        "gzipBytes": 44,
+        "sha256": "e8580c0cc48121d8edcac7e4ad104fcb540668a0e1c390ce37a60bfa6257b699",
+        "cache": "public, max-age=31536000, immutable"
+      },
+      {
+        "name": "client.kiYKGtcZ.js",
+        "bytes": 12378,
+        "gzipBytes": 4298,
+        "sha256": "09e17e33e37700daaba8540bb206f3d734630a9de56846ffe64b7dca9c89f12d",
+        "cache": "public, max-age=31536000, immutable"
+      },
+      {
+        "name": "ClientRouter.astro_astro_type_script_index_0_lang.C1UGImjx.js",
+        "bytes": 1634,
+        "gzipBytes": 812,
+        "sha256": "507bbfa99df97584f86b99b310642e717fb465e3104a30979edd3a46b16db162",
+        "cache": "public, max-age=31536000, immutable"
+      },
+      {
+        "name": "Discovery.DGdCtgKO.js",
+        "bytes": 59605,
+        "gzipBytes": 18276,
+        "sha256": "513ab15804139725659cb1ac369300d46f7a6de7b01f424255646e883c19b03c",
+        "cache": "public, max-age=31536000, immutable"
+      },
+      {
+        "name": "page.sRBh_WEB.js",
+        "bytes": 47,
+        "gzipBytes": 67,
+        "sha256": "e7d76fb057156598f92829ceea6e78d5ad548077bc19b38b472b935ba428e130",
+        "cache": "public, max-age=31536000, immutable"
+      },
+      {
+        "name": "prefetch.Ck1a_4eV.js",
+        "bytes": 2529,
+        "gzipBytes": 1153,
+        "sha256": "10185e578dfc7e4c18a634c51c892e5ae0e2f32860590ef1a376afb4fe9199be",
+        "cache": "public, max-age=31536000, immutable"
+      },
+      {
+        "name": "react.DvXU6kJ2.js",
+        "bytes": 8412,
+        "gzipBytes": 3228,
+        "sha256": "d2f40f3cf9c8f62f6abb6988cf470484b3bfd50d0cd8a33416dacc1d8c6f669d",
+        "cache": "public, max-age=31536000, immutable"
+      },
+      {
+        "name": "schemas.RRvgXBdS.js",
+        "bytes": 84996,
+        "gzipBytes": 24058,
+        "sha256": "351e740d6256350d79c5e016b11cd79bc96aa7890ac7e03358f688a3fee00e33",
+        "cache": "public, max-age=31536000, immutable"
+      },
+      {
+        "name": "Shell.astro_astro_type_script_index_0_lang.DmtDzEt5.js",
+        "bytes": 3034,
+        "gzipBytes": 1225,
+        "sha256": "1abc90a521f4189244c05ee44bc6b5537edfbbbf6d71c74acfccfa4383d96b90",
+        "cache": "public, max-age=31536000, immutable"
+      }
+    ],
+    "totalGzipBytes": 118979,
+    "errors": 0,
+    "scope": "Each deployed JavaScript response body equals local built output byte-for-byte. Gzip calculated locally; not measured wire transfer or route-specific execution."
+  },
+  "remote-smoke": {
+    "base": "https://frame-movie-discovery-2fklc3yxk-alirezaconstantins-projects.vercel.app",
+    "verdict": "pass",
+    "checks": [
+      {
+        "path": "/api/health",
+        "status": 200,
+        "elapsedMs": 425
+      },
+      {
+        "path": "/api/movies",
+        "status": 200,
+        "elapsedMs": 386
+      },
+      {
+        "path": "/api/movies?genres=drama&excludeGenres=horror&runtimeMax=110&sort=runtime",
+        "status": 200,
+        "elapsedMs": 225
+      },
+      {
+        "path": "/api/movies?genres=drama,comedy&genreMode=all",
+        "status": 200,
+        "elapsedMs": 244
+      },
+      {
+        "path": "/api/movies?genres=horror&excludeGenres=horror",
+        "status": 400,
+        "elapsedMs": 214
+      },
+      {
+        "path": "/api/movies?runtimeMin=120&runtimeMax=90",
+        "status": 400,
+        "elapsedMs": 209
+      },
+      {
+        "path": "/api/movies?unknown=true",
+        "status": 400,
+        "elapsedMs": 201
+      },
+      {
+        "path": "/api/movies/the-space-between",
+        "status": 200,
+        "elapsedMs": 223
+      },
+      {
+        "path": "/api/movies/not-a-film",
+        "status": 404,
+        "elapsedMs": 220
+      }
+    ],
+    "timingScope": "single functional smoke observations, not a performance benchmark"
+  },
+  "remote-extra": {
+    "base": "https://frame-movie-discovery-2fklc3yxk-alirezaconstantins-projects.vercel.app",
+    "samples": [
+      {
+        "locale": "en",
+        "width": 1440,
+        "height": 1000,
+        "loading": true,
+        "errorRecovery": true,
+        "cacheReuse": true,
+        "backForward": true,
+        "apiResponses": [
+          {
+            "status": 200,
+            "url": "https://frame-movie-discovery-2fklc3yxk-alirezaconstantins-projects.vercel.app/api/movies?v=1&genres=drama"
+          },
+          {
+            "status": 503,
+            "url": "https://frame-movie-discovery-2fklc3yxk-alirezaconstantins-projects.vercel.app/api/movies?v=1&genres=comedy%2Cdrama"
+          },
+          {
+            "status": 200,
+            "url": "https://frame-movie-discovery-2fklc3yxk-alirezaconstantins-projects.vercel.app/api/movies?v=1&genres=comedy%2Cdrama"
+          }
+        ]
+      },
+      {
+        "locale": "fa",
+        "width": 390,
+        "height": 844,
+        "loading": true,
+        "errorRecovery": true,
+        "cacheReuse": true,
+        "backForward": true,
+        "apiResponses": [
+          {
+            "status": 200,
+            "url": "https://frame-movie-discovery-2fklc3yxk-alirezaconstantins-projects.vercel.app/api/movies?v=1&genres=drama"
+          },
+          {
+            "status": 503,
+            "url": "https://frame-movie-discovery-2fklc3yxk-alirezaconstantins-projects.vercel.app/api/movies?v=1&genres=comedy%2Cdrama"
+          },
+          {
+            "status": 200,
+            "url": "https://frame-movie-discovery-2fklc3yxk-alirezaconstantins-projects.vercel.app/api/movies?v=1&genres=comedy%2Cdrama"
+          }
+        ]
+      }
+    ],
+    "errors": [],
+    "injectedFailures": [
+      {
+        "locale": "en",
+        "type": "console",
+        "message": "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+      },
+      {
+        "locale": "fa",
+        "type": "console",
+        "message": "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+      }
+    ]
+  },
+  "neon-before-idle": {
+    "errors": 0,
+    "samples": [
+      {
+        "connectAndQueryMs": 1320.241,
+        "connectMs": 1001.579,
+        "postmasterStart": "2026-10-18T13:39:44Z",
+        "sample": 0
+      },
+      {
+        "connectAndQueryMs": 1391.237,
+        "connectMs": 1044.529,
+        "postmasterStart": "2026-10-18T13:39:44Z",
+        "sample": 1
+      },
+      {
+        "connectAndQueryMs": 1319.491,
+        "connectMs": 990.804,
+        "postmasterStart": "2026-10-18T13:39:44Z",
+        "sample": 2
+      },
+      {
+        "connectAndQueryMs": 1363.041,
+        "connectMs": 1024.288,
+        "postmasterStart": "2026-10-18T13:39:44Z",
+        "sample": 3
+      },
+      {
+        "connectAndQueryMs": 1394.713,
+        "connectMs": 1053.711,
+        "postmasterStart": "2026-10-18T13:39:44Z",
+        "sample": 4
+      },
+      {
+        "connectAndQueryMs": 1361.301,
+        "connectMs": 1022.701,
+        "postmasterStart": "2026-10-18T13:39:44Z",
+        "sample": 5
+      }
+    ],
+    "scope": "Six separate pooled-host TLS connections and SELECT 1 from this workstation. First request after documented idle interval is a wake-up candidate; endpoint suspension status is unobserved. Includes WAN, TLS, authentication and pooler, not isolated compute wake-up.",
+    "timestamp": "2026-10-18T13:48:30Z",
+    "tls": "verify-full"
+  },
+  "neon-after-idle": {
+    "errors": 0,
+    "samples": [
+      {
+        "connectAndQueryMs": 1928.234,
+        "connectMs": 1590.686,
+        "postmasterStart": "2026-10-18T13:54:55Z",
+        "sample": 0
+      },
+      {
+        "connectAndQueryMs": 1251.329,
+        "connectMs": 940.987,
+        "postmasterStart": "2026-10-18T13:54:55Z",
+        "sample": 1
+      },
+      {
+        "connectAndQueryMs": 1319.925,
+        "connectMs": 992.28,
+        "postmasterStart": "2026-10-18T13:54:55Z",
+        "sample": 2
+      },
+      {
+        "connectAndQueryMs": 1338.509,
+        "connectMs": 1007.669,
+        "postmasterStart": "2026-10-18T13:54:55Z",
+        "sample": 3
+      },
+      {
+        "connectAndQueryMs": 1329.381,
+        "connectMs": 1001.9,
+        "postmasterStart": "2026-10-18T13:54:55Z",
+        "sample": 4
+      },
+      {
+        "connectAndQueryMs": 1281.947,
+        "connectMs": 963.503,
+        "postmasterStart": "2026-10-18T13:54:55Z",
+        "sample": 5
+      }
+    ],
+    "scope": "Six separate pooled-host TLS connections and SELECT 1 from this workstation. First request after documented idle interval is a wake-up candidate; endpoint suspension status is unobserved. Includes WAN, TLS, authentication and pooler, not isolated compute wake-up.",
+    "timestamp": "2026-10-18T13:55:02Z",
+    "tls": "verify-full"
+  },
+  "remote-api-after-idle": {
+    "timestamp": "2026-10-18T13:55:05.450Z",
+    "base": "https://frame-movie-discovery-2fklc3yxk-alirezaconstantins-projects.vercel.app",
+    "environment": {
+      "platform": "win32",
+      "node": "v24.19.0"
+    },
+    "samples": [
+      {
+        "kind": "health",
+        "index": 0,
+        "elapsedMs": 995,
+        "status": 200,
+        "cache": "MISS",
+        "age": "0",
+        "vercelId": "fra1::iad1::rh4mc-1792331702713-679e1f4bfb51",
+        "serverTiming": null
+      },
+      {
+        "kind": "health",
+        "index": 1,
+        "elapsedMs": 393,
+        "status": 200,
+        "cache": "MISS",
+        "age": "0",
+        "vercelId": "fra1::iad1::tcxlc-1792331703559-39280b258f19",
+        "serverTiming": null
+      },
+      {
+        "kind": "health",
+        "index": 2,
+        "elapsedMs": 213,
+        "status": 200,
+        "cache": "MISS",
+        "age": "0",
+        "vercelId": "fra1::iad1::22tbf-1792331703792-50a829c21636",
+        "serverTiming": null
+      },
+      {
+        "kind": "health",
+        "index": 3,
+        "elapsedMs": 212,
+        "status": 200,
+        "cache": "MISS",
+        "age": "0",
+        "vercelId": "fra1::iad1::89fnl-1792331704009-d7e0c7ac92d6",
+        "serverTiming": null
+      },
+      {
+        "kind": "health",
+        "index": 4,
+        "elapsedMs": 208,
+        "status": 200,
+        "cache": "MISS",
+        "age": "0",
+        "vercelId": "fra1::iad1::22tbf-1792331704212-2fa50c62b6a2",
+        "serverTiming": null
+      },
+      {
+        "kind": "health",
+        "index": 5,
+        "elapsedMs": 218,
+        "status": 200,
+        "cache": "MISS",
+        "age": "0",
+        "vercelId": "fra1::iad1::hpbjq-1792331704421-2936b49c4556",
+        "serverTiming": null
+      },
+      {
+        "kind": "filter",
+        "index": 0,
+        "elapsedMs": 299,
+        "status": 200,
+        "cache": "MISS",
+        "age": "0",
+        "vercelId": "fra1::iad1::vcmdb-1792331704652-eac2f4fb7d92",
+        "serverTiming": null
+      },
+      {
+        "kind": "filter",
+        "index": 1,
+        "elapsedMs": 114,
+        "status": 200,
+        "cache": "HIT",
+        "age": "0",
+        "vercelId": "fra1::iad1::2589n-1792331704950-6d52ed0fa9e9",
+        "serverTiming": null
+      },
+      {
+        "kind": "filter",
+        "index": 2,
+        "elapsedMs": 118,
+        "status": 200,
+        "cache": "HIT",
+        "age": "1",
+        "vercelId": "fra1::iad1::j6bfn-1792331705061-7c5b2297605e",
+        "serverTiming": null
+      },
+      {
+        "kind": "filter",
+        "index": 3,
+        "elapsedMs": 101,
+        "status": 200,
+        "cache": "HIT",
+        "age": "1",
+        "vercelId": "fra1::iad1::hd7q7-1792331705168-4f191f879e0e",
+        "serverTiming": null
+      },
+      {
+        "kind": "filter",
+        "index": 4,
+        "elapsedMs": 105,
+        "status": 200,
+        "cache": "HIT",
+        "age": "1",
+        "vercelId": "fra1::iad1::qrx9r-1792331705279-7422097eacf7",
+        "serverTiming": null
+      },
+      {
+        "kind": "filter",
+        "index": 5,
+        "elapsedMs": 121,
+        "status": 200,
+        "cache": "HIT",
+        "age": "1",
+        "vercelId": "fra1::iad1::jttbb-1792331705389-1d7714d2ae62",
+        "serverTiming": null
+      }
+    ],
+    "errors": 0,
+    "scope": "Client end-to-end, sequential, unthrottled. First health sample is first observed request; remaining five health requests are warm candidates. Filter includes edge caching when reported. No server instrumentation isolates Go initialization, SQL, or Neon wake-up."
+  },
+  "idle-interval": {
+    "probeStartedAt": "2026-10-18T13:54:51.2686748Z",
+    "idleSince": "2026-10-18T13:48:30Z"
+  },
+  "e2eStats": {
+    "startTime": "2026-10-18T13:44:22.886Z",
+    "duration": 35911.481,
+    "expected": 20,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}
