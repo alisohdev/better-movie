@@ -1,0 +1,75 @@
+name: Automatic protected Preview after main CI
+# Deploy only successful main push verification; never deploy PRs or Production.
+on:
+  workflow_run:
+    workflows: ['Verify synthetic slice']
+    types: [completed]
+    branches: [main]
+
+permissions:
+  contents: read
+  actions: read
+  pull-requests: read
+
+concurrency:
+  group: better-movie-preview
+  cancel-in-progress: false
+
+env:
+  VERCEL_PROJECT_ID: prj_K1VfRwHsmRpTpvNsNCDJNhWM8dNT
+  VERCEL_ORG_ID: team_zTb0ZL2P3xsTKB8S0J25ytnZ
+  VERCEL_CLI_VERSION: '64.5.0'
+  VERCEL_TELEMETRY_DISABLED: '1'
+  NO_UPDATE_NOTIFIER: '1'
+  REVIEWED_SHA: ${{ github.event.workflow_run.head_sha }}
+
+jobs:
+  gate:
+    # workflow_run can be privileged; explicitly forbid non-main, non-push and fork contexts.
+    if: >-
+      github.repository == 'alisohdev/better-movie' &&
+      github.ref == 'refs/heads/main' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'main' &&
+      github.event.workflow_run.head_repository.full_name == github.repository &&
+      github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          persist-credentials: false
+      - name: Validate current main, successful CI, merged PR and Preview policy
+        run: python3 scripts/ci/preview_deploy.py gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+  preview:
+    needs: gate
+    if: >-
+      github.repository == 'alisohdev/better-movie' &&
+      github.ref == 'refs/heads/main' &&
+      github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    environment: preview-deploy
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '24.19.0'
+      - name: Install exact reviewed CLI (without deployment secret)
+        run: npm install --global --ignore-scripts "vercel@$VERCEL_CLI_VERSION"
+      - name: Recheck gates, deploy protected Preview, record result and smoke test
+        run: python3 scripts/ci/preview_deploy.py deploy
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+      - name: Remove transient CLI project state
+        if: always()
+        run: rm -rf .vercel

@@ -19,7 +19,7 @@ permissions:
   pull-requests: read
 
 concurrency:
-  group: better-movie-manual-preview
+  group: better-movie-preview
   cancel-in-progress: false
 
 env:
