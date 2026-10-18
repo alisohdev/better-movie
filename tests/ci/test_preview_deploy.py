@@ -87,8 +87,8 @@ class Gates(unittest.TestCase):
                     'PREVIEW_APPROVAL': '', 'GITHUB_EVENT_PATH': str(event_file)}
             for latest_id, expect_ok in [(123, True), (124, False)]:
                 responses = base_responses + [{'workflow_runs': [{**RUN, 'id': latest_id}]}] + tail_responses
-                with self.subTest(latest_id=latest_id), patch.dict(os.environ, auto, clear=True), \\
-                     patch.object(p, 'git', side_effect=[SHA, '']), \\
+                with self.subTest(latest_id=latest_id), patch.dict(os.environ, auto, clear=True), \
+                     patch.object(p, 'git', side_effect=[SHA, '']), \
                      patch.object(p, 'gh', side_effect=responses):
                     if expect_ok:
                         self.assertEqual(p.gate(), SHA)
