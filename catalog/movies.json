@@ -1,0 +1,894 @@
+{
+  "catalogRevision": "synthetic-v1",
+  "notice": "All films, scores, release observations, and artwork are fictional demonstration content.",
+  "movies": [
+    {
+      "id": "the-space-between",
+      "titleEn": "The Space Between",
+      "titleFa": "فاصله میان ما",
+      "originalTitle": "The Space Between",
+      "synopsisEn": "A letter arrives twenty years late, sending two strangers across a city that has forgotten their names.",
+      "synopsisFa": null,
+      "genres": [
+        "drama",
+        "romance"
+      ],
+      "year": 2024,
+      "runtime": 108,
+      "rating": 8.2,
+      "voteCount": 410,
+      "popularity": 98,
+      "originalLanguage": "en",
+      "countries": [
+        "GB"
+      ],
+      "poster": "/posters/the-space-between.svg",
+      "source": "Synthetic studio",
+      "synthetic": true,
+      "releaseObservations": [
+        {
+          "eventType": "digital",
+          "date": "2026-11-20",
+          "country": "GB",
+          "source": "Synthetic studio",
+          "checkedAt": "2026-10-18T00:00:00Z",
+          "verification": "reported"
+        }
+      ]
+    },
+    {
+      "id": "last-train-to-dawn",
+      "titleEn": "Last Train to Dawn",
+      "titleFa": "آخرین قطار تا سپیده",
+      "originalTitle": "آخرین قطار تا سپیده",
+      "synopsisEn": "A night conductor and an unexpected passenger have one journey to make things right.",
+      "synopsisFa": null,
+      "genres": [
+        "thriller",
+        "drama"
+      ],
+      "year": 2023,
+      "runtime": 102,
+      "rating": 7.8,
+      "voteCount": 280,
+      "popularity": 94,
+      "originalLanguage": "fa",
+      "countries": [
+        "IR"
+      ],
+      "poster": "/posters/last-train-to-dawn.svg",
+      "source": "Synthetic studio",
+      "synthetic": true,
+      "releaseObservations": []
+    },
+    {
+      "id": "a-sea-of-silence",
+      "titleEn": "A Sea of Silence",
+      "titleFa": "دریایی از سکوت",
+      "originalTitle": "A Sea of Silence",
+      "synopsisEn": "On a remote island, a sound collector discovers a message hidden in the wind.",
+      "synopsisFa": null,
+      "genres": [
+        "mystery",
+        "drama"
+      ],
+      "year": 2025,
+      "runtime": 96,
+      "rating": 8.4,
+      "voteCount": 830,
+      "popularity": 92,
+      "originalLanguage": "fr",
+      "countries": [
+        "FR"
+      ],
+      "poster": "/posters/a-sea-of-silence.svg",
+      "source": "Synthetic studio",
+      "synthetic": true,
+      "releaseObservations": []
+    },
+    {
+      "id": "orbit-of-two",
+      "titleEn": "Orbit of Two",
+      "titleFa": "مدار دو نفر",
+      "originalTitle": "Orbit of Two",
+      "synopsisEn": "Two engineers on a failing weather station disagree about what is worth saving.",
+      "synopsisFa": null,
+      "genres": [
+        "science-fiction",
+        "drama"
+      ],
+      "year": 2024,
+      "runtime": 118,
+      "rating": 8.1,
+      "voteCount": 620,
+      "popularity": 89,
+      "originalLanguage": "en",
+      "countries": [
+        "US"
+      ],
+      "poster": "/posters/orbit-of-two.svg",
+      "source": "Synthetic studio",
+      "synthetic": true,
+      "releaseObservations": [
+        {
+          "eventType": "physical",
+          "date": "2025-03-12",
+          "country": "US",
+          "source": "Synthetic studio",
+          "checkedAt": "2026-10-18T00:00:00Z",
+          "verification": "reported"
+        }
+      ]
+    },
+    {
+      "id": "the-orange-grove",
+      "titleEn": "The Orange Grove",
+      "titleFa": "باغ نارنج",
+      "originalTitle": "باغ نارنج",
+      "synopsisEn": "Three siblings reunite to sell their childhood home and find it has other plans.",
+      "synopsisFa": null,
+      "genres": [
+        "comedy",
+        "drama"
+      ],
+      "year": 2022,
+      "runtime": 99,
+      "rating": 7.6,
+      "voteCount": 170,
+      "popularity": 86,
+      "originalLanguage": "fa",
+      "countries": [
+        "IR"
+      ],
+      "poster": "/posters/the-orange-grove.svg",
+      "source": "Synthetic studio",
+      "synthetic": true,
+      "releaseObservations": []
+    },
+    {
+      "id": "midnight-atlas",
+      "titleEn": "Midnight Atlas",
+      "titleFa": "اطلس نیمه‌شب",
+      "originalTitle": "Midnight Atlas",
+      "synopsisEn": "A mapmaker follows a route that appears only after midnight.",
+      "synopsisFa": null,
+      "genres": [
+        "adventure",
+        "thriller"
+      ],
+      "year": 2025,
+      "runtime": 112,
+      "rating": 7.9,
+      "voteCount": 340,
+      "popularity": 84,
+      "originalLanguage": "ja",
+      "countries": [
+        "JP"
+      ],
+      "poster": "/posters/midnight-atlas.svg",
+      "source": "Synthetic studio",
+      "synthetic": true,
+      "releaseObservations": []
+    },
+    {
+      "id": "paper-skies",
+      "titleEn": "Paper Skies",
+      "titleFa": "آسمان کاغذی",
+      "originalTitle": "Paper Skies",
+      "synopsisEn": "A child builds a flying machine from the stories her grandmother never finished.",
+      "synopsisFa": null,
+      "genres": [
+        "animation",
+        "adventure"
+      ],
+      "year": 2021,
+      "runtime": 86,
+      "rating": 8,
+      "voteCount": 210,
+      "popularity": 81,
+      "originalLanguage": "en",
+      "countries": [
+        "CA"
+      ],
+      "poster": "/posters/paper-skies.svg",
+      "source": "Synthetic studio",
+      "synthetic": true,
+      "releaseObservations": [
+        {
+          "eventType": "digital",
+          "date": "2025-03-12",
+          "country": "CA",
+          "source": "Synthetic studio",
+          "checkedAt": "2026-10-18T00:00:00Z",
+          "verification": "reported"
+        }
+      ]
+    },
+    {
+      "id": "room-for-the-rain",
+      "titleEn": "Room for the Rain",
+      "titleFa": "اتاقی برای باران",
+      "originalTitle": "Room for the Rain",
+      "synopsisEn": "A caretaker's last week in an old hotel becomes a quiet lesson in starting again.",
+      "synopsisFa": null,
+      "genres": [
+        "drama"
+      ],
+      "year": 2019,
+      "runtime": 92,
+      "rating": 7.4,
+      "voteCount": 89,
+      "popularity": 78,
+      "originalLanguage": "ko",
+      "countries": [
+        "KR"
+      ],
+      "poster": "/posters/room-for-the-rain.svg",
+      "source": "Synthetic studio",
+      "synthetic": true,
+      "releaseObservations": []
+    },
+    {
+      "id": "the-other-shore",
+      "titleEn": "The Other Shore",
+      "titleFa": "ساحل دیگر",
+      "originalTitle": "The Other Shore",
+      "synopsisEn": "Two rival ferrymen must work together after a bridge closes their river.",
+      "synopsisFa": null,
+      "genres": [
+        "drama",
+        "comedy"
+      ],
+      "year": 2020,
+      "runtime": 104,
+      "rating": 7.7,
+      "voteCount": 130,
+      "popularity": 75,
+      "originalLanguage": "tr",
+      "countries": [
+        "TR"
+      ],
+      "poster": "/posters/the-other-shore.svg",
+      "source": "Synthetic studio",
+      "synthetic": true,
+      "releaseObservations": []
+    },
+    {
+      "id": "signals-from-home",
+      "titleEn": "Signals from Home",
+      "titleFa": "نشانه‌های خانه",
+      "originalTitle": "Signals from Home",
+      "synopsisEn": "A radio operator begins receiving broadcasts from the town she left behind.",
+      "synopsisFa": null,
+      "genres": [
+        "science-fiction",
+        "mystery"
+      ],
+      "year": 2023,
+      "runtime": 109,
+      "rating": 8.3,
+      "voteCount": 780,
+      "popularity": 73,
+      "originalLanguage": "en",
+      "countries": [
+        "US",
+        "GB"
+      ],
+      "poster": "/posters/signals-from-home.svg",
+      "source": "Synthetic studio",
+      "synthetic": true,
+      "releaseObservations": [
+        {
+          "eventType": "physical",
+          "date": "2025-03-12",
+          "country": "US",
+          "source": "Synthetic studio",
+          "checkedAt": "2026-10-18T00:00:00Z",
+          "verification": "reported"
+        }
+      ]
+    },
+    {
+      "id": "a-small-rebellion",
+      "titleEn": "A Small Rebellion",
+      "titleFa": "شورشی کوچک",
+      "originalTitle": "A Small Rebellion",
+      "synopsisEn": "A sleepy village enters a baking competition with one impossible recipe.",
+      "synopsisFa": null,
+      "genres": [
+        "comedy"
+      ],
+      "year": 2018,
+      "runtime": 88,
+      "rating": 7.1,
+      "voteCount": 61,
+      "popularity": 71,
+      "originalLanguage": "it",
+      "countries": [
+        "IT"
+      ],
+      "poster": "/posters/a-small-rebellion.svg",
+      "source": "Synthetic studio",
+      "synthetic": true,
+      "releaseObservations": []
+    },
+    {
+      "id": "winter-library",
+      "titleEn": "The Winter Library",
+      "titleFa": "کتابخانه زمستان",
+      "originalTitle": "کتابخانه زمستان",
+      "synopsisEn": "A librarian and a lost traveler spend a snowstorm reading the margins of old books.",
+      "synopsisFa": null,
+      "genres": [
+        "romance",
+        "drama"
+      ],
+      "year": 2017,
+      "runtime": 114,
+      "rating": 7.9,
+      "voteCount": 205,
+      "popularity": 69,
+      "originalLanguage": "fa",
+      "countries": [
+        "IR"
+      ],
+      "poster": "/posters/winter-library.svg",
+      "source": "Synthetic studio",
+      "synthetic": true,
+      "releaseObservations": []
+    },
+    {
+      "id": "city-of-second-chances",
+      "titleEn": "City of Second Chances",
+      "titleFa": "شهر فرصت‌های دوباره",
+      "originalTitle": "City of Second Chances",
+      "synopsisEn": "A retired bus driver invents a route connecting people who have never met.",
+      "synopsisFa": null,
+      "genres": [
+        "drama"
+      ],
+      "year": 2016,
+      "runtime": 101,
+      "rating": 8,
+      "voteCount": 360,
+      "popularity": 67,
+      "originalLanguage": "es",
+      "countries": [
+        "ES"
+      ],
+      "poster": "/posters/city-of-second-chances.svg",
+      "source": "Synthetic studio",
+      "synthetic": true,
+      "releaseObservations": [
+        {
+          "eventType": "digital",
+          "date": "2025-03-12",
+          "country": "ES",
+          "source": "Synthetic studio",
+          "checkedAt": "2026-10-18T00:00:00Z",
+          "verification": "reported"
+        }
+      ]
+    },
+    {
+      "id": "under-the-waterline",
+      "titleEn": "Under the Waterline",
+      "titleFa": "زیر خط آب",
+      "originalTitle": "Under the Waterline",
+      "synopsisEn": "A marine survey reveals a town's oldest secret beneath its harbor.",
+      "synopsisFa": null,
+      "genres": [
+        "thriller",
+        "mystery"
+      ],
+      "year": 2022,
+      "runtime": 121,
+      "rating": 7.5,
+      "voteCount": 150,
+      "popularity": 65,
+      "originalLanguage": "en",
+      "countries": [
+        "AU"
+      ],
+      "poster": "/posters/under-the-waterline.svg",
+      "source": "Synthetic studio",
+      "synthetic": true,
+      "releaseObservations": []
+    },
+    {
+      "id": "red-valley",
+      "titleEn": "Red Valley",
+      "titleFa": "دره سرخ",
+      "originalTitle": "دره سرخ",
+      "synopsisEn": "A tracker returns to the desert to find the road his father never finished.",
+      "synopsisFa": null,
+      "genres": [
+        "adventure",
+        "action"
+      ],
+      "year": 2015,
+      "runtime": 126,
+      "rating": 7.3,
+      "voteCount": 190,
+      "popularity": 63,
+      "originalLanguage": "fa",
+      "countries": [
+        "IR"
+      ],
+      "poster": "/posters/red-valley.svg",
+      "source": "Synthetic studio",
+      "synthetic": true,
+      "releaseObservations": []
+    },
+    {
+      "id": "the-slow-river",
+      "titleEn": "The Slow River",
+      "titleFa": "رود آرام",
+      "originalTitle": "The Slow River",
+      "synopsisEn": "An observational journey follows one river through four seasons.",
+      "synopsisFa": null,
+      "genres": [
+        "documentary"
+      ],
+      "year": 2024,
+      "runtime": 84,
+      "rating": 8.1,
+      "voteCount": 44,
+      "popularity": 60,
+      "originalLanguage": "de",
+      "countries": [
+        "DE"
+      ],
+      "poster": "/posters/the-slow-river.svg",
+      "source": "Synthetic studio",
+      "synthetic": true,
+      "releaseObservations": [
+        {
+          "eventType": "physical",
+          "date": "2025-03-12",
+          "country": "DE",
+          "source": "Synthetic studio",
+          "checkedAt": "2026-10-18T00:00:00Z",
+          "verification": "reported"
+        }
+      ]
+    },
+    {
+      "id": "night-garden",
+      "titleEn": "Night Garden",
+      "titleFa": "باغ شب",
+      "originalTitle": "Night Garden",
+      "synopsisEn": "A botanist's new greenhouse blooms only when nobody is looking.",
+      "synopsisFa": null,
+      "genres": [
+        "horror",
+        "mystery"
+      ],
+      "year": 2021,
+      "runtime": 93,
+      "rating": 6.9,
+      "voteCount": 120,
+      "popularity": 58,
+      "originalLanguage": "en",
+      "countries": [
+        "US"
+      ],
+      "poster": "/posters/night-garden.svg",
+      "source": "Synthetic studio",
+      "synthetic": true,
+      "releaseObservations": []
+    },
+    {
+      "id": "a-handful-of-stars",
+      "titleEn": "A Handful of Stars",
+      "titleFa": "مشتی ستاره",
+      "originalTitle": "A Handful of Stars",
+      "synopsisEn": "A young astronomer and her neighbor set out to restore an abandoned observatory.",
+      "synopsisFa": null,
+      "genres": [
+        "adventure",
+        "drama"
+      ],
+      "year": 2014,
+      "runtime": 116,
+      "rating": 7.8,
+      "voteCount": 260,
+      "popularity": 56,
+      "originalLanguage": "fr",
+      "countries": [
+        "FR",
+        "BE"
+      ],
+      "poster": "/posters/a-handful-of-stars.svg",
+      "source": "Synthetic studio",
+      "synthetic": true,
+      "releaseObservations": []
+    },
+    {
+      "id": "soft-landing",
+      "titleEn": "Soft Landing",
+      "titleFa": "فرود آرام",
+      "originalTitle": "Soft Landing",
+      "synopsisEn": "A pilot takes a year on the ground and finds a different kind of direction.",
+      "synopsisFa": null,
+      "genres": [
+        "comedy",
+        "romance"
+      ],
+      "year": 2013,
+      "runtime": 97,
+      "rating": 7.2,
+      "voteCount": 75,
+      "popularity": 54,
+      "originalLanguage": "en",
+      "countries": [
+        "GB"
+      ],
+      "poster": "/posters/soft-landing.svg",
+      "source": "Synthetic studio",
+      "synthetic": true,
+      "releaseObservations": [
+        {
+          "eventType": "digital",
+          "date": "2025-03-12",
+          "country": "GB",
+          "source": "Synthetic studio",
+          "checkedAt": "2026-10-18T00:00:00Z",
+          "verification": "reported"
+        }
+      ]
+    },
+    {
+      "id": "the-long-afternoon",
+      "titleEn": "The Long Afternoon",
+      "titleFa": "بعدازظهر بلند",
+      "originalTitle": "بعدازظهر بلند",
+      "synopsisEn": "One family meal unfolds into an unexpected portrait of a city.",
+      "synopsisFa": null,
+      "genres": [
+        "drama"
+      ],
+      "year": 2010,
+      "runtime": 131,
+      "rating": 8.2,
+      "voteCount": 510,
+      "popularity": 51,
+      "originalLanguage": "fa",
+      "countries": [
+        "IR"
+      ],
+      "poster": "/posters/the-long-afternoon.svg",
+      "source": "Synthetic studio",
+      "synthetic": true,
+      "releaseObservations": []
+    },
+    {
+      "id": "northern-frequency",
+      "titleEn": "Northern Frequency",
+      "titleFa": "فرکانس شمال",
+      "originalTitle": "Northern Frequency",
+      "synopsisEn": "A musician crosses the tundra to record a concert with no audience.",
+      "synopsisFa": null,
+      "genres": [
+        "documentary",
+        "adventure"
+      ],
+      "year": 2020,
+      "runtime": 90,
+      "rating": 7.6,
+      "voteCount": 98,
+      "popularity": 49,
+      "originalLanguage": "sv",
+      "countries": [
+        "SE"
+      ],
+      "poster": "/posters/northern-frequency.svg",
+      "source": "Synthetic studio",
+      "synthetic": true,
+      "releaseObservations": []
+    },
+    {
+      "id": "the-silver-forest",
+      "titleEn": "The Silver Forest",
+      "titleFa": "جنگل نقره‌ای",
+      "originalTitle": "The Silver Forest",
+      "synopsisEn": "A fox and a mechanical bird follow an ancient migration path.",
+      "synopsisFa": null,
+      "genres": [
+        "animation",
+        "adventure"
+      ],
+      "year": 2019,
+      "runtime": 82,
+      "rating": 7.7,
+      "voteCount": 185,
+      "popularity": 47,
+      "originalLanguage": "ja",
+      "countries": [
+        "JP"
+      ],
+      "poster": "/posters/the-silver-forest.svg",
+      "source": "Synthetic studio",
+      "synthetic": true,
+      "releaseObservations": [
+        {
+          "eventType": "physical",
+          "date": "2025-03-12",
+          "country": "JP",
+          "source": "Synthetic studio",
+          "checkedAt": "2026-10-18T00:00:00Z",
+          "verification": "reported"
+        }
+      ]
+    },
+    {
+      "id": "echo-chamber",
+      "titleEn": "Echo Chamber",
+      "titleFa": "اتاق پژواک",
+      "originalTitle": "Echo Chamber",
+      "synopsisEn": "An archivist finds recordings of a conversation that has not happened yet.",
+      "synopsisFa": null,
+      "genres": [
+        "science-fiction",
+        "thriller"
+      ],
+      "year": 2026,
+      "runtime": 107,
+      "rating": 7.9,
+      "voteCount": 310,
+      "popularity": 44,
+      "originalLanguage": "en",
+      "countries": [
+        "US"
+      ],
+      "poster": "/posters/echo-chamber.svg",
+      "source": "Synthetic studio",
+      "synthetic": true,
+      "releaseObservations": []
+    },
+    {
+      "id": "one-more-sunday",
+      "titleEn": "One More Sunday",
+      "titleFa": "یک یکشنبه دیگر",
+      "originalTitle": "One More Sunday",
+      "synopsisEn": "Two old friends decide to repeat the best day of their lives.",
+      "synopsisFa": null,
+      "genres": [
+        "comedy",
+        "drama"
+      ],
+      "year": 2007,
+      "runtime": 95,
+      "rating": 7.4,
+      "voteCount": 110,
+      "popularity": 42,
+      "originalLanguage": "it",
+      "countries": [
+        "IT"
+      ],
+      "poster": "/posters/one-more-sunday.svg",
+      "source": "Synthetic studio",
+      "synthetic": true,
+      "releaseObservations": []
+    },
+    {
+      "id": "east-of-the-moon",
+      "titleEn": "East of the Moon",
+      "titleFa": "شرق ماه",
+      "originalTitle": "شرق ماه",
+      "synopsisEn": "A traveler follows handwritten signs through a country he no longer recognizes.",
+      "synopsisFa": null,
+      "genres": [
+        "drama",
+        "adventure"
+      ],
+      "year": 1998,
+      "runtime": 123,
+      "rating": 8.3,
+      "voteCount": 680,
+      "popularity": 40,
+      "originalLanguage": "fa",
+      "countries": [
+        "IR"
+      ],
+      "poster": "/posters/east-of-the-moon.svg",
+      "source": "Synthetic studio",
+      "synthetic": true,
+      "releaseObservations": [
+        {
+          "eventType": "digital",
+          "date": "2025-03-12",
+          "country": "IR",
+          "source": "Synthetic studio",
+          "checkedAt": "2026-10-18T00:00:00Z",
+          "verification": "reported"
+        }
+      ]
+    },
+    {
+      "id": "the-last-projection",
+      "titleEn": "The Last Projection",
+      "titleFa": "آخرین نمایش",
+      "originalTitle": "The Last Projection",
+      "synopsisEn": "A projectionist reopens a cinema for one audience member.",
+      "synopsisFa": null,
+      "genres": [
+        "drama"
+      ],
+      "year": 1992,
+      "runtime": 103,
+      "rating": 8.6,
+      "voteCount": 940,
+      "popularity": 38,
+      "originalLanguage": "en",
+      "countries": [
+        "GB"
+      ],
+      "poster": "/posters/the-last-projection.svg",
+      "source": "Synthetic studio",
+      "synthetic": true,
+      "releaseObservations": []
+    },
+    {
+      "id": "the-lightkeepers",
+      "titleEn": "The Lightkeepers",
+      "titleFa": "نگهبانان نور",
+      "originalTitle": "The Lightkeepers",
+      "synopsisEn": "A family tends a chain of lighthouses along a disappearing coast.",
+      "synopsisFa": null,
+      "genres": [
+        "documentary"
+      ],
+      "year": 1986,
+      "runtime": 89,
+      "rating": 7.9,
+      "voteCount": 135,
+      "popularity": 36,
+      "originalLanguage": "no",
+      "countries": [
+        "NO"
+      ],
+      "poster": "/posters/the-lightkeepers.svg",
+      "source": "Synthetic studio",
+      "synthetic": true,
+      "releaseObservations": []
+    },
+    {
+      "id": "velvet-static",
+      "titleEn": "Velvet Static",
+      "titleFa": "خش‌خش مخملی",
+      "originalTitle": "Velvet Static",
+      "synopsisEn": "A late-night presenter gets a call that changes the rhythm of her city.",
+      "synopsisFa": null,
+      "genres": [
+        "thriller"
+      ],
+      "year": 2004,
+      "runtime": 98,
+      "rating": 7.3,
+      "voteCount": 200,
+      "popularity": 34,
+      "originalLanguage": "en",
+      "countries": [
+        "CA"
+      ],
+      "poster": "/posters/velvet-static.svg",
+      "source": "Synthetic studio",
+      "synthetic": true,
+      "releaseObservations": [
+        {
+          "eventType": "physical",
+          "date": "2025-03-12",
+          "country": "CA",
+          "source": "Synthetic studio",
+          "checkedAt": "2026-10-18T00:00:00Z",
+          "verification": "reported"
+        }
+      ]
+    },
+    {
+      "id": "summer-without-maps",
+      "titleEn": "Summer Without Maps",
+      "titleFa": "تابستان بی‌نقشه",
+      "originalTitle": "Summer Without Maps",
+      "synopsisEn": "Four cousins take the wrong train and decide not to turn back.",
+      "synopsisFa": null,
+      "genres": [
+        "comedy",
+        "adventure"
+      ],
+      "year": 2001,
+      "runtime": 106,
+      "rating": null,
+      "voteCount": null,
+      "popularity": 32,
+      "originalLanguage": "es",
+      "countries": [
+        "MX"
+      ],
+      "poster": "/posters/summer-without-maps.svg",
+      "source": "Synthetic studio",
+      "synthetic": true,
+      "releaseObservations": []
+    },
+    {
+      "id": "blue-hour-letters",
+      "titleEn": "Blue Hour Letters",
+      "titleFa": "نامه‌های ساعت آبی",
+      "originalTitle": "نامه‌های ساعت آبی",
+      "synopsisEn": "A post office opens for one hour a day in a mountain village.",
+      "synopsisFa": null,
+      "genres": [
+        "romance",
+        "drama"
+      ],
+      "year": 2012,
+      "runtime": null,
+      "rating": 7.8,
+      "voteCount": 65,
+      "popularity": 30,
+      "originalLanguage": "fa",
+      "countries": [
+        "IR"
+      ],
+      "poster": "/posters/blue-hour-letters.svg",
+      "source": "Synthetic studio",
+      "synthetic": true,
+      "releaseObservations": []
+    },
+    {
+      "id": "the-invisible-bridge",
+      "titleEn": "The Invisible Bridge",
+      "titleFa": "پل ناپیدا",
+      "originalTitle": "The Invisible Bridge",
+      "synopsisEn": "Two neighborhoods build a connection that no city plan can explain.",
+      "synopsisFa": null,
+      "genres": [
+        "animation",
+        "drama"
+      ],
+      "year": null,
+      "runtime": 91,
+      "rating": 7.5,
+      "voteCount": 57,
+      "popularity": 27,
+      "originalLanguage": "en",
+      "countries": [
+        "US"
+      ],
+      "poster": "/posters/the-invisible-bridge.svg",
+      "source": "Synthetic studio",
+      "synthetic": true,
+      "releaseObservations": [
+        {
+          "eventType": "digital",
+          "date": "2025-03-12",
+          "country": "US",
+          "source": "Synthetic studio",
+          "checkedAt": "2026-10-18T00:00:00Z",
+          "verification": "reported"
+        }
+      ]
+    },
+    {
+      "id": "still-life-with-road",
+      "titleEn": "Still Life with a Road",
+      "titleFa": "طبیعت بی‌جان با جاده",
+      "originalTitle": "Still Life with a Road",
+      "synopsisEn": "An artist walks the route of a painting she has never seen.",
+      "synopsisFa": null,
+      "genres": [],
+      "year": 2009,
+      "runtime": null,
+      "rating": null,
+      "voteCount": null,
+      "popularity": 25,
+      "originalLanguage": null,
+      "countries": [],
+      "poster": "/posters/still-life-with-road.svg",
+      "source": "Synthetic studio",
+      "synthetic": true,
+      "releaseObservations": []
+    }
+  ]
+}
