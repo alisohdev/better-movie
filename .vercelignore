@@ -1,0 +1,16 @@
+.agents/
+skills-lock.json
+docs.rar
+.local/
+docs/
+.audit/
+PRODUCT.md
+README.md
+playwright-report/
+test-results/
+graft/
+/scripts/
+tests/
+playwright.config.ts
+.github/
+compose.yaml
