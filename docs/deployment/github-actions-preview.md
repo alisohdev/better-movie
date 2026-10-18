@@ -1,4 +1,4 @@
-# Manual protected Preview from GitHub Actions
+# Protected Preview from GitHub Actions (manual fallback)
 
 This workflow targets only the existing `frame-movie-discovery` project
 (`prj_K1VfRwHsmRpTpvNsNCDJNhWM8dNT`) in `alirezaconstantins-projects`
@@ -8,8 +8,15 @@ and needs no Vercel login or network change.
 
 ## What authorizes a deployment
 
-Only `workflow_dispatch` starts the deployment workflow. There is no push, PR,
-schedule, reusable-workflow, or Production deployment trigger. The separate
+The manual fallback uses only `workflow_dispatch`. The separate
+[`preview-auto.yml`](../../.github/workflows/preview-auto.yml) automatically
+deploys the **current main SHA after successful main push verification** via
+`workflow_run`. Its guard refuses PR or fork workflows, failed CI, stale main,
+direct pushes without a merged PR, and non-Preview Vercel configuration.
+Both workflows serialize deployments into the same concurrency group.
+Neither workflow can intentionally deploy to Production.
+
+The remaining manual-specific instructions below explain how to run the fallback. The separate
 `Preview workflow checks` workflow runs credential-free guard tests on changes;
 it cannot deploy.
 
@@ -38,8 +45,12 @@ GitHub hosts one small gate job and one deployment job (5/20 minute limits),
 serialized without canceling an in-progress deployment. No containers, browser
 installation, paid runner, additional service, or retained artifact is needed.
 The existing public repository can use standard GitHub-hosted runners for free;
-Vercel Hobby/Neon Free quotas still apply. One manual run creates at most one
-Preview. A rerun is a new deployment request and needs approval too.
+Vercel Hobby/Neon Free quotas still apply. One manual or automated run creates at most one Preview. Automatic CI reruns can trigger another deployment; check Vercel before retrying unknown outcomes.
+
+Automatic deployments use the existing `preview-deploy` GitHub Environment
+and its `VERCEL_TOKEN` secret; no further phone action is required after setup.
+See [Automatic Preview deployment](automatic-preview.md) for ongoing behavior.
+The following is the one-time setup and manual fallback reference.
 
 ## Minimal phone setup — do only after authorization
 
@@ -133,11 +144,8 @@ performance proof, or a Production release.
    create the restricted GitHub Environment and secret yourself; no secret is
    collected by Codex. This can happen before or after authorized merges, but
    must be complete before a dispatch. It does not authorize deployment.
-4. **Preview approval boundary:** after all three PRs are merged and the final
-   main push verification succeeds, review the resulting full SHA. Explicitly
-   approve one protected Preview deployment of that SHA. If main changes, review
-   the new SHA and approve again.
-5. In [GitHub Actions](https://github.com/alisohdev/better-movie/actions), open
+4. **Preview approval boundary (manual fallback only):** after the final main push verification succeeds, review the resulting SHA if you choose to trigger an extra manual Preview. The automatic workflow already has standing authorization to deploy verified merge commits.
+5. For **optional manual fallback only**, in [GitHub Actions](https://github.com/alisohdev/better-movie/actions), open
    **Manual protected Preview → Run workflow**, select **main**, enter the
    approved SHA and **REVIEWED_PREVIEW_ONLY**, then tap **Run workflow**. That
    manual action is the execution approval for one Preview. No deployment is
