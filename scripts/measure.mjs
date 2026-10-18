@@ -21,7 +21,10 @@ for (let sample = 0; sample < 5; sample++) {
     await page.addInitScript(() => {
       window.__lab = { lcpMs: null, cls: 0 };
       new PerformanceObserver((list) => {
-        for (const entry of list.getEntries()) window.__lab.lcpMs = entry.startTime;
+      for (const entry of list.getEntries()) {
+        window.__lab.lcpMs = entry.startTime;
+        window.__lab.lcpElement = { tag: entry.element?.tagName, id: entry.element?.id, url: entry.url, size: entry.size };
+      }
       }).observe({ type: 'largest-contentful-paint', buffered: true });
       new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) if (!entry.hadRecentInput) window.__lab.cls += entry.value;
@@ -34,8 +37,9 @@ for (let sample = 0; sample < 5; sample++) {
       await session.send('Emulation.setCPUThrottlingRate', { rate: 4 });
     }
     await page.goto(new URL(`/${surface.locale}/discover/`, base).href, { waitUntil: 'networkidle' });
-    await page.screenshot({ path: `.local/screenshots/${surface.name}.png`, fullPage: true });
     observations.push({ sample: sample + 1, surface: surface.name, scope: surface.throttle ? 'fresh browser context, 4x CPU, 150ms latency, 1.6Mbps down' : 'fresh browser context, unthrottled', errors, ...await page.evaluate(() => ({ ...window.__lab, horizontalOverflow: document.documentElement.scrollWidth > innerWidth, resourceRequests: performance.getEntriesByType('resource').length, jsResources: performance.getEntriesByType('resource').filter((entry) => entry.name.includes('.js')).length })) });
+    // Full-page capture can introduce below-fold LCP candidates. Freeze metrics first.
+    await page.screenshot({ path: `.local/screenshots/${surface.name}.png`, fullPage: true });
     await context.close();
   }
 }
