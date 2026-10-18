@@ -38,6 +38,15 @@ func routeRequest(next http.Handler, w http.ResponseWriter, r *http.Request) {
 		invalidRoute(w, r)
 		return
 	}
+	// The named Vercel wildcard also becomes a query parameter. Consume only
+	// the single matching value, so conflicting or duplicate input is rejected.
+	if paths, ok := values["path"]; ok {
+		if len(paths) != 1 || paths[0] != routes[0] {
+			invalidRoute(w, r)
+			return
+		}
+		delete(values, "path")
+	}
 	delete(values, "__route")
 	request := r.Clone(r.Context())
 	request.URL.Path = "/api/" + routes[0]
