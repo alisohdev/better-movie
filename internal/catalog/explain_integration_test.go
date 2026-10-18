@@ -59,6 +59,11 @@ func TestPostgresQueryPlans(t *testing.T) {
 		params dbgen.ListMoviesParams
 		total  int64
 	}{
+		{"advanced language country score votes", dbgen.ListMoviesParams{
+			IncludeGenres: []string{}, ExcludeGenres: []string{}, GenreMode: "any", SortKey: "rating",
+			Languages: []string{"fa", "en"}, Countries: []string{"IR", "US"},
+			RatingMin: pgtype.Float8{Float64: 8, Valid: true}, VoteCountMin: pgtype.Int4{Int32: 200, Valid: true},
+		}, 4},
 		{"baseline popularity", dbgen.ListMoviesParams{IncludeGenres: []string{}, ExcludeGenres: []string{}, GenreMode: "any", SortKey: "popularity"}, 32},
 		{"all genres plus exclusion and bounds", dbgen.ListMoviesParams{
 			IncludeGenres: []string{"drama", "romance"}, ExcludeGenres: []string{"horror"}, GenreMode: "all", SortKey: "newest",
@@ -68,6 +73,7 @@ func TestPostgresQueryPlans(t *testing.T) {
 	} {
 		t.Run(test.name, func(t *testing.T) {
 			total, err := queries.CountMovies(ctx, dbgen.CountMoviesParams{
+				Languages: test.params.Languages, Countries: test.params.Countries, RatingMin: test.params.RatingMin, VoteCountMin: test.params.VoteCountMin,
 				IncludeGenres: test.params.IncludeGenres, GenreMode: test.params.GenreMode, ExcludeGenres: test.params.ExcludeGenres,
 				YearMin: test.params.YearMin, YearMax: test.params.YearMax, RuntimeMin: test.params.RuntimeMin, RuntimeMax: test.params.RuntimeMax,
 			})

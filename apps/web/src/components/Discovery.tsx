@@ -2,8 +2,10 @@ import { useEffect, useRef, useState, type SubmitEvent } from 'react';
 import { keepPreviousData, QueryClientProvider, useQuery } from '@tanstack/react-query';
 import { navigate, type TransitionBeforePreparationEvent, type TransitionBeforeSwapEvent } from 'astro:transitions/client';
 import { copy, genreName, type Locale, type MovieResults } from '../lib/model';
-import { defaultFilters, isDefaultFilters, modeSchema, parseFilters, parseRangeDraft, serializeFilters, sortSchema, type FilterResult, type Filters } from '../lib/filters';
+import { defaultFilters, filterErrorText, isDefaultFilters, modeSchema, parseFilters, parseRangeDraft, serializeFilters, sortSchema, type FilterResult, type Filters } from '../lib/filters';
 import { getQueryClient, movieQuery } from '../lib/query-client';
+import { disclosureSchema } from '../lib/discovery-state';
+import { AdvancedFilters, AdvancedChips } from './AdvancedFilters';
 import { TitleSearch } from './TitleSearch';
 import { MovieCard } from './MovieCard';
 
@@ -17,6 +19,7 @@ export default function Discovery(props: Props) {
 }
 
 function DiscoveryBody({ locale, genres, initialResults }: Props) {
+  const restoreScroll = useRef<number | undefined>(undefined);
   const [route, setRoute] = useState<FilterResult>({ kind: 'valid', filters: defaultFilters() });
   const [hydrated, setHydrated] = useState(false);
   const [online, setOnline] = useState(true);
@@ -31,11 +34,23 @@ function DiscoveryBody({ locale, genres, initialResults }: Props) {
   const dataCanonical = query.data && !query.isPlaceholderData ? canonical : lastResult.current.canonical;
   const matches = hydrated && route.kind === 'valid' && dataCanonical === canonical;
   const pending = hydrated && route.kind === 'valid' && (query.isFetching || query.fetchStatus === 'paused');
-  const activeCount = filters.genres.length + filters.excludeGenres.length + Number(filters.yearMin !== null || filters.yearMax !== null) + Number(filters.runtimeMin !== null || filters.runtimeMax !== null);
+  const activeCount = filters.languages.length + filters.countries.length + Number(filters.ratingMin !== null) + Number(filters.voteCountMin !== null) + filters.genres.length + filters.excludeGenres.length + Number(filters.yearMin !== null || filters.yearMax !== null) + Number(filters.runtimeMin !== null || filters.runtimeMax !== null);
 
   useEffect(() => {
     if (query.data && !query.isPlaceholderData) lastResult.current = { data: query.data, canonical };
   }, [query.data, query.isPlaceholderData, canonical]);
+
+  useEffect(() => {
+    if (!matches || restoreScroll.current === undefined) return;
+    let second = 0;
+    const first = requestAnimationFrame(() => {
+      second = requestAnimationFrame(() => {
+        if (restoreScroll.current !== undefined) window.scrollTo({ top: restoreScroll.current, behavior: 'instant' });
+        restoreScroll.current = undefined;
+      });
+    });
+    return () => { cancelAnimationFrame(first); cancelAnimationFrame(second); };
+  }, [matches, canonical]);
 
   useEffect(() => {
     const read = (search = window.location.search) => {
@@ -78,12 +93,19 @@ function DiscoveryBody({ locale, genres, initialResults }: Props) {
     try {
       const marker = sessionStorage.getItem('frame:restore');
       const raw: unknown = JSON.parse(sessionStorage.getItem(`frame:selection:${locale}`) ?? 'null');
-      if (marker === location.pathname + location.search && typeof raw === 'object' && raw !== null && 'scroll' in raw && typeof raw.scroll === 'number') {
-        const top = raw.scroll;
-        sessionStorage.removeItem('frame:restore');
-        requestAnimationFrame(() => requestAnimationFrame(() => window.scrollTo({ top, behavior: 'instant' })));
+      const explicitReturn = marker === location.pathname + location.search && typeof raw === 'object' && raw !== null;
+      const top: unknown = explicitReturn && 'scroll' in raw ? raw.scroll : history.state?.frameScroll;
+      const saved: unknown = explicitReturn && 'disclosures' in raw ? raw.disclosures : history.state?.frameDisclosures;
+      const disclosures = disclosureSchema.safeParse(saved);
+      if (disclosures.success) {
+        setFiltersOpen(disclosures.data.panel);
+        for (const element of document.querySelectorAll<HTMLDetailsElement>('details[data-filter-disclosure]')) {
+          element.open = disclosures.data.details.some((name) => name === element.dataset.filterDisclosure);
+        }
       }
-    } catch { /* Session persistence is optional. */ }
+      if (typeof top === 'number' && Number.isFinite(top) && top >= 0) restoreScroll.current = top;
+      if (explicitReturn) sessionStorage.removeItem('frame:restore');
+    } catch { /* Browser history remains available without session storage. */ }
     return () => {
       document.removeEventListener('astro:before-preparation', prepare);
       document.removeEventListener('astro:before-swap', swap);
@@ -150,7 +172,7 @@ function DiscoveryBody({ locale, genres, initialResults }: Props) {
 
     <div className="catalog-notice"><span className="notice-dot" aria-hidden="true" /><span>{copy(locale, 'A fictional film collection', 'مجموعه‌ای از فیلم‌های خیالی')}</span><span className="notice-explanation">{copy(locale, '32 original examples. All titles, scores and release notes are synthetic.', '۳۲ نمونهٔ اختصاصی؛ عنوان‌ها، امتیازها و تاریخ‌های انتشار، نمایشی هستند.')}</span></div>
 
-    {route.kind === 'invalid' ? <div className="feedback error-feedback" role="alert"><h2>{copy(locale, 'This filter link needs a correction', 'این پیوند فیلتر نیاز به اصلاح دارد')}</h2><p>{copy(locale, 'No search was sent. The starting sample below does not match this invalid link.', 'جست‌وجویی ارسال نشد. نمونه‌های زیر نتیجهٔ این پیوند نامعتبر نیستند.')}</p><ul lang="en" dir="ltr">{route.errors.map((error, index) => <li key={`${error}-${index}`}>{error}</li>)}</ul><button className="text-button" onClick={reset}>{copy(locale, 'Reset invalid filters', 'پاک کردن فیلترهای نامعتبر')}</button></div> : null}
+    {route.kind === 'invalid' ? <div className="feedback error-feedback" role="alert"><h2>{copy(locale, 'This filter link needs a correction', 'این پیوند فیلتر نیاز به اصلاح دارد')}</h2><p>{copy(locale, 'No search was sent. The starting sample below does not match this invalid link.', 'جست‌وجویی ارسال نشد. نمونه‌های زیر نتیجهٔ این پیوند نامعتبر نیستند.')}</p><ul lang={locale} dir={locale === 'fa' ? 'rtl' : 'ltr'}>{route.errors.map((error, index) => <li key={`${error}-${index}`}>{filterErrorText(error, locale)}</li>)}</ul><button className="text-button" onClick={reset}>{copy(locale, 'Reset invalid filters', 'پاک کردن فیلترهای نامعتبر')}</button></div> : null}
 
     <div className="catalog-layout">
       <aside className="filter-rail" aria-label={copy(locale, 'Movie filters', 'فیلترهای فیلم')}>
@@ -162,21 +184,22 @@ function DiscoveryBody({ locale, genres, initialResults }: Props) {
             <fieldset className="filter-section"><legend>{copy(locale, 'Include genres', 'ژانرهای دلخواه')}</legend><div className="genre-options">{genres.map((genre) => <label className={`genre-option ${filters.genres.includes(genre) ? 'selected' : ''}`} key={genre}><input type="checkbox" aria-label={copy(locale, `Include ${genreName(genre, locale)}`, `افزودن ${genreName(genre, locale)}`)} checked={filters.genres.includes(genre)} disabled={filters.excludeGenres.includes(genre)} onChange={() => toggleGenre(genre, 'genres')} /><span>{genreName(genre, locale)}</span></label>)}</div>
               <div className="match-options" role="group" aria-label={copy(locale, 'Included genre matching', 'شیوهٔ تطبیق ژانرها')}>{(['any', 'all'] satisfies Filters['genreMode'][]).map((mode) => <label key={mode}><input type="radio" name="genreMode" aria-label={copy(locale, mode === 'any' ? 'Match any included genre' : 'Match all included genres', mode === 'any' ? 'تطبیق یکی از ژانرها' : 'تطبیق همهٔ ژانرها')} checked={filters.genreMode === mode} onChange={() => apply({ ...filters, genreMode: modeSchema.parse(mode), page: 1 })} /><span>{mode === 'any' ? copy(locale, 'Any selected', 'یکی از انتخاب‌ها') : copy(locale, 'All selected', 'همهٔ انتخاب‌ها')}</span></label>)}</div>
             </fieldset>
-            <details className="exclude-section"><summary>{copy(locale, 'Leave something out', 'این ژانرها را نمی‌خواهم')}<span>{filters.excludeGenres.length || '+'}</span></summary><fieldset><legend className="sr-only">{copy(locale, 'Exclude genres', 'ژانرهای حذف‌شده')}</legend><p className="filter-hint">{copy(locale, 'Excludes known genre tags. Not a content-safety guarantee.', 'بر پایهٔ برچسب ژانر است؛ تضمینی دربارهٔ محتوای فیلم نیست.')}</p><div className="genre-options">{genres.map((genre) => <label key={genre} className={`genre-option excluded ${filters.excludeGenres.includes(genre) ? 'selected' : ''}`}><input type="checkbox" aria-label={copy(locale, `Exclude ${genreName(genre, locale)}`, `حذف ${genreName(genre, locale)}`)} checked={filters.excludeGenres.includes(genre)} disabled={filters.genres.includes(genre)} onChange={() => toggleGenre(genre, 'excludeGenres')} /><span>{genreName(genre, locale)}</span></label>)}</div></fieldset></details>
+            <details data-filter-disclosure="exclude" className="exclude-section"><summary>{copy(locale, 'Leave something out', 'این ژانرها را نمی‌خواهم')}<span>{filters.excludeGenres.length || '+'}</span></summary><fieldset><legend className="sr-only">{copy(locale, 'Exclude genres', 'ژانرهای حذف‌شده')}</legend><p className="filter-hint">{copy(locale, 'Excludes known genre tags. Not a content-safety guarantee.', 'بر پایهٔ برچسب ژانر است؛ تضمینی دربارهٔ محتوای فیلم نیست.')}</p><div className="genre-options">{genres.map((genre) => <label key={genre} className={`genre-option excluded ${filters.excludeGenres.includes(genre) ? 'selected' : ''}`}><input type="checkbox" aria-label={copy(locale, `Exclude ${genreName(genre, locale)}`, `حذف ${genreName(genre, locale)}`)} checked={filters.excludeGenres.includes(genre)} disabled={filters.genres.includes(genre)} onChange={() => toggleGenre(genre, 'excludeGenres')} /><span>{genreName(genre, locale)}</span></label>)}</div></fieldset></details>
             <form className="range-form" onSubmit={submitRanges} noValidate>
               <fieldset className="filter-section"><legend>{copy(locale, 'Runtime', 'زمان فیلم')}</legend><div className="range-inputs"><label>{copy(locale, 'At least', 'حداقل')}<span className="input-with-unit"><input type="number" min={1} max={600} inputMode="numeric" placeholder="—" aria-label={copy(locale, 'Runtime minimum', 'حداقل زمان فیلم')} value={draft.runtimeMin} onChange={(event) => setDraft({ ...draft, runtimeMin: event.target.value })} /><span>{copy(locale, 'min', 'دقیقه')}</span></span></label><span className="range-dash" aria-hidden="true">–</span><label>{copy(locale, 'At most', 'حداکثر')}<span className="input-with-unit"><input type="number" min={1} max={600} inputMode="numeric" placeholder="—" aria-label={copy(locale, 'Runtime maximum', 'حداکثر زمان فیلم')} value={draft.runtimeMax} onChange={(event) => setDraft({ ...draft, runtimeMax: event.target.value })} /><span>{copy(locale, 'min', 'دقیقه')}</span></span></label></div></fieldset>
               <fieldset className="filter-section"><legend>{copy(locale, 'Release year', 'سال انتشار')}</legend><div className="range-inputs"><label>{copy(locale, 'From', 'از')}<input type="number" min={1888} max={2100} inputMode="numeric" placeholder="1888" aria-label={copy(locale, 'Year from', 'سال از')} value={draft.yearMin} onChange={(event) => setDraft({ ...draft, yearMin: event.target.value })} /></label><span className="range-dash" aria-hidden="true">–</span><label>{copy(locale, 'To', 'تا')}<input type="number" min={1888} max={2100} inputMode="numeric" placeholder="2100" aria-label={copy(locale, 'Year to', 'سال تا')} value={draft.yearMax} onChange={(event) => setDraft({ ...draft, yearMax: event.target.value })} /></label></div><p className="filter-hint">{copy(locale, 'Gregorian years in both languages.', 'سال‌های میلادی در هر دو زبان.')}</p><div className="decade-options">{[1990, 2000, 2010, 2020].map((year) => <button type="button" key={year} aria-pressed={filters.yearMin === year && filters.yearMax === year + 9} onClick={() => apply({ ...filters, yearMin: year, yearMax: year + 9, page: 1 }, true)}>{year}s</button>)}</div></fieldset>
               {rangeErrors.length ? <div className="range-errors" role="alert"><p>{copy(locale, 'Check the ranges before applying.', 'بازه‌ها را پیش از اعمال بررسی کن.')}</p><ul lang={locale}>{rangeErrors.map((error, index) => <li key={index}>{error}</li>)}</ul></div> : null}
               <button type="submit" className="apply-button">{copy(locale, 'Apply ranges', 'اعمال بازه‌ها')}<span aria-hidden="true">→</span></button>
             </form>
-            <p className="missing-data-note">{copy(locale, 'Films with missing values won’t match an active range.', 'فیلم‌هایی با اطلاعات نامشخص، در بازهٔ فعال قرار نمی‌گیرند.')}</p>
+            <AdvancedFilters filters={filters} locale={locale} genres={genres} onApply={apply} />
+            <p className="missing-data-note">{copy(locale, 'Films with missing values won’t match an active constraint.', 'فیلم‌هایی با اطلاعات نامشخص، با محدودیت فعال آن داده مطابقت ندارند.')}</p>
           </div>
         </div>
       </aside>
 
       <section className="results-section" aria-label={copy(locale, 'Movie results', 'نتایج فیلم‌ها')} aria-busy={pending} data-testid="results">
         <div className="results-toolbar"><div><p className="section-label">{copy(locale, 'THE COLLECTION', 'مجموعهٔ فیلم‌ها')}</p><h2>{!hydrated ? copy(locale, 'A place to begin', 'جایی برای شروع') : matches ? copy(locale, `${data.total} films to explore`, `${data.total} فیلم برای کشف`) : copy(locale, 'Your previous selection', 'انتخاب قبلی شما')}</h2></div><label className="sort-control"><span>{copy(locale, 'Sort by', 'مرتب‌سازی')}</span><select aria-label={copy(locale, 'Sort movies', 'مرتب‌سازی فیلم‌ها')} value={filters.sort} onChange={(event) => apply({ ...filters, sort: sortSchema.parse(event.target.value), page: 1 })}><option value="popularity">{copy(locale, 'Popularity', 'محبوبیت')}</option><option value="rating">{copy(locale, 'Highest rated', 'بالاترین امتیاز')}</option><option value="newest">{copy(locale, 'Newest', 'جدیدترین')}</option><option value="runtime">{copy(locale, 'Shortest runtime', 'کوتاه‌ترین')}</option></select></label></div>
-        {activeCount ? <div className="active-filters" aria-label={copy(locale, 'Active filters', 'فیلترهای فعال')}>{filters.genres.map((genre) => <button key={genre} onClick={() => toggleGenre(genre, 'genres')}>{genreName(genre, locale)}<span aria-hidden="true">×</span><span className="sr-only">{copy(locale, 'Remove included genre', 'حذف ژانر دلخواه')}</span></button>)}{filters.excludeGenres.map((genre) => <button className="exclude-chip" key={genre} onClick={() => toggleGenre(genre, 'excludeGenres')}>{copy(locale, 'No ', 'بدون ')}{genreName(genre, locale)}<span aria-hidden="true">×</span><span className="sr-only">{copy(locale, 'Remove exclusion', 'حذف محدودیت ژانر')}</span></button>)}{filters.runtimeMin !== null || filters.runtimeMax !== null ? <button onClick={() => apply({ ...filters, runtimeMin: null, runtimeMax: null, page: 1 }, true)}>{filters.runtimeMin ?? '…'}–{filters.runtimeMax ?? '…'} {copy(locale, 'min', 'دقیقه')}<span aria-hidden="true">×</span><span className="sr-only">{copy(locale, 'Remove runtime range', 'حذف بازهٔ زمان')}</span></button> : null}{filters.yearMin !== null || filters.yearMax !== null ? <button onClick={() => apply({ ...filters, yearMin: null, yearMax: null, page: 1 }, true)}>{filters.yearMin ?? '…'}–{filters.yearMax ?? '…'}<span aria-hidden="true">×</span><span className="sr-only">{copy(locale, 'Remove year range', 'حذف بازهٔ سال')}</span></button> : null}</div> : null}
+        {activeCount ? <div className="active-filters" aria-label={copy(locale, 'Active filters', 'فیلترهای فعال')}><AdvancedChips filters={filters} locale={locale} onApply={apply} />{filters.genres.map((genre) => <button key={genre} onClick={() => toggleGenre(genre, 'genres')}>{genreName(genre, locale)}<span aria-hidden="true">×</span><span className="sr-only">{copy(locale, 'Remove included genre', 'حذف ژانر دلخواه')}</span></button>)}{filters.excludeGenres.map((genre) => <button className="exclude-chip" key={genre} onClick={() => toggleGenre(genre, 'excludeGenres')}>{copy(locale, 'No ', 'بدون ')}{genreName(genre, locale)}<span aria-hidden="true">×</span><span className="sr-only">{copy(locale, 'Remove exclusion', 'حذف محدودیت ژانر')}</span></button>)}{filters.runtimeMin !== null || filters.runtimeMax !== null ? <button onClick={() => apply({ ...filters, runtimeMin: null, runtimeMax: null, page: 1 }, true)}>{filters.runtimeMin ?? '…'}–{filters.runtimeMax ?? '…'} {copy(locale, 'min', 'دقیقه')}<span aria-hidden="true">×</span><span className="sr-only">{copy(locale, 'Remove runtime range', 'حذف بازهٔ زمان')}</span></button> : null}{filters.yearMin !== null || filters.yearMax !== null ? <button onClick={() => apply({ ...filters, yearMin: null, yearMax: null, page: 1 }, true)}>{filters.yearMin ?? '…'}–{filters.yearMax ?? '…'}<span aria-hidden="true">×</span><span className="sr-only">{copy(locale, 'Remove year range', 'حذف بازهٔ سال')}</span></button> : null}</div> : null}
         <div className="result-status" role="status" aria-live="polite">{!hydrated ? copy(locale, 'Starting sample · 12 of 32 fictional films. Filtered links update after loading.', 'نمونهٔ آغازین · ۱۲ فیلم از ۳۲ فیلم خیالی. پیوندهای فیلترشده پس از بارگذاری به‌روز می‌شوند.') : pending ? <><span className="loading-dot" />{copy(locale, 'Updating your selection. Earlier cards stay visible until results arrive.', 'در حال به‌روزرسانی انتخاب شما؛ کارت‌های قبلی تا دریافت نتیجه نمایش داده می‌شوند.')}</> : matches && !query.isError ? copy(locale, `Showing ${data.items.length ? (data.page - 1) * 12 + 1 : 0}–${Math.min(data.page * 12, data.total)} of ${data.total}`, `نمایش ${data.items.length ? (data.page - 1) * 12 + 1 : 0} تا ${Math.min(data.page * 12, data.total)} از ${data.total}`) : copy(locale, 'These cards are an earlier sample, not results for the current filters.', 'این کارت‌ها نمونهٔ قبلی هستند و نتیجهٔ فیلترهای کنونی نیستند.')}</div>
         {!online || query.isError ? <div className="feedback network-feedback" role="alert"><div><strong>{!online ? copy(locale, 'You’re offline', 'اتصال اینترنت قطع است') : copy(locale, 'The catalog is taking a break', 'دسترسی به فهرست ممکن نشد')}</strong><p>{copy(locale, 'Your earlier cards are still here. Reconnect and try the current filters again.', 'کارت‌های قبلی اینجا هستند. پس از اتصال، فیلترهای فعلی را دوباره امتحان کن.')}</p></div><button className="secondary-button" disabled={!online || query.isFetching} onClick={() => void query.refetch()}>{copy(locale, 'Try again', 'تلاش دوباره')}</button></div> : null}
         {matches && data.items.length === 0 && !query.isError ? <div className="empty-state"><span aria-hidden="true">↔</span><h3>{copy(locale, 'No films fit this combination.', 'فیلمی با این ترکیب پیدا نشد.')}</h3><p>{copy(locale, 'Every preference is still applied. Try removing a genre or widening a range.', 'همهٔ فیلترها حفظ شده‌اند. یک ژانر را بردار یا بازه‌ای را گسترده‌تر کن.')}</p><button className="secondary-button" onClick={reset}>{copy(locale, 'Clear filters', 'پاک کردن فیلترها')}</button></div> : <div className="movie-grid">{data.items.map((movie, index) => <MovieCard key={movie.id} movie={movie} locale={locale} priority={index === 0} />)}</div>}

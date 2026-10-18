@@ -35,16 +35,24 @@ AND ($4::integer IS NULL OR m.year >= $4::integer)
 AND ($5::integer IS NULL OR m.year <= $5::integer)
 AND ($6::integer IS NULL OR m.runtime >= $6::integer)
 AND ($7::integer IS NULL OR m.runtime <= $7::integer)
+AND (COALESCE(cardinality($8::text[]), 0) = 0 OR m.original_language = ANY($8::text[]))
+AND (COALESCE(cardinality($9::text[]), 0) = 0 OR m.countries && $9::text[])
+AND ($10::double precision IS NULL OR m.rating >= $10::double precision)
+AND ($11::integer IS NULL OR m.vote_count >= $11::integer)
 `
 
 type CountMoviesParams struct {
-	IncludeGenres []string    `json:"include_genres"`
-	GenreMode     string      `json:"genre_mode"`
-	ExcludeGenres []string    `json:"exclude_genres"`
-	YearMin       pgtype.Int4 `json:"year_min"`
-	YearMax       pgtype.Int4 `json:"year_max"`
-	RuntimeMin    pgtype.Int4 `json:"runtime_min"`
-	RuntimeMax    pgtype.Int4 `json:"runtime_max"`
+	IncludeGenres []string      `json:"include_genres"`
+	GenreMode     string        `json:"genre_mode"`
+	ExcludeGenres []string      `json:"exclude_genres"`
+	YearMin       pgtype.Int4   `json:"year_min"`
+	YearMax       pgtype.Int4   `json:"year_max"`
+	RuntimeMin    pgtype.Int4   `json:"runtime_min"`
+	RuntimeMax    pgtype.Int4   `json:"runtime_max"`
+	Languages     []string      `json:"languages"`
+	Countries     []string      `json:"countries"`
+	RatingMin     pgtype.Float8 `json:"rating_min"`
+	VoteCountMin  pgtype.Int4   `json:"vote_count_min"`
 }
 
 func (q *Queries) CountMovies(ctx context.Context, arg CountMoviesParams) (int64, error) {
@@ -56,6 +64,10 @@ func (q *Queries) CountMovies(ctx context.Context, arg CountMoviesParams) (int64
 		arg.YearMax,
 		arg.RuntimeMin,
 		arg.RuntimeMax,
+		arg.Languages,
+		arg.Countries,
+		arg.RatingMin,
+		arg.VoteCountMin,
 	)
 	var count int64
 	err := row.Scan(&count)
@@ -127,25 +139,33 @@ AND ($4::integer IS NULL OR m.year >= $4::integer)
 AND ($5::integer IS NULL OR m.year <= $5::integer)
 AND ($6::integer IS NULL OR m.runtime >= $6::integer)
 AND ($7::integer IS NULL OR m.runtime <= $7::integer)
+AND (COALESCE(cardinality($8::text[]), 0) = 0 OR m.original_language = ANY($8::text[]))
+AND (COALESCE(cardinality($9::text[]), 0) = 0 OR m.countries && $9::text[])
+AND ($10::double precision IS NULL OR m.rating >= $10::double precision)
+AND ($11::integer IS NULL OR m.vote_count >= $11::integer)
 ORDER BY
-    CASE WHEN $8::text = 'popularity' THEN m.popularity END DESC NULLS LAST,
-    CASE WHEN $8::text = 'rating' THEN m.rating END DESC NULLS LAST,
-    CASE WHEN $8::text = 'newest' THEN m.year END DESC NULLS LAST,
-    CASE WHEN $8::text = 'runtime' THEN m.runtime END ASC NULLS LAST,
+    CASE WHEN $12::text = 'popularity' THEN m.popularity END DESC NULLS LAST,
+    CASE WHEN $12::text = 'rating' THEN m.rating END DESC NULLS LAST,
+    CASE WHEN $12::text = 'newest' THEN m.year END DESC NULLS LAST,
+    CASE WHEN $12::text = 'runtime' THEN m.runtime END ASC NULLS LAST,
     m.id ASC
-LIMIT 12 OFFSET $9::integer
+LIMIT 12 OFFSET $13::integer
 `
 
 type ListMoviesParams struct {
-	IncludeGenres []string    `json:"include_genres"`
-	GenreMode     string      `json:"genre_mode"`
-	ExcludeGenres []string    `json:"exclude_genres"`
-	YearMin       pgtype.Int4 `json:"year_min"`
-	YearMax       pgtype.Int4 `json:"year_max"`
-	RuntimeMin    pgtype.Int4 `json:"runtime_min"`
-	RuntimeMax    pgtype.Int4 `json:"runtime_max"`
-	SortKey       string      `json:"sort_key"`
-	PageOffset    int32       `json:"page_offset"`
+	IncludeGenres []string      `json:"include_genres"`
+	GenreMode     string        `json:"genre_mode"`
+	ExcludeGenres []string      `json:"exclude_genres"`
+	YearMin       pgtype.Int4   `json:"year_min"`
+	YearMax       pgtype.Int4   `json:"year_max"`
+	RuntimeMin    pgtype.Int4   `json:"runtime_min"`
+	RuntimeMax    pgtype.Int4   `json:"runtime_max"`
+	Languages     []string      `json:"languages"`
+	Countries     []string      `json:"countries"`
+	RatingMin     pgtype.Float8 `json:"rating_min"`
+	VoteCountMin  pgtype.Int4   `json:"vote_count_min"`
+	SortKey       string        `json:"sort_key"`
+	PageOffset    int32         `json:"page_offset"`
 }
 
 type ListMoviesRow struct {
@@ -162,6 +182,10 @@ func (q *Queries) ListMovies(ctx context.Context, arg ListMoviesParams) ([]ListM
 		arg.YearMax,
 		arg.RuntimeMin,
 		arg.RuntimeMax,
+		arg.Languages,
+		arg.Countries,
+		arg.RatingMin,
+		arg.VoteCountMin,
 		arg.SortKey,
 		arg.PageOffset,
 	)
