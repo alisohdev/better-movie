@@ -1,0 +1,305 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-18T10:55:40.535Z",
+  "title": "Design System: Frame",
+  "extensions": {
+    "colorMeta": {
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink Navy",
+        "tonalRamp": [
+          "oklch(15.00% 0.0341 254.54)",
+          "oklch(26.43% 0.0341 254.54)",
+          "oklch(37.86% 0.0341 254.54)",
+          "oklch(49.29% 0.0341 254.54)",
+          "oklch(60.71% 0.0341 254.54)",
+          "oklch(72.14% 0.0341 254.54)",
+          "oklch(83.57% 0.0341 254.54)",
+          "oklch(95.00% 0.0341 254.54)"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Surface",
+        "tonalRamp": [
+          "oklch(15.00% 0.0359 252.46)",
+          "oklch(26.43% 0.0359 252.46)",
+          "oklch(37.86% 0.0359 252.46)",
+          "oklch(49.29% 0.0359 252.46)",
+          "oklch(60.71% 0.0359 252.46)",
+          "oklch(72.14% 0.0359 252.46)",
+          "oklch(83.57% 0.0359 252.46)",
+          "oklch(95.00% 0.0359 252.46)"
+        ]
+      },
+      "surface-raised": {
+        "role": "neutral",
+        "displayName": "Raised Surface",
+        "tonalRamp": [
+          "oklch(15.00% 0.0397 250.59)",
+          "oklch(26.43% 0.0397 250.59)",
+          "oklch(37.86% 0.0397 250.59)",
+          "oklch(49.29% 0.0397 250.59)",
+          "oklch(60.71% 0.0397 250.59)",
+          "oklch(72.14% 0.0397 250.59)",
+          "oklch(83.57% 0.0397 250.59)",
+          "oklch(95.00% 0.0397 250.59)"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Warm Paper",
+        "tonalRamp": [
+          "oklch(15.00% 0.0165 91.56)",
+          "oklch(26.43% 0.0165 91.56)",
+          "oklch(37.86% 0.0165 91.56)",
+          "oklch(49.29% 0.0165 91.56)",
+          "oklch(60.71% 0.0165 91.56)",
+          "oklch(72.14% 0.0165 91.56)",
+          "oklch(83.57% 0.0165 91.56)",
+          "oklch(95.00% 0.0165 91.56)"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Muted Slate",
+        "tonalRamp": [
+          "oklch(15.00% 0.0240 252.22)",
+          "oklch(26.43% 0.0240 252.22)",
+          "oklch(37.86% 0.0240 252.22)",
+          "oklch(49.29% 0.0240 252.22)",
+          "oklch(60.71% 0.0240 252.22)",
+          "oklch(72.14% 0.0240 252.22)",
+          "oklch(83.57% 0.0240 252.22)",
+          "oklch(95.00% 0.0240 252.22)"
+        ]
+      },
+      "subtle": {
+        "role": "neutral",
+        "displayName": "Subtle Slate",
+        "tonalRamp": [
+          "oklch(15.00% 0.0337 251.22)",
+          "oklch(26.43% 0.0337 251.22)",
+          "oklch(37.86% 0.0337 251.22)",
+          "oklch(49.29% 0.0337 251.22)",
+          "oklch(60.71% 0.0337 251.22)",
+          "oklch(72.14% 0.0337 251.22)",
+          "oklch(83.57% 0.0337 251.22)",
+          "oklch(95.00% 0.0337 251.22)"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Divider Slate",
+        "tonalRamp": [
+          "oklch(15.00% 0.0385 253.07)",
+          "oklch(26.43% 0.0385 253.07)",
+          "oklch(37.86% 0.0385 253.07)",
+          "oklch(49.29% 0.0385 253.07)",
+          "oklch(60.71% 0.0385 253.07)",
+          "oklch(72.14% 0.0385 253.07)",
+          "oklch(83.57% 0.0385 253.07)",
+          "oklch(95.00% 0.0385 253.07)"
+        ]
+      },
+      "coral": {
+        "role": "primary",
+        "displayName": "Muted Coral",
+        "tonalRamp": [
+          "oklch(15.00% 0.0788 38.63)",
+          "oklch(26.43% 0.0788 38.63)",
+          "oklch(37.86% 0.0788 38.63)",
+          "oklch(49.29% 0.0788 38.63)",
+          "oklch(60.71% 0.0788 38.63)",
+          "oklch(72.14% 0.0788 38.63)",
+          "oklch(83.57% 0.0788 38.63)",
+          "oklch(95.00% 0.0788 38.63)"
+        ]
+      },
+      "accent-ink": {
+        "role": "neutral",
+        "displayName": "Accent Ink",
+        "tonalRamp": [
+          "oklch(15.00% 0.0142 25.57)",
+          "oklch(26.43% 0.0142 25.57)",
+          "oklch(37.86% 0.0142 25.57)",
+          "oklch(49.29% 0.0142 25.57)",
+          "oklch(60.71% 0.0142 25.57)",
+          "oklch(72.14% 0.0142 25.57)",
+          "oklch(83.57% 0.0142 25.57)",
+          "oklch(95.00% 0.0142 25.57)"
+        ]
+      },
+      "score-gold": {
+        "role": "secondary",
+        "displayName": "Score Gold",
+        "tonalRamp": [
+          "oklch(15.00% 0.0900 85.08)",
+          "oklch(26.43% 0.0900 85.08)",
+          "oklch(37.86% 0.0900 85.08)",
+          "oklch(49.29% 0.0900 85.08)",
+          "oklch(60.71% 0.0900 85.08)",
+          "oklch(72.14% 0.0900 85.08)",
+          "oklch(83.57% 0.0900 85.08)",
+          "oklch(95.00% 0.0900 85.08)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Discovery Display",
+        "purpose": "Discovery headline with script and viewport adaptations."
+      },
+      "headline": {
+        "displayName": "Results Headline",
+        "purpose": "Result count or current selection heading."
+      },
+      "body": {
+        "displayName": "Shared System Family",
+        "purpose": "Local family across reading text and native controls; no shared size is established."
+      }
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "control-state",
+        "value": "background .15s ease-out, color .15s ease-out",
+        "purpose": "Genre choice state feedback."
+      },
+      {
+        "name": "poster-brightness",
+        "value": "filter .18s ease-out",
+        "purpose": "Slight poster brightening on link hover."
+      },
+      {
+        "name": "poster-reveal",
+        "value": "opacity .15s ease-out",
+        "purpose": "Decorative open affordance on hover and keyboard focus."
+      },
+      {
+        "name": "pending-pulse",
+        "value": "pending-pulse 1s ease-out infinite alternate",
+        "purpose": "Pending dot pulses between opacity .35 and 1."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "animation: none; transition: none; scroll-behavior: auto",
+        "purpose": "Global prefers-reduced-motion: reduce treatment."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "wide-min",
+        "value": "1500px"
+      },
+      {
+        "name": "desktop-compress-max",
+        "value": "1180px"
+      },
+      {
+        "name": "tablet-max",
+        "value": "900px"
+      },
+      {
+        "name": "mobile-max",
+        "value": "680px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Apply range preferences.",
+      "html": "<button class=\"ds-primary\" type=\"button\">Apply ranges<span aria-hidden=\"true\">→</span></button>",
+      "css": ".ds-primary{font-family:\"Segoe UI\",Tahoma,Arial,sans-serif;display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:44px;min-width:190px;background:var(--accent,#e8aa96);color:var(--accent-ink,#271e1d);border:0;border-radius:5px;padding:10px 14px;font-size:12px;font-weight:650;cursor:pointer}.ds-primary:hover{background:#f1bdab}.ds-primary:focus-visible{outline:2px solid var(--accent,#e8aa96);outline-offset:5px;}.ds-primary:disabled{opacity:.42;cursor:not-allowed}"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Pagination and recovery actions.",
+      "html": "<button class=\"ds-secondary\" type=\"button\">Next page<span aria-hidden=\"true\">→</span></button>",
+      "css": ".ds-secondary{font-family:\"Segoe UI\",Tahoma,Arial,sans-serif;display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:44px;padding:10px 13px;border:1px solid var(--line,#354558);border-radius:5px;background:none;color:var(--text,#eeeade);font-size:11px;cursor:pointer}.ds-secondary:hover:not(:disabled){border-color:var(--accent,#e8aa96);color:var(--accent,#e8aa96)}.ds-secondary:focus-visible{outline:2px solid var(--accent,#e8aa96);outline-offset:5px;}.ds-secondary:disabled{opacity:.42;cursor:not-allowed}"
+    },
+    {
+      "name": "Text Button",
+      "kind": "button",
+      "refersTo": "button-text",
+      "description": "Clear preferences through an understated text action.",
+      "html": "<button class=\"ds-text\" type=\"button\">Clear filters</button>",
+      "css": ".ds-text{font-family:\"Segoe UI\",Tahoma,Arial,sans-serif;background:none;border:0;color:var(--accent,#e8aa96);text-align:start;font-size:11px;min-height:44px;padding:4px 0;text-decoration:underline;text-underline-offset:4px;cursor:pointer}.ds-text:hover{color:var(--text,#eeeade)}.ds-text:focus-visible{outline:2px solid var(--accent,#e8aa96);outline-offset:5px;}"
+    },
+    {
+      "name": "Range Field",
+      "kind": "input",
+      "refersTo": "input-range",
+      "description": "A labeled numeric preference with LTR values.",
+      "html": "<label class=\"ds-field\">From<input type=\"number\" inputmode=\"numeric\" min=\"1888\" max=\"2100\" placeholder=\"1888\" aria-label=\"Year from\"></label>",
+      "css": ".ds-field{font-family:\"Segoe UI\",Tahoma,Arial,sans-serif;display:flex;flex-direction:column;gap:8px;font-size:10px;color:var(--muted,#abb7c5);max-width:130px}.ds-field input{font-family:\"Segoe UI\",Tahoma,Arial,sans-serif;width:100%;height:44px;background:var(--surface,#172535);color:var(--text,#eeeade);border:1px solid var(--line,#354558);border-radius:5px;padding:8px 10px;font-size:12px;direction:ltr;appearance:textfield}.ds-field input::placeholder{color:var(--subtle,#96a7ba)}.ds-field input:focus-visible{outline:2px solid var(--accent,#e8aa96);outline-offset:5px;}"
+    },
+    {
+      "name": "Navigation",
+      "kind": "nav",
+      "description": "Discovery route marker and locale link.",
+      "html": "<nav class=\"ds-nav\" aria-label=\"Main navigation\"><a class=\"ds-discover\" href=\"/en/discover/\">Discover</a><a class=\"ds-locale\" href=\"/en/discover/\" aria-label=\"Switch to English\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 20 20\" fill=\"none\" aria-hidden=\"true\"><circle cx=\"10\" cy=\"10\" r=\"8\" stroke=\"currentColor\"/><ellipse cx=\"10\" cy=\"10\" rx=\"3.5\" ry=\"8\" stroke=\"currentColor\"/><path d=\"M2 10h16\" stroke=\"currentColor\"/></svg>English</a></nav>",
+      "css": ".ds-nav{font-family:\"Segoe UI\",Tahoma,Arial,sans-serif;display:flex;align-items:center;gap:35px;border-bottom:1px solid var(--line,#354558);font-size:14px;color:var(--text,#eeeade)}.ds-nav a{color:inherit;text-decoration:none}.ds-nav .ds-discover{height:100px;display:flex;align-items:center;border-bottom:2px solid var(--accent,#e8aa96);font-weight:600}.ds-nav .ds-locale{min-height:44px;display:inline-flex;align-items:center;gap:8px;color:var(--muted,#abb7c5)}.ds-nav .ds-locale:hover{color:var(--text,#eeeade)}.ds-nav a:focus-visible{outline:2px solid var(--accent,#e8aa96);outline-offset:5px;}@media(max-width:680px){.ds-nav{gap:20px;font-size:12px}.ds-nav .ds-discover{height:80px}}"
+    },
+    {
+      "name": "Genre Choices",
+      "kind": "chip",
+      "refersTo": "chip-genre",
+      "description": "Native checkbox choices with distinct included and excluded treatments.",
+      "html": "<div class=\"ds-genres\"><label class=\"ds-genre\"><input type=\"checkbox\" checked aria-label=\"Include Drama\"><span>Drama</span></label><label class=\"ds-genre\"><input type=\"checkbox\" aria-label=\"Include Comedy\"><span>Comedy</span></label><label class=\"ds-genre ds-excluded\"><input type=\"checkbox\" checked aria-label=\"Exclude Horror\"><span>No Horror</span></label></div>",
+      "css": ".ds-genres{display:flex;flex-wrap:wrap;gap:7px}.ds-genre{font-family:\"Segoe UI\",Tahoma,Arial,sans-serif;position:relative;display:inline-flex;align-items:center;min-height:44px;cursor:pointer}.ds-genre input{position:absolute;opacity:0;width:100%;height:100%;margin:0;cursor:pointer}.ds-genre span{padding:6px 10px;border:1px solid var(--line,#354558);border-radius:5px;color:var(--muted,#abb7c5);font-size:11px;line-height:1.6;transition:background .15s ease-out,color .15s ease-out}.ds-genre:hover span{border-color:#728197;color:var(--text,#eeeade)}.ds-genre input:checked+span{background:var(--accent,#e8aa96);color:var(--accent-ink,#271e1d);border-color:var(--accent,#e8aa96)}.ds-genre.ds-excluded input:checked+span{background:#483a40;color:#f0bcba;border-color:#af7984}.ds-genre input:focus-visible+span{outline:2px solid var(--accent,#e8aa96);outline-offset:4px}.ds-genre input:disabled+span{opacity:.35}@media(prefers-reduced-motion:reduce){.ds-genre span{transition:none}}"
+    },
+    {
+      "name": "Film Card",
+      "kind": "card",
+      "refersTo": "movie-poster",
+      "description": "Original portrait art with visible title, metadata, and synthetic score.",
+      "html": "<article class=\"ds-card\"><a href=\"/en/movies/the-space-between/\"><div class=\"ds-poster\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"300\" height=\"450\" viewBox=\"0 0 300 450\" aria-hidden=\"true\"><rect width=\"300\" height=\"450\" fill=\"#e7c9aa\"/><path d=\"M50 295V105a100 100 0 0 1 200 0v190h-45V108a55 55 0 0 0-110 0v187Z\" fill=\"#bc594e\"/><path d=\"m0 281 300-98v87L0 365Z\" fill=\"#253945\"/><circle cx=\"108\" cy=\"222\" r=\"12\" fill=\"#bc594e\"/><path d=\"m94 239 28-2 13 63h-50Z\" fill=\"#bc594e\"/><circle cx=\"198\" cy=\"183\" r=\"10\" fill=\"#bc594e\"/><path d=\"m187 199 23-2 10 57h-41Z\" fill=\"#bc594e\"/><text x=\"24\" y=\"31\" fill=\"#bc594e\" font-family=\"Arial,sans-serif\" font-size=\"9\" letter-spacing=\"2\">FRAME · FICTIONAL FILM</text><rect y=\"347\" width=\"300\" height=\"103\" fill=\"#e7c9aa\"/><text fill=\"#bc594e\" font-family=\"Arial,sans-serif\" font-size=\"21\" font-weight=\"700\" letter-spacing=\"-.6\"><tspan x=\"24\" y=\"377\">THE SPACE BETWEEN</tspan></text><text x=\"24\" y=\"434\" fill=\"#bc594e\" font-family=\"Arial,sans-serif\" font-size=\"9\" letter-spacing=\"1.2\">2024 / SYNTHETIC STUDIO</text></svg><span class=\"ds-score\" aria-label=\"Synthetic score 8.2 out of 10\"><span class=\"ds-star\" aria-hidden=\"true\">★</span>8.2</span><span class=\"ds-open\" aria-hidden=\"true\">↗</span></div><h3 dir=\"auto\">The Space Between</h3></a><p class=\"ds-meta\">2024 · 108 min</p><p>Drama / Romance</p></article>",
+      "css": ".ds-card{font-family:\"Segoe UI\",Tahoma,Arial,sans-serif;width:200px;min-width:0;color:var(--text,#eeeade)}.ds-card a{color:inherit;text-decoration:none;display:block}.ds-poster{position:relative;aspect-ratio:2/3;overflow:hidden;background:var(--surface-raised,#203143);border-radius:6px}.ds-poster svg{display:block;width:100%;height:100%;transition:filter .18s ease-out}.ds-card a:hover svg{filter:brightness(1.06)}.ds-card a:focus-visible{outline:2px solid var(--accent,#e8aa96);outline-offset:5px;border-radius:6px}.ds-score{display:flex;align-items:center;gap:4px;position:absolute;top:9px;inset-inline-start:9px;padding:4px 6px;border-radius:4px;background:#142434;color:var(--text,#eeeade);font-size:10px;font-weight:650;direction:ltr}.ds-star{color:#e8c988}.ds-open{position:absolute;inset-inline-end:9px;bottom:9px;display:flex;align-items:center;justify-content:center;width:29px;height:29px;background:var(--background,#101c2b);border-radius:50%;font-size:17px;opacity:0;transition:opacity .15s ease-out}.ds-card a:hover .ds-open,.ds-card a:focus-visible .ds-open{opacity:1}.ds-card h3{font-size:12px;font-weight:650;line-height:1.6;margin:12px 0 4px}.ds-card a:hover h3{color:var(--accent,#e8aa96)}.ds-meta{font-size:10px;color:var(--muted,#abb7c5);line-height:1.6;margin:0 0 4px}.ds-card p:last-child{font-size:9px;color:var(--subtle,#96a7ba);line-height:1.75;margin:0}@media(prefers-reduced-motion:reduce){.ds-poster svg,.ds-open{transition:none}}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Turn constraints into a film choice.",
+    "overview": "A quiet cinematic interface gives preferences, film choices, and their evidence clear places to live. Ink navy and warm paper form the reading surface; muted coral marks actions and selection. Original geometric posters supply the strongest variation in color and composition.\n\nFrame remains a reversible working name. This app-scoped record reflects the shared stylesheet, shell, discovery controls, film cards, and local poster generator. Accessible controls, readable evidence, and honest unknown states constrain future screens.",
+    "keyCharacteristics": [
+      "Dark reading surfaces with warm text and restrained coral emphasis.",
+      "Flat tonal layers, thin dividers, and compact softened corners.",
+      "Original portrait artwork and controls that respect English LTR and Persian RTL."
+    ],
+    "rules": [
+      {
+        "name": "The Selection Coral Rule",
+        "body": "Use coral for actionable emphasis, included selection, and focus. Preserve a separate visible treatment for exclusions.",
+        "section": "colors"
+      },
+      {
+        "name": "The Script Room Rule",
+        "body": "Persian headings remove letter spacing and use expanded line height (1.6). Preserve automatic direction for mixed film titles and LTR direction for numeric ranges.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat Surface Rule",
+        "body": "Separate interface regions with tone, thin borders, and space. Reserve bright compositional contrast for the artwork and meaningful control states.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do reserve portrait space for original geometric posters.",
+      "Do preserve visible labels, coral keyboard focus, and minimum hit heights.",
+      "Do use logical start/end spacing and script-specific heading treatment.",
+      "Do keep synthetic labels and unknown values visible alongside film information.",
+      "Do honor reduced motion by removing animation and transitions."
+    ],
+    "donts": [
+      "Don't communicate inclusion or exclusion through color alone.",
+      "Don't place essential film information behind a hover-only affordance.",
+      "Don't replace uncertain film values with fabricated scores, dates, or runtimes.",
+      "Don't promote compact utility text into the default size for new prose."
+    ]
+  }
+}

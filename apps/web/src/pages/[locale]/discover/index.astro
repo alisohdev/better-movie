@@ -1,0 +1,13 @@
+---
+import Shell from '../../../layouts/Shell.astro';
+import Discovery from '../../../components/Discovery';
+import { genres, initialResults } from '../../../lib/catalog.server';
+import { copy, type Locale } from '../../../lib/model';
+export function getStaticPaths() { return [{ params: { locale: 'en' }, props: { locale: 'en' } }, { params: { locale: 'fa' }, props: { locale: 'fa' } }]; }
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+---
+<Shell locale={locale} title={copy(locale, 'Discover your next film — Frame', 'فیلم بعدی‌ات را کشف کن — فریم')}>
+  <Discovery client:load locale={locale} genres={genres} initialResults={initialResults} />
+  <noscript><p class="feedback">{copy(locale, 'This is the starting sample. Interactive filters require JavaScript; every film detail opens as a full page.', 'این نمونهٔ آغازین است. فیلترهای تعاملی به جاوااسکریپت نیاز دارند؛ صفحهٔ جزئیات هر فیلم مستقل باز می‌شود.')}</p></noscript>
+</Shell>

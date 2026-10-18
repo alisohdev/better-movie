@@ -1,0 +1,49 @@
+name: Verify synthetic slice
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:18-alpine
+        env:
+          POSTGRES_USER: movie
+          POSTGRES_PASSWORD: local-development-only
+          POSTGRES_DB: movie_discovery
+        ports:
+          - 55432:5432
+        options: >-
+          --health-cmd "pg_isready -U movie -d movie_discovery"
+          --health-interval 2s
+          --health-timeout 3s
+          --health-retries 15
+    env:
+      DATABASE_URL: postgres://movie:local-development-only@127.0.0.1:55432/movie_discovery?sslmode=disable
+      TEST_DATABASE_URL: postgres://movie:local-development-only@127.0.0.1:55432/movie_discovery?sslmode=disable
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
+      - run: npm ci
+      - run: go run github.com/sqlc-dev/sqlc/cmd/sqlc@v1.31.1 generate
+      - run: git diff --exit-code -- internal/dbgen
+      - run: go test ./...
+      - run: go vet ./...
+      - run: go run ./cmd/catalog migrate
+      - run: go run ./cmd/catalog seed
+      - run: npm run verify
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e

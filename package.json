@@ -1,0 +1,20 @@
+{
+  "name": "frame-synthetic-cinema",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": ["apps/web"],
+  "scripts": {
+    "dev": "npm run dev --workspace @frame/web --",
+    "build": "npm run build --workspace @frame/web",
+    "preview": "npm run preview --workspace @frame/web --",
+    "check": "npm run check --workspace @frame/web",
+    "test:unit": "npm run test:unit --workspace @frame/web",
+    "test:e2e": "playwright test",
+    "verify": "npm run check && npm run test:unit && npm run build"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1",
+    "lighthouse": "13.5.0"
+  }
+}

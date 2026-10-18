@@ -1,0 +1,49 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import '../styles/global.css';
+import { copy, type Locale } from '../lib/model';
+interface Props { locale: Locale; title: string; description?: string; }
+const { locale, title, description = copy(locale, 'A small collection of fictional films. Find something for tonight.', 'مجموعه‌ای کوچک از فیلم‌های خیالی. برای امشب فیلمی پیدا کن.') } = Astro.props;
+const otherLocale = locale === 'en' ? 'fa' : 'en';
+const alternatePath = Astro.url.pathname.replace(`/${locale}/`, `/${otherLocale}/`);
+---
+<!doctype html>
+<html lang={locale} dir={locale === 'fa' ? 'rtl' : 'ltr'}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="robots" content="noindex,nofollow" />
+    <meta name="theme-color" content="#101c2b" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <title>{title}</title>
+    <ClientRouter />
+  </head>
+  <body>
+    <!-- THESIS: Turn constraints into a film choice. OWN-WORLD: Ink navy, warm paper, muted coral, cinematic original geometric posters. STORY: Start with a few preferences, inspect the results, read the evidence. FIRST VIEWPORT: Quiet masthead, generous single headline, literal recipes, filter rail beside a four-column film grid. FORM: Brief-pinned editorial discovery; accessible controls take precedence over decoration. -->
+    <a class="skip-link" href="#main">{copy(locale, 'Skip to content', 'رفتن به محتوا')}</a>
+    <header class="site-header page-width">
+      <a class="wordmark" href={`/${locale}/discover/`} aria-label={copy(locale, 'Frame home', 'خانه فریم')}>
+        <svg width="29" height="29" viewBox="0 0 30 30" fill="none" aria-hidden="true"><path d="M2 11V2h9M19 2h9v9M28 19v9h-9M11 28H2v-9" stroke="currentColor" stroke-width="2.5"/><path d="m12 9 10 6-10 6V9Z" fill="currentColor"/></svg>
+        <span>FRAME<span class="wordmark-dot">.</span></span>
+      </a>
+      <nav aria-label={copy(locale, 'Main navigation', 'ناوبری اصلی')}>
+        <a class="nav-discover" href={`/${locale}/discover/`}>{copy(locale, 'Discover', 'کشف فیلم')}</a>
+        <span class="header-note">{copy(locale, 'A little less scrolling. A little more cinema.', 'کمی کمتر گشتن، کمی بیشتر سینما.')}</span>
+        <a class="locale-link" data-locale-toggle href={alternatePath} lang={otherLocale} hreflang={otherLocale} aria-label={copy(locale, 'Switch to Persian', 'Switch to English')}>
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8" stroke="currentColor"/><ellipse cx="10" cy="10" rx="3.5" ry="8" stroke="currentColor"/><path d="M2 10h16" stroke="currentColor"/></svg>
+          {copy(locale, 'فارسی', 'English')}
+        </a>
+      </nav>
+    </header>
+    <main id="main" class="page-width"><slot /></main>
+    <footer class="site-footer page-width">
+      <a class="footer-brand" href={`/${locale}/discover/`}>FRAME.</a>
+      <p>{copy(locale, 'An independent place to find your next film.', 'جایی مستقل برای پیدا کردن فیلم بعدی شما.')}</p>
+      <p class="footer-notice">{copy(locale, 'Synthetic catalog · 32 fictional films · Original artwork', 'فهرست نمایشی · ۳۲ فیلم خیالی · پوسترهای اختصاصی')}</p>
+    </footer>
+    <script>
+      import '../lib/navigation';
+    </script>
+  </body>
+</html>

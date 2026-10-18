@@ -1,0 +1,42 @@
+---
+import Shell from '../../../layouts/Shell.astro';
+import { catalog } from '../../../lib/catalog.server';
+import { copy, genreName, movieTitle, type Locale, type Movie } from '../../../lib/model';
+export function getStaticPaths() {
+  return catalog.movies.flatMap((movie) => ['en', 'fa'].map((locale) => ({ params: { locale, id: movie.id }, props: { locale, movie } })));
+}
+interface Props { locale: Locale; movie: Movie; }
+const { locale, movie } = Astro.props;
+const title = movieTitle(movie, locale);
+const synopsis = locale === 'fa' && movie.synopsisFa ? movie.synopsisFa : movie.synopsisEn;
+const englishFallback = locale === 'fa' && !movie.synopsisFa;
+const regionNames = new Intl.DisplayNames([locale], { type: 'region' });
+const languageNames = new Intl.DisplayNames([locale], { type: 'language' });
+const countryName = (code: string) => regionNames.of(code) ?? code;
+const date = (value: string) => new Intl.DateTimeFormat(locale, { dateStyle: 'medium', calendar: 'gregory', timeZone: 'UTC' }).format(new Date(value));
+const today = new Date().toISOString().slice(0, 10);
+const eventName = (event: Movie['releaseObservations'][number]['eventType']) => ({ theatrical: copy(locale, 'Theatrical release', 'اکران سینمایی'), digital: copy(locale, 'Digital release', 'انتشار دیجیتال'), physical: copy(locale, 'Physical release', 'انتشار فیزیکی') })[event];
+---
+<Shell locale={locale} title={`${title} — Frame`} description={movie.synopsisEn}>
+  <a class="back-link" href={`/${locale}/discover/`} data-return-discovery><span aria-hidden="true">←</span>{copy(locale, 'Back to your selection', 'بازگشت به انتخاب شما')}</a>
+  <article class="movie-detail">
+    <div class="detail-poster-column">
+      <img class="detail-poster" src={movie.poster} width="300" height="450" alt={copy(locale, `Original geometric poster for ${title}`, `پوستر هندسی اختصاصی ${title}`)} loading="eager" fetchpriority="high" />
+      <p class="artwork-caption">{copy(locale, 'Original artwork · Fictional film', 'پوستر اختصاصی · فیلم خیالی')}</p>
+    </div>
+    <div class="detail-content">
+      <p class="synthetic-label"><span class="notice-dot" aria-hidden="true" />{copy(locale, 'Synthetic catalog', 'فهرست نمایشی')}</p>
+      <div class="detail-genres">{movie.genres.length ? movie.genres.map((genre) => <span>{genreName(genre, locale)}</span>) : <span>{copy(locale, 'Genres unrecorded', 'ژانر ثبت نشده')}</span>}</div>
+      <h1 dir="auto">{title}</h1>
+      {movie.originalTitle !== title ? <p class="original-title" dir="auto">{movie.originalTitle}</p> : null}
+      <p class="detail-meta"><span>{movie.year ?? copy(locale, 'Year unknown', 'سال نامشخص')}</span><span aria-hidden="true">·</span><span>{movie.runtime === null ? copy(locale, 'Runtime unknown', 'زمان فیلم نامشخص') : copy(locale, `${movie.runtime} minutes`, `${movie.runtime} دقیقه`)}</span></p>
+      <div class="detail-score"><span class="detail-star" aria-hidden="true">★</span><strong>{movie.rating === null ? '—' : movie.rating.toFixed(1)}</strong><span class="score-scale">/ 10</span><div><p>{copy(locale, 'Synthetic community score', 'امتیاز نمایشی مخاطبان')}</p><span>{movie.voteCount === null ? copy(locale, 'Vote count unknown', 'تعداد رأی نامشخص') : copy(locale, `${movie.voteCount} fictional votes`, `${movie.voteCount} رأی خیالی`)}</span></div></div>
+      <section class="synopsis-section" aria-labelledby="synopsis-heading"><h2 id="synopsis-heading">{copy(locale, 'The story', 'داستان فیلم')}</h2>{englishFallback ? <p class="fallback-note">{copy(locale, 'English synopsis', 'خلاصهٔ انگلیسی؛ نسخهٔ فارسی موجود نیست.')}</p> : null}<p class="synopsis" dir={englishFallback ? 'ltr' : 'auto'} lang={englishFallback ? 'en' : locale}>{synopsis}</p></section>
+      <dl class="film-facts"><div><dt>{copy(locale, 'Original language', 'زبان اصلی')}</dt><dd>{movie.originalLanguage ? languageNames.of(movie.originalLanguage) ?? movie.originalLanguage : copy(locale, 'Unknown', 'نامشخص')}</dd></div><div><dt>{copy(locale, 'Production countries', 'کشورهای سازنده')}</dt><dd>{movie.countries.length ? movie.countries.map(countryName).join(copy(locale, ', ', '، ')) : copy(locale, 'Unknown', 'نامشخص')}</dd></div><div><dt>{copy(locale, 'Metadata source', 'منبع اطلاعات')}</dt><dd>Synthetic studio</dd></div></dl>
+      <section class="release-section" aria-labelledby="release-heading"><h2 id="release-heading">{copy(locale, 'Release notes', 'یادداشت‌های انتشار')}</h2><p class="release-explanation">{copy(locale, 'Fictional release observations for this demonstration. Dates do not establish file or service availability.', 'اطلاعات انتشار خیالی برای این نمونه. این تاریخ‌ها نشانهٔ وجود فایل یا دسترسی در سرویس‌ها نیستند.')}</p>
+        {movie.releaseObservations.length ? <div class="release-observations">{movie.releaseObservations.map((observation) => <div class="release-observation"><div class="release-event"><strong>{eventName(observation.eventType)}</strong><span class="release-status">{observation.date && observation.date > today ? copy(locale, 'Scheduled · synthetic', 'برنامه‌ریزی‌شده · نمایشی') : copy(locale, 'Reported · synthetic', 'گزارش‌شده · نمایشی')}</span></div><p class="release-date">{observation.date ? <time datetime={observation.date}>{date(observation.date)}</time> : copy(locale, 'Date unrecorded', 'تاریخ ثبت نشده')}<span aria-hidden="true"> · </span>{countryName(observation.country)}</p><p class="source-line">{copy(locale, 'Source: ', 'منبع: ')}{observation.source}<span aria-hidden="true"> · </span>{copy(locale, 'Checked ', 'بررسی: ')}<time datetime={observation.checkedAt}>{date(observation.checkedAt)}</time></p></div>)}</div> : <p class="no-release">{copy(locale, 'No release information recorded.', 'اطلاعات انتشار ثبت نشده است.')}</p>}
+      </section>
+      <p class="detail-trust-note">{copy(locale, 'This film, its score, and its release notes are fictional. Static catalog snapshot: synthetic-v1.', 'این فیلم، امتیاز و یادداشت‌های انتشار آن خیالی هستند. نسخهٔ ثابت فهرست: synthetic-v1.')}</p>
+    </div>
+  </article>
+</Shell>
