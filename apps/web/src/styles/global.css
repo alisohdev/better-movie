@@ -219,3 +219,24 @@ summary::-webkit-details-marker { display: none; }
   .filter-disclosure[data-open="true"] .filter-toggle { border-bottom: 1px solid var(--line); }
   .filter-disclosure[data-open="false"] .filters-body { display: none; }
 }
+
+/* Suggestions float over the collection so pending/result states never move it. */
+.title-search { margin-block: 0 30px; max-width: 680px; }
+.title-search > label { font-size: 18px; font-weight: 600; }
+.title-search-hint { color: var(--muted); font-size: 12px; line-height: 1.7; margin-block: 7px 12px; }
+.title-search-control { position: relative; scroll-margin-top: 20px; }
+.title-search-input { display: flex; align-items: center; min-height: 52px; border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding-inline-start: 16px; gap: 10px; }
+.title-search-input:focus-within { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.title-search-input > span { color: var(--accent); font-size: 26px; }
+.title-search-input input { min-width: 0; width: 100%; height: 52px; border: 0; background: transparent; color: var(--text); font-size: 16px; outline: none; }
+.title-search-input input::-webkit-search-cancel-button { display: none; }
+.title-search-clear { flex: 0 0 48px; min-height: 48px; font-size: 24px; }
+.title-search-popup { position: absolute; inset-inline: 0; top: calc(100% + 8px); z-index: 10; max-height: min(390px, 50dvh); overflow-y: auto; overscroll-behavior: contain; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 16px 40px #0006; }
+.title-search-status { color: var(--muted); font-size: 12px; line-height: 1.7; padding: 12px 16px; margin: 0; }
+.title-search-popup > button { margin: 0 16px 14px; }
+.title-suggestion { display: flex; gap: 12px; align-items: center; min-height: 64px; padding: 12px 16px; border-top: 1px solid var(--line); }
+.title-suggestion:hover, .title-suggestion[aria-selected="true"] { background: var(--surface-raised); }
+.title-suggestion-text { display: flex; flex-direction: column; gap: 4px; min-width: 0; flex: 1; overflow-wrap: anywhere; }
+.title-suggestion-text strong { font-size: 14px; font-weight: 600; }
+.title-suggestion-text > span, .title-suggestion-year { font-size: 12px; color: var(--muted); }
+.title-suggestion > svg { flex: 0 0 16px; color: var(--accent); }

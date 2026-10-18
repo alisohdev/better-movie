@@ -19,6 +19,7 @@ func TestPostgresFunctionRewrite(t *testing.T) {
 		status int
 	}{
 		{"/api/index?__route=health", 200},
+		{"/api/index?__route=titles&q=orbit&v=1", 200},
 		{"/api/index?__route=movies&genres=drama,romance&genreMode=all", 200},
 		{"/api/index?__route=movies/the-space-between", 200},
 		{"/api/index?__route=unknown", 404},

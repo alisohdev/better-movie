@@ -43,7 +43,7 @@ export const resultsSchema = z.object({
 }).strict();
 export type MovieResults = z.infer<typeof resultsSchema>;
 
-export function movieTitle(movie: Movie, locale: Locale) {
+export function movieTitle(movie: Pick<Movie, 'titleEn' | 'titleFa'>, locale: Locale) {
   return locale === 'fa' ? movie.titleFa ?? movie.titleEn : movie.titleEn;
 }
 
@@ -68,3 +68,7 @@ export const genreNames: Record<string, { en: string; fa: string }> = {
 export function genreName(slug: string, locale: Locale) {
   return genreNames[slug]?.[locale] ?? slug;
 }
+
+export const titleSuggestionSchema = movieSchema.pick({ id: true, titleEn: true, titleFa: true, originalTitle: true, year: true });
+export type TitleSuggestion = z.infer<typeof titleSuggestionSchema>;
+export const titleLookupSchema = z.object({ items: z.array(titleSuggestionSchema).max(6), catalogRevision: z.literal(CATALOG_REVISION) }).strict();

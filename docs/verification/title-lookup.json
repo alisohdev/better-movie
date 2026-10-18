@@ -1,0 +1,137 @@
+{
+  "environment": {
+    "platform": "linux",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
+    "node": "v24.19.0",
+    "postgres": "18 local Docker",
+    "catalog": "32 owned synthetic movies, synthetic-v1",
+    "build": "Astro production output, local Go API via preview proxy"
+  },
+  "allBuiltJavaScriptGzipBytes": 120657,
+  "baselineMainJavaScriptGzipBytes": 118979,
+  "deltaJavaScriptGzipBytes": 1678,
+  "surfaces": [
+    {
+      "locale": "en",
+      "mobile": false,
+      "throttle": "none",
+      "titleRequests": 5,
+      "inputToSuggestionsMs": {
+        "samples": [
+          307.04,
+          244.63,
+          255.76,
+          246.34,
+          268.2
+        ],
+        "median": 255.76,
+        "range": [
+          244.63,
+          307.04
+        ]
+      },
+      "collectionDisplacementPx": 0,
+      "horizontalOverflow": false,
+      "pageErrors": []
+    },
+    {
+      "locale": "fa",
+      "mobile": false,
+      "throttle": "none",
+      "titleRequests": 5,
+      "inputToSuggestionsMs": {
+        "samples": [
+          307.68,
+          252.72,
+          254.02,
+          271.42,
+          323.26
+        ],
+        "median": 271.42,
+        "range": [
+          252.72,
+          323.26
+        ]
+      },
+      "collectionDisplacementPx": 0,
+      "horizontalOverflow": false,
+      "pageErrors": []
+    },
+    {
+      "locale": "en",
+      "mobile": true,
+      "throttle": "4x CPU, 150ms RTT, 1.6Mbps down",
+      "titleRequests": 5,
+      "inputToSuggestionsMs": {
+        "samples": [
+          600.81,
+          429.56,
+          610.05,
+          505.56,
+          442.93
+        ],
+        "median": 505.56,
+        "range": [
+          429.56,
+          610.05
+        ]
+      },
+      "collectionDisplacementPx": 0,
+      "horizontalOverflow": false,
+      "pageErrors": []
+    },
+    {
+      "locale": "fa",
+      "mobile": true,
+      "throttle": "4x CPU, 150ms RTT, 1.6Mbps down",
+      "titleRequests": 5,
+      "inputToSuggestionsMs": {
+        "samples": [
+          589.96,
+          531.51,
+          445.56,
+          513.1,
+          514.24
+        ],
+        "median": 514.24,
+        "range": [
+          445.56,
+          589.96
+        ]
+      },
+      "collectionDisplacementPx": 0,
+      "horizontalOverflow": false,
+      "pageErrors": []
+    }
+  ],
+  "api": {
+    "scope": "five successful warm local HTTP + Go + PostgreSQL responses, no HTTP response cache",
+    "elapsedMs": {
+      "samples": [
+        29.83,
+        5.5,
+        14.86,
+        4.56,
+        4.6
+      ],
+      "median": 5.5,
+      "range": [
+        4.56,
+        29.83
+      ]
+    },
+    "responseBytes": [
+      887,
+      887,
+      887,
+      887,
+      887
+    ]
+  },
+  "limitations": [
+    "Local lab only; no deployment, Neon wake-up, Iranian network or field p75 measurement.",
+    "Browser timings include the intentional 200ms debounce and Playwright driver/assertion overhead.",
+    "Five samples per surface and 32 movies do not establish catalog scalability or robust INP.",
+    "Collection displacement is measured within an interaction; it is not a page-level CLS measurement."
+  ]
+}

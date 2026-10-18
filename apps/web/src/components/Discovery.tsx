@@ -4,6 +4,7 @@ import { navigate, type TransitionBeforePreparationEvent, type TransitionBeforeS
 import { copy, genreName, type Locale, type MovieResults } from '../lib/model';
 import { defaultFilters, isDefaultFilters, modeSchema, parseFilters, parseRangeDraft, serializeFilters, sortSchema, type FilterResult, type Filters } from '../lib/filters';
 import { getQueryClient, movieQuery } from '../lib/query-client';
+import { TitleSearch } from './TitleSearch';
 import { MovieCard } from './MovieCard';
 
 interface Props { locale: Locale; genres: string[]; initialResults: MovieResults; }
@@ -144,6 +145,8 @@ function DiscoveryBody({ locale, genres, initialResults }: Props) {
         <button className="recipe" onClick={() => apply({ ...defaultFilters(), yearMin: 1990, yearMax: 1999 }, true)}><span>{copy(locale, 'A trip to the ’90s', 'سفری به دههٔ ۹۰ میلادی')}</span><span aria-hidden="true">↗</span></button>
       </div>
     </section>
+
+    <TitleSearch locale={locale} />
 
     <div className="catalog-notice"><span className="notice-dot" aria-hidden="true" /><span>{copy(locale, 'A fictional film collection', 'مجموعه‌ای از فیلم‌های خیالی')}</span><span className="notice-explanation">{copy(locale, '32 original examples. All titles, scores and release notes are synthetic.', '۳۲ نمونهٔ اختصاصی؛ عنوان‌ها، امتیازها و تاریخ‌های انتشار، نمایشی هستند.')}</span></div>
 
