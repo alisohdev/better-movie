@@ -41,3 +41,9 @@ There is no configured Neon database URL or Neon API credential, no connected Gi
 This slice deliberately ends at synthetic genre include/exclude/any/all filtering, year and runtime ranges, sorting, pagination, shareable URLs, localized results, official-release observation examples, and details. It has no real catalog, title search, language or country filter, rating threshold, provider offer, authentication, video, AI, ads, or billing.
 
 First verify eligible free hosting with a privately configured Neon database. In parallel, settle real metadata permissions and audit source coverage. Then add bilingual title aliases, language/country and source-labeled rating filters, followed by sourced official digital/physical observations only if the evidence supports them. No source, provider, or real-film publication is approved by this synthetic prototype.
+
+## Hosted provisioning attempt
+
+Vercel project creation and Neon Free provisioning completed. The integration attached preview environment variables; migration and seed were run through the Vercel environment without printing the database URL. The 32 synthetic fixture rows are present in Neon. `sslmode=require` from the provider is strengthened to certificate and hostname verification in `internal/database/pool.go`.
+
+The production build passed on Vercel after narrowing `.vercelignore` so required Astro scripts remained included. Vercel then blocked the deployment because the repository commit author lacks deployment permission for the account. There is no ready preview deployment to test, so remote HTTP routing, React hydration, and end-to-end Vercel-to-Neon requests remain unverified. See the [deployment handoff](../deployment/vercel-neon.md).

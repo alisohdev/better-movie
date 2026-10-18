@@ -28,3 +28,11 @@ Run browser checks against the preview, inspect production JavaScript sizes, and
 Commit the npm lockfile, Go checksums, SQL migrations, sqlc sources/generated bindings, fixture revision, and Vercel configuration. Rebuild from a clean checkout. Build output requires no database credential because the initial static snapshot is owned and immutable. Go serving always reads PostgreSQL. Future real-data publication needs a permitted export/build activation process.
 
 For a conventional server, use `go run ./cmd/server` or build that command and serve Astro output with a static host/reverse proxy. Keep Vercel-specific initialization limited to `api/index.go`. If the documented one-project composition fails remotely, evaluate two projects with an API proxy before a free conventional Go host. Any paid change needs separate approval.
+
+## Vercel/Neon provisioning status (October 18, 2026)
+
+Created the Vercel project `frame-movie-discovery` and provisioned Neon Free resource `frame-movie-discovery-db` in `iad1`, connected to the Vercel Preview environment. The real Neon URL from the integration requested `sslmode=require`; the database boundary now upgrades that request to `sslmode=verify-full` before pgx parses it, preserving certificate and hostname checks. Go tests and vet passed, and the remote migration plus idempotent seed completed for all 32 `synthetic-v1` records.
+
+The Vercel build completed, but the deployment is `BLOCKED` with the platform reason that the commit author does not have permission to create deployments for this project. No ready preview URL or production deployment exists. The current Vercel account has no linked GitHub identity, and its account email does not match the commit author. Link the GitHub identity used by the repository commit author to this Vercel account, or correct the repository's Git identity only if the current identity is factually wrong, then retry `vercel deploy`. No attempt was made to spoof commit metadata or bypass the platform gate.
+
+The generated `.vercelignore` excludes local environment files, temporary test output, and agent-generated material from uploads. The Neon resource uses the explicit Free plan; no paid plan, custom domain, or production database connection was configured.
