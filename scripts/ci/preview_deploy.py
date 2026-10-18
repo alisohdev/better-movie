@@ -1,4 +1,5 @@
-"""Manual Preview runner. No env pull, database writes, production, or API mutations.
+"""Protected Preview runner for manual dispatch and successful main CI completion.
+No env pull, database writes, or Production release.
 
 The only remote mutation is the explicit `vercel deploy --target=preview` call.
 API responses and CLI logs are never printed: they can include sensitive fields.
@@ -71,15 +72,39 @@ def git(*args):
 def validate_context(env):
     sha = env.get('REVIEWED_SHA', '')
     require(re.fullmatch('[0-9a-f]{40}', sha) is not None, 'Use a full lowercase commit SHA.')
-    require(env.get('GITHUB_EVENT_NAME') == 'workflow_dispatch', 'Manual dispatch required.')
     require(env.get('GITHUB_REPOSITORY') == REPO, 'Unexpected repository.')
-    require(env.get('GITHUB_REF') == 'refs/heads/main', 'Dispatch must select main.')
-    require(env.get('GITHUB_SHA') == sha, 'Dispatch SHA differs from reviewed SHA.')
-    require(env.get('PREVIEW_APPROVAL') == 'REVIEWED_PREVIEW_ONLY', 'Explicit Preview approval required.')
+    require(env.get('GITHUB_REF') == 'refs/heads/main', 'Only main may deploy.')
+    require(env.get('GITHUB_SHA') == sha, 'GitHub default-branch SHA must match the reviewed commit.')
     require(env.get('VERCEL_PROJECT_ID') == PROJECT and env.get('VERCEL_ORG_ID') == TEAM,
             'Unexpected configured project or team.')
+    event = env.get('GITHUB_EVENT_NAME')
+    if event == 'workflow_dispatch':
+        require(env.get('PREVIEW_APPROVAL') == 'REVIEWED_PREVIEW_ONLY',
+                'Explicit Preview approval required.')
+    elif event == 'workflow_run':
+        event_path = env.get('GITHUB_EVENT_PATH')
+        require(bool(event_path), 'GitHub workflow event payload is required.')
+        try:
+            payload = json.loads(Path(event_path).read_text(encoding='utf-8'))
+        except (OSError, ValueError) as exc:
+            raise Refuse('Cannot validate GitHub workflow event payload.') from exc
+        run = payload.get('workflow_run') or {}
+        require(payload.get('action') == 'completed' and
+                (payload.get('repository') or {}).get('full_name') == REPO,
+                'Unexpected workflow completion origin.')
+        require(run.get('name') == 'Verify synthetic slice' and
+                run.get('path') == '.github/workflows/verify.yml' and
+                run.get('event') == 'push' and
+                run.get('head_branch') == 'main' and
+                (run.get('head_repository') or {}).get('full_name') == REPO and
+                run.get('head_sha') == sha and
+                run.get('status') == 'completed' and
+                run.get('conclusion') == 'success' and
+                isinstance(run.get('id'), int) and run['id'] > 0,
+                'Only successful main push verification may deploy automatically.')
+    else:
+        raise Refuse('Only manual Preview approval or successful main CI may deploy.')
     return sha
-
 
 def validate_ci(runs, sha):
     # Only the named verification workflow's latest push run counts, never a PR
@@ -90,6 +115,7 @@ def validate_ci(runs, sha):
     latest = max(matching, key=lambda r: (r['run_number'], r.get('run_attempt', 1)))
     require(latest.get('status') == 'completed' and latest.get('conclusion') == 'success',
             'Latest verification run must be completed and successful.')
+    return latest
 
 
 def gate():
@@ -104,7 +130,11 @@ def gate():
             'Commit must be the merge result of a PR into main; direct pushes are refused.')
     runs = gh('/actions/workflows/verify.yml/runs?' + urlencode(
         {'branch': 'main', 'event': 'push', 'head_sha': sha, 'per_page': 100}))
-    validate_ci(runs['workflow_runs'], sha)
+    latest_run = validate_ci(runs['workflow_runs'], sha)
+    if os.environ.get('GITHUB_EVENT_NAME') == 'workflow_run':
+        payload = json.loads(Path(os.environ['GITHUB_EVENT_PATH']).read_text(encoding='utf-8'))
+        require(latest_run.get('id') == payload['workflow_run']['id'],
+                'CI completion event does not match latest verified main run.')
     environment = gh('/environments/preview-deploy')
     policy = environment.get('deployment_branch_policy') or {}
     require(policy.get('custom_branch_policies') is True and policy.get('protected_branches') is False,
@@ -114,7 +144,7 @@ def gate():
     require(len(rules) == 1 and rules[0].get('name') == 'main'
             and rules[0].get('type', 'branch') == 'branch',
             'preview-deploy must allow only the main branch.')
-    print('Reviewed main SHA, merged PR, and successful verification confirmed: ' + sha)
+    print('Verified main SHA, merged PR, and successful verification confirmed: ' + sha)
     return sha
 
 
