@@ -10,34 +10,34 @@ await mkdir('.local/screenshots', { recursive: true });
 const browser = await chromium.launch({ channel: process.env.PLAYWRIGHT_CHANNEL });
 const observations = [];
 for (let sample = 0; sample < 5; sample++) {
-for (const surface of [
-  { name: 'desktop-en', locale: 'en', width: 1440, height: 1000, throttle: false },
-  { name: 'mobile-fa', locale: 'fa', width: 390, height: 844, throttle: true },
-]) {
-  const context = await browser.newContext({ viewport: { width: surface.width, height: surface.height }, reducedMotion: 'reduce', extraHTTPHeaders: testHeaders });
-  const page = await context.newPage();
-  const errors = [];
-  page.on('pageerror', (error) => errors.push(error.message));
-  await page.addInitScript(() => {
-    window.__lab = { lcpMs: null, cls: 0 };
-    new PerformanceObserver((list) => {
-      for (const entry of list.getEntries()) window.__lab.lcpMs = entry.startTime;
-    }).observe({ type: 'largest-contentful-paint', buffered: true });
-    new PerformanceObserver((list) => {
-      for (const entry of list.getEntries()) if (!entry.hadRecentInput) window.__lab.cls += entry.value;
-    }).observe({ type: 'layout-shift', buffered: true });
-  });
-  if (surface.throttle) {
-    const session = await context.newCDPSession(page);
-    await session.send('Network.enable');
-    await session.send('Network.emulateNetworkConditions', { offline: false, latency: 150, downloadThroughput: 200000, uploadThroughput: 93750 });
-    await session.send('Emulation.setCPUThrottlingRate', { rate: 4 });
+  for (const surface of [
+    { name: 'desktop-en', locale: 'en', width: 1440, height: 1000, throttle: false },
+    { name: 'mobile-fa', locale: 'fa', width: 390, height: 844, throttle: true },
+  ]) {
+    const context = await browser.newContext({ viewport: { width: surface.width, height: surface.height }, reducedMotion: 'reduce', extraHTTPHeaders: testHeaders });
+    const page = await context.newPage();
+    const errors = [];
+    page.on('pageerror', (error) => errors.push(error.message));
+    await page.addInitScript(() => {
+      window.__lab = { lcpMs: null, cls: 0 };
+      new PerformanceObserver((list) => {
+        for (const entry of list.getEntries()) window.__lab.lcpMs = entry.startTime;
+      }).observe({ type: 'largest-contentful-paint', buffered: true });
+      new PerformanceObserver((list) => {
+        for (const entry of list.getEntries()) if (!entry.hadRecentInput) window.__lab.cls += entry.value;
+      }).observe({ type: 'layout-shift', buffered: true });
+    });
+    if (surface.throttle) {
+      const session = await context.newCDPSession(page);
+      await session.send('Network.enable');
+      await session.send('Network.emulateNetworkConditions', { offline: false, latency: 150, downloadThroughput: 200000, uploadThroughput: 93750 });
+      await session.send('Emulation.setCPUThrottlingRate', { rate: 4 });
+    }
+    await page.goto(new URL(`/${surface.locale}/discover/`, base).href, { waitUntil: 'networkidle' });
+    await page.screenshot({ path: `.local/screenshots/${surface.name}.png`, fullPage: true });
+    observations.push({ sample: sample + 1, surface: surface.name, scope: surface.throttle ? 'fresh browser context, 4x CPU, 150ms latency, 1.6Mbps down' : 'fresh browser context, unthrottled', errors, ...await page.evaluate(() => ({ ...window.__lab, horizontalOverflow: document.documentElement.scrollWidth > innerWidth, resourceRequests: performance.getEntriesByType('resource').length, jsResources: performance.getEntriesByType('resource').filter((entry) => entry.name.includes('.js')).length })) });
+    await context.close();
   }
-  await page.goto(new URL(`/${surface.locale}/discover/`, base).href, { waitUntil: 'networkidle' });
-  await page.screenshot({ path: `.local/screenshots/${surface.name}.png`, fullPage: true });
-  observations.push({ sample: sample + 1, surface: surface.name, scope: surface.throttle ? 'fresh browser context, 4x CPU, 150ms latency, 1.6Mbps down' : 'fresh browser context, unthrottled', errors, ...await page.evaluate(() => ({ ...window.__lab, horizontalOverflow: document.documentElement.scrollWidth > innerWidth, resourceRequests: performance.getEntriesByType('resource').length, jsResources: performance.getEntriesByType('resource').filter((entry) => entry.name.includes('.js')).length })) });
-  await context.close();
-}
 }
 await browser.close();
 
