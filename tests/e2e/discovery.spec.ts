@@ -85,6 +85,7 @@ test('cached filter results are reused without a duplicate request', async ({ pa
   await page.getByLabel('Include Drama', { exact: true }).click();
   await expect.poll(() => dramaRequests).toBe(1);
   await expect(page).toHaveURL(/genres=drama/);
+  await expect(page.getByRole('status')).toContainText(/^Showing /);
   await expect(page.getByTestId('movie-card').first()).toContainText('The Space Between');
   await page.getByLabel('Include Drama', { exact: true }).click();
   await expect(page).not.toHaveURL(/genres=drama/);
