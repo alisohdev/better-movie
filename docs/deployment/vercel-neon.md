@@ -1,6 +1,6 @@
 # Deploy the synthetic slice on free infrastructure
 
-This run has not established a remote Astro/React to Go to Neon deployment. A cached Vercel CLI session exists, but no Neon connection URL or Neon API credential is configured. Account eligibility and actual Iranian-network access remain unverified. The compatibility assessment is documentation evidence, not a deployed test.
+A protected Vercel Preview exists with the working Neon Free database. The October 18 follow-up found its public API rewrite returned 400 even though the direct Go function reached Neon. The adapter relocation and matching-public-path fix must be committed, deployed, and checked before claiming reproducibility. See the remote verification record for final evidence. Account eligibility and Iranian-network access remain unverified.
 
 ## Prerequisites
 
@@ -10,7 +10,7 @@ Use an eligible personal noncommercial Vercel Hobby account and Neon Free projec
 2. Obtain direct and pooled PostgreSQL connection URLs privately. Use verified TLS. Do not paste them into repository files, frontend environment variables, screenshots, or command output.
 3. In a private shell, set `DATABASE_URL` to the direct URL and run `go run ./cmd/catalog migrate` followed by `go run ./cmd/catalog seed`. This imports only the owned fixture.
 4. Connect a Git repository to a new Vercel Hobby project. Keep the project root at the repository root. Do not select a Go-server framework preset. `vercel.json` selects Other, runs the Astro build, and discovers the root Go handler.
-5. Set server-only `DATABASE_URL` to the pooled URL in the project's environment settings. Set both preview and production scopes deliberately. Do not add a PUBLIC-prefixed database variable.
+5. Set server-only `DATABASE_URL` to the pooled URL in the project's environment settings. Keep this milestone in Preview scope; production deployment requires separate approval. Do not add a PUBLIC-prefixed database variable.
 6. Deploy a preview using the free Vercel subdomain. A deployment is permission to test synthetic content, not proof that real metadata is cleared.
 
 ## Remote acceptance checks
@@ -33,6 +33,16 @@ For a conventional server, use `go run ./cmd/server` or build that command and s
 
 Created the Vercel project `frame-movie-discovery` and provisioned Neon Free resource `frame-movie-discovery-db` in `iad1`, connected to the Vercel Preview environment. The real Neon URL from the integration requested `sslmode=require`; the database boundary now upgrades that request to `sslmode=verify-full` before pgx parses it, preserving certificate and hostname checks. Go tests and vet passed, and the remote migration plus idempotent seed completed for all 32 `synthetic-v1` records.
 
-The Vercel build completed, but the deployment is `BLOCKED` with the platform reason that the commit author does not have permission to create deployments for this project. No ready preview URL or production deployment exists. The current Vercel account has no linked GitHub identity, and its account email does not match the commit author. Link the GitHub identity used by the repository commit author to this Vercel account, or correct the repository's Git identity only if the current identity is factually wrong, then retry `vercel deploy`. No attempt was made to spoof commit metadata or bypass the platform gate.
+Historical provisioning result: the initial Vercel build completed, but that deployment was `BLOCKED` with the platform reason that the commit author does not have permission to create deployments for this project. No ready preview URL or production deployment exists. The current Vercel account has no linked GitHub identity, and its account email does not match the commit author. Link the GitHub identity used by the repository commit author to this Vercel account, or correct the repository's Git identity only if the current identity is factually wrong, then retry `vercel deploy`. No attempt was made to spoof commit metadata or bypass the platform gate.
 
 The generated `.vercelignore` excludes local environment files, temporary test output, and agent-generated material from uploads. The Neon resource uses the explicit Free plan; no paid plan, custom domain, or production database connection was configured.
+
+## Reproduce the protected Preview
+
+Keep the repository root as the Vercel root. The Go builder imports the reusable adapter from `bettermovie/httpapi`; placing it in `internal/httpapi` prevents the generated Vercel wrapper from importing it under Go internal-package rules. Catalog and database internals remain internal.
+
+Use a clean checkout of the pushed verification branch, run `npm ci`, `go test ./...`, `go vet ./...`, and `npm run verify`, then `vercel deploy --target preview`. Link the existing project; retain its existing Preview database variable. Do not migrate or reseed the working Neon database during verification. Verify deployment metadata identifies the committed SHA and `gitDirty=0`.
+
+Use `vercel curl /api/health --deployment PREVIEW_URL` for CLI-authorized access. Browser and measurement scripts accept the existing automation credential in `VERCEL_AUTOMATION_BYPASS_SECRET`; supply it privately and never save it in tracked files or logs. Preview authentication stays enabled. Run the smoke script, both desktop/mobile browser projects, and performance scripts against that exact deployment.
+
+CI installs the official sqlc v1.31.1 Linux executable after verifying SHA-256 `497ae4fcdfa64c5b0c311ffe4c2bd991e43991e82e5367792ed78bc2dca27354` from the [release asset metadata](https://github.com/sqlc-dev/sqlc/releases/tag/v1.31.1). This avoids compiling the tool with application Go 1.25; generated bindings must still match.

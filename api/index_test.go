@@ -74,3 +74,21 @@ func TestDirectPortablePathDoesNotRequireRewriteState(t *testing.T) {
 		t.Fatal("direct public request was not dispatched")
 	}
 }
+
+func TestRewriteWithPreservedPublicPath(t *testing.T) {
+	for _, path := range []string{"health", "movies", "movies/the-space-between"} {
+		t.Run(path, func(t *testing.T) {
+			request := httptest.NewRequest(http.MethodGet, "/api/"+path+"?__route="+path+"&v=1", nil)
+			response := httptest.NewRecorder()
+			routeRequest(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				if r.URL.Path != "/api/"+path || r.URL.Query().Has("__route") || r.URL.Query().Get("v") != "1" {
+					t.Fatal("preserved route lost public query or leaked rewrite state")
+				}
+				w.WriteHeader(http.StatusNoContent)
+			}), response, request)
+			if response.Code != http.StatusNoContent {
+				t.Fatalf("status=%d, want 204", response.Code)
+			}
+		})
+	}
+}
