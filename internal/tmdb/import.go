@@ -83,13 +83,14 @@ func WritePrivate(path string, value any) error {
 
 // Import advances at most limit selected IDs, serially. Call persist after every
 // outcome, including errors. Ctrl-C interrupts HTTP/sleep; a later run resumes.
+// A nil client permits offline completed-checkpoint reruns, never pending fetches.
 func Import(ctx context.Context, m Mapping, checkpoint Checkpoint, client *Client, limit int, retain string, now time.Time, persist func(Checkpoint) error) (Checkpoint, *Artifact, error) {
 	if m.Validate() != nil || limit < 1 || limit > 40 {
 		return checkpoint, nil, errors.New("invalid bounded mapping or limit")
 	}
 	until, err := time.Parse(time.DateOnly, retain)
 	if err != nil || until.Before(now.UTC().Truncate(24*time.Hour)) {
-		return checkpoint, nil, errors.New("approved retention deadline required")
+		return checkpoint, nil, errors.New("explicit unexpired retention deadline required")
 	}
 	encoded, _ := json.Marshal(m)
 	hash := digest(encoded)
@@ -121,6 +122,9 @@ func Import(ctx context.Context, m Mapping, checkpoint Checkpoint, client *Clien
 		}
 		if attempts == limit || ctx.Err() != nil {
 			break
+		}
+		if client == nil {
+			return checkpoint, nil, errors.New("TMDB_READ_ACCESS_TOKEN required for authenticated requests")
 		}
 		if until.Before(client.now().UTC().Truncate(24 * time.Hour)) {
 			break

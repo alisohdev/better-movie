@@ -33,6 +33,7 @@ func run() error {
 	out := flags.String("out", "", "private completed artifact JSON")
 	artifact := flags.String("artifact", "", "private artifact to stage")
 	limit := flags.Int("limit", 40, "maximum selected IDs to attempt (1–40)")
+	retainUntil := flags.String("retain-until", "", "required import expiry YYYY-MM-DD, within permitted retention")
 	isolated := flags.Bool("isolated-database", false, "confirm dedicated local/staging database")
 	if flags.Parse(os.Args[2:]) != nil || flags.NArg() != 0 {
 		return errors.New("invalid command arguments")
@@ -45,10 +46,6 @@ func run() error {
 	case "mapping":
 		return json.NewEncoder(os.Stdout).Encode(tmdb.MappingTemplate())
 	case "import":
-		// These are operator acknowledgements, not assertions of legal clearance.
-		if os.Getenv("TMDB_ACCESS_APPROVED") != "1" || os.Getenv("TMDB_TERMS_REFERENCE") == "" {
-			return errors.New("private access acknowledgement and accepted-terms reference required")
-		}
 		if *mapping == "" || *checkpoint == "" || *out == "" || *mapping == *checkpoint || *mapping == *out || *checkpoint == *out {
 			return errors.New("distinct private mapping, checkpoint and output paths required")
 		}
@@ -64,11 +61,15 @@ func run() error {
 		} else if !os.IsNotExist(err) {
 			return errors.New("checkpoint unavailable")
 		}
-		client, err := tmdb.NewClient(os.Getenv("TMDB_READ_ACCESS_TOKEN"))
-		if err != nil {
-			return err
+		var client *tmdb.Client
+		if token := os.Getenv("TMDB_READ_ACCESS_TOKEN"); token != "" {
+			var err error
+			client, err = tmdb.NewClient(token)
+			if err != nil {
+				return err
+			}
 		}
-		saved, completed, err := tmdb.Import(ctx, selection, saved, client, *limit, os.Getenv("TMDB_RETAIN_UNTIL"), time.Now(), func(value tmdb.Checkpoint) error { return tmdb.WritePrivate(*checkpoint, value) })
+		saved, completed, err := tmdb.Import(ctx, selection, saved, client, *limit, *retainUntil, time.Now(), func(value tmdb.Checkpoint) error { return tmdb.WritePrivate(*checkpoint, value) })
 		summary := struct {
 			Selected, Complete int
 			ArtifactReady      bool `json:"artifactReady"`

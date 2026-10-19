@@ -14,11 +14,21 @@ This code never changes the existing deployed Neon database or Vercel settings. 
 
 Official documentation accessed 2026-10-19: [application authentication](https://developer.themoviedb.org/docs/authentication-application), [rate limits](https://developer.themoviedb.org/docs/rate-limiting), [append-to-response](https://developer.themoviedb.org/docs/append-to-response), [movie details](https://developer.themoviedb.org/reference/movie-details), [translations](https://developer.themoviedb.org/reference/movie-translations), [FAQ/attribution](https://developer.themoviedb.org/docs/faq). Reading documentation did not invoke Try It or a movie API. The official logo page was robots-blocked here; no logo or poster was fetched or recreated.
 
+## Simplest Codex Cloud setup
+
+For metadata fetching, configure **one secret only: `TMDB_READ_ACCESS_TOKEN`**, using the Cloud environment's private secret configuration for the task runtime. Do not put its value in setup scripts, a prompt, a command, a repository file or a PUBLIC-prefixed variable. Do not print it or inspect secret files. The local-terminal `read` example below is unnecessary when Cloud already injects the secret. Mapping, reports, staging, tests and completed checkpoint reruns require no token; only a pending authenticated fetch does.
+
+No database URL is needed to generate a mapping, import metadata or inspect the safe status report. Keep both `DATABASE_URL` and `TMDB_STAGING_DATABASE_URL` unset for a fetch-only session. PostgreSQL staging is a separate optional step requiring its dedicated connection. Existing publication/attribution gates are unchanged; no real-mode variables belong in the current protected Preview.
+
+Use the reviewed private mapping and the import command below, supplying the permitted expiry as a command option rather than another environment variable. The old `TMDB_ACCESS_APPROVED`, `TMDB_TERMS_REFERENCE` and `TMDB_RETAIN_UNTIL` variables are no longer read; remove them from old setup scripts. Tests need none of these settings and use only self-authored responses.
+
+For a separately authorized live run, Cloud must legitimately permit HTTPS access to `api.themoviedb.org`; if network policy blocks it, use the normal environment configuration/review process rather than a proxy override, mirror or geographic bypass. Merely configuring the secret does not authorize fetching, grant account eligibility or publish a catalog. This refactor was tested without a live request or actual credential.
+
 ## 1. Eligible account, privately configured token and permissions
 
 The authorized operator must obtain an **API Read Access Token** from their own eligible TMDB account, through its API settings, and review/accept the applicable current terms. Follow the [official authentication instructions](https://developer.themoviedb.org/docs/authentication-application). Do not use another person's identity, a mirror, a geographic bypass, scraping or an unauthorized key. If eligibility/access is denied, stop. The deferred inquiry is not a prerequisite to write/test code, and the importer cannot certify the legal sufficiency of the holder's accepted terms.
 
-Before any real request, establish whether those terms cover the intended **private** audit/projection retention. Privately record the accepted version/date, any provider clarification, allowed fields and refresh/removal duties. Set an evidence reference and actual permitted expiry below; no six-month or permanent-storage right is assumed. The access flag is an explicit operator acknowledgement, not a rights determination. Public publication requires a separate owner decision.
+Before any real request, establish whether those terms cover the intended **private** audit/projection retention. Privately record the accepted version/date, any provider clarification, allowed fields and refresh/removal duties. Choose an explicit expiry within the permitted retention using `--retain-until YYYY-MM-DD`; no default retention period or permanent-storage right is assumed. Accepted terms and their evidence remain an operator responsibility, not environment-variable acknowledgements. Public publication requires a separate owner decision.
 
 The following commands are for the operator's private terminal, not for Codex to execute against TMDB. Never paste credentials, provider responses or real projections into chat, git, screenshots, logs or CI artifacts. The ordinary runtime and all tests require no TMDB credential.
 
@@ -36,15 +46,15 @@ Edit that private JSON: supply each selected `tmdbId`, confirm `matchTitle`, set
 # Read silently into the environment; do not echo or share the value.
 read -r -s -p 'TMDB API Read Access Token: ' TMDB_READ_ACCESS_TOKEN
 export TMDB_READ_ACCESS_TOKEN
-export TMDB_ACCESS_APPROVED=1
-export TMDB_TERMS_REFERENCE='YOUR_PRIVATE_ACCEPTED_TERMS_REFERENCE'
-export TMDB_RETAIN_UNTIL='YYYY-MM-DD' # replace with the actual permitted deadline
 
 go run ./cmd/tmdb import \
   --mapping .local/tmdb/run-01/mapping.json \
   --checkpoint .local/tmdb/run-01/checkpoint.json \
-  --out .local/tmdb/run-01/catalog.json --limit 5
+  --out .local/tmdb/run-01/catalog.json --limit 5 \
+  --retain-until YYYY-MM-DD # replace with the actual permitted deadline
 ```
+
+`--retain-until` is required for each import invocation, including resume and completed checkpoint reruns. Use the same date when resuming: changing it requires a fresh run. Missing, malformed or past dates fail before any request. The expiry remains in each compact projection and is checked by staging, builds and API readiness. It does not establish a storage right or automatically delete local files.
 
 A limit of five intentionally returns an incomplete/nonzero result if more than five IDs are selected. Repeating the same command attempts the next incomplete rows, including rejected rows that need resolution. Use `--limit 40` for all remaining selected rows; total selection never exceeds forty. The per-run summary exposes counts and `artifactReady`, not movie content. Use a fresh output directory for a refreshed catalog so an old complete artifact cannot be mistaken for this run's output.
 
@@ -54,7 +64,7 @@ go run ./cmd/tmdb report --checkpoint .local/tmdb/run-01/checkpoint.json
 # Inspect identity_or_metadata_rejected and access/retry codes privately.
 # On access_denied, resolve legitimate account/terms eligibility rather than retrying through another origin.
 # For a revised mapping or retention policy, start a fresh explicit run/checkpoint after resolving the cause.
-unset TMDB_READ_ACCESS_TOKEN TMDB_ACCESS_APPROVED
+unset TMDB_READ_ACCESS_TOKEN
 ```
 
 A failed or partial run is not a smaller accepted catalog. To choose a smaller subset, explicitly review a new mapping/run; do not edit success/error codes to bypass validation. Records and the snapshot must meet the actual agreed retention policy. `.local/` is ignored by git, not an access-control or licensing mechanism. Do not back up, share or retain it beyond those permissions.
@@ -113,7 +123,7 @@ Keep the original owned fixture and original database/schema intact. To return t
 ```sh
 # Stop only the local staging processes you started.
 unset CATALOG_FILE CATALOG_REVISION TMDB_APPROVED_LOGO TMDB_PUBLICATION_APPROVED
-unset TMDB_STAGING_DATABASE_URL TMDB_READ_ACCESS_TOKEN TMDB_ACCESS_APPROVED
+unset TMDB_STAGING_DATABASE_URL TMDB_READ_ACCESS_TOKEN
 npm run build
 # Restart cmd/server with the original private DATABASE_URL and the default preview command.
 ```
