@@ -1,5 +1,5 @@
 import { useEffect, useState, type SubmitEvent } from 'react';
-import { copy, type Locale } from '../lib/model';
+import { IS_TMDB, copy, type Locale } from '../lib/model';
 import { countryCodes, languageCodes, optionName } from '../lib/discovery-options';
 import { parseFilters, serializeFilters, type Filters } from '../lib/filters';
 
@@ -39,8 +39,8 @@ export function AdvancedFilters({ filters, locale, genres, onApply }: Props) {
       </fieldset>
     </details>)}
     <form className="range-form" noValidate onSubmit={submit}>
-      <fieldset className="filter-section"><legend>{copy(locale, 'Fictional scores', 'امتیازهای خیالی')}</legend>
-        <p className="filter-hint">{copy(locale, 'Synthetic fictional scores, not real TMDB or IMDb ratings. No minimum vote count is applied unless you set one.', 'امتیازها ساختگی و خیالی‌اند، نه امتیاز واقعی TMDB یا IMDb. حداقل تعداد رأی تنها با انتخاب شما اعمال می‌شود.')}</p>
+      <fieldset className="filter-section"><legend>{IS_TMDB ? copy(locale, 'TMDB community scores', 'امتیازهای کاربران TMDB') : copy(locale, 'Fictional scores', 'امتیازهای خیالی')}</legend>
+        <p className="filter-hint">{IS_TMDB ? copy(locale, 'TMDB community ratings. No minimum vote count is applied unless you set one.', 'امتیازهای کاربران TMDB. حداقل تعداد رأی تنها با انتخاب شما اعمال می‌شود.') : copy(locale, 'Synthetic fictional scores, not real TMDB or IMDb ratings. No minimum vote count is applied unless you set one.', 'امتیازها ساختگی و خیالی‌اند، نه امتیاز واقعی TMDB یا IMDb. حداقل تعداد رأی تنها با انتخاب شما اعمال می‌شود.')}</p>
         <label className="advanced-number">{copy(locale, 'Minimum score (0–10)', 'حداقل امتیاز (۰ تا ۱۰)')}<input type="number" dir="ltr" min="0" max="10" step="any" inputMode="decimal" placeholder="—" value={rating} onChange={(event) => setRating(event.target.value)} aria-invalid={invalid || undefined} aria-describedby={invalid ? 'score-error' : undefined} /></label>
         <label className="advanced-number">{copy(locale, 'Minimum vote count (optional)', 'حداقل تعداد رأی (اختیاری)')}<input type="number" dir="ltr" min="0" max="2147483647" step="1" inputMode="numeric" placeholder="—" value={votes} onChange={(event) => setVotes(event.target.value)} aria-invalid={invalid || undefined} aria-describedby={invalid ? 'score-error' : undefined} /></label>
       </fieldset>
@@ -57,7 +57,7 @@ export function AdvancedChips({ filters, locale, onApply }: Omit<Props, 'genres'
       {group === 'languages' ? copy(locale, 'Language: ', 'زبان: ') : copy(locale, 'Country: ', 'کشور: ')}{optionName(group, code, locale)}<span aria-hidden="true">×</span><span className="sr-only">{copy(locale, 'Remove filter', 'حذف فیلتر')}</span>
     </button>))}
     {(['ratingMin', 'voteCountMin'] as const).map((key) => filters[key] !== null ? <button key={key} onClick={() => onApply({ ...filters, [key]: null, page: 1 })}>
-      {key === 'ratingMin' ? copy(locale, 'Fictional score ', 'امتیاز خیالی ') : copy(locale, 'Votes ', 'تعداد رأی ')}<bdi dir="ltr">≥ {filters[key]}</bdi><span aria-hidden="true">×</span><span className="sr-only">{copy(locale, 'Remove filter', 'حذف فیلتر')}</span>
+      {key === 'ratingMin' ? IS_TMDB ? copy(locale, 'TMDB score ', 'امتیاز TMDB ') : copy(locale, 'Fictional score ', 'امتیاز خیالی ') : copy(locale, 'Votes ', 'تعداد رأی ')}<bdi dir="ltr">≥ {filters[key]}</bdi><span aria-hidden="true">×</span><span className="sr-only">{copy(locale, 'Remove filter', 'حذف فیلتر')}</span>
     </button> : null)}
   </>;
 }
