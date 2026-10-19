@@ -1,115 +1,86 @@
-# Movie data feasibility for the validation pilot
+# Real-catalog feasibility and permission gate
 
-Research date: 2026-10-18. This note explains which data can support an Iranian-first movie discovery MVP and which promises require more evidence.
+Reviewed **2026-10-19** for Milestone 5a. This supersedes the October 18 research note; the fixed audit thresholds below are unchanged. **No provider eligibility or film coverage has been verified. M5a is not clearance for M5b.** No authenticated API requests, metadata imports, poster downloads, scraping, account registrations or outreach occurred. The app still uses 32 owned fictional films.
 
-Engineering update, October 18, 2026. These rights checks apply before ingesting or publicly publishing real third-party metadata. They do not block a non-public prototype using original synthetic titles, descriptions, ratings, release observations, and artwork. A film audit is optional evidence before real integration, not an engineering prerequisite. The approved stack is Go with pgx/sqlc/PostgreSQL and Astro/React/TypeScript. Initial infrastructure must remain free.
+Better Movie proposes a $0 validation pilot without ads or affiliate links, serving movie enthusiasts in Iran through Persian RTL and English LTR interfaces. The actual operator, jurisdiction, contracting entity and future business purpose require the owner's confirmation. Neither the audience's language nor this chat's timezone establishes those facts. See [PRODUCT.md](../../PRODUCT.md) and the [MVP brief](mvp.md).
 
-The confirmed scope is a free validation pilot without advertisements or affiliate links. Persian and English interfaces are required at launch. Verified WEB-DL and Blu-ray file availability can wait. Interface translation does not establish Persian movie-title or synopsis coverage.
+## Verified documentation, with freshness limits
 
-The recommended starting point is TMDB for a small discovery catalog, subject to current terms and provider eligibility confirmation. Present release information as a source's observation about a release event. No credible licensed source for verified WEB-DL or Blu-ray files was identified in the provider documentation reviewed here. This is a research limit, not a claim that no such source exists.
+All access dates in this register are **2026-10-19**. “Verified” means the stated documentation was accessible; it does not mean this project's intended use has been approved. No movie API was called using a documentation example or Try It control.
 
-## Evidence and source register
-
-The following twelve first-party documents support this note. Documentation facts appear with citations. Product choices and audit thresholds are proposals. Film coverage, regional connectivity, provider acceptance, and response quality remain unmeasured. This research used public documentation, not authenticated film API calls, credentials, or scraped catalogs.
-
-| Source | What it establishes |
+| Official source | Retrieval and supported finding |
 | --- | --- |
-| [TMDB FAQ](https://developer.themoviedb.org/docs/faq) | Noncommercial use, commercial definition, attribution, images, and service limitations. |
-| [TMDB API terms, indexed English version](https://www.themoviedb.org/api-terms-of-use?language=en-CA) | Contract restrictions, with the freshness limitation below. |
-| [TMDB movie discovery](https://developer.themoviedb.org/reference/discover-movie) | Filter vocabulary and regional release-date behavior. |
-| [TMDB movie translations](https://developer.themoviedb.org/reference/movie-translations) | A separate endpoint for movie translations. |
-| [TMDB alternative titles](https://developer.themoviedb.org/reference/movie-alternative-titles) | Alternative titles and country filtering. |
-| [TMDB release dates](https://developer.themoviedb.org/reference/movie-release-dates) | Six release-event types. |
-| [TMDB watch providers](https://developer.themoviedb.org/reference/movie-watch-providers) | Country-based offers and JustWatch attribution. |
-| [JustWatch partner API](https://apis.justwatch.com/docs/api/) | Contract access, branded links, and published locales. |
-| [IMDb noncommercial datasets](https://data.imdb.com/non-commercial-datasets/) | Available fields and dataset structure. |
-| [IMDb software reuse conditions](https://help.imdb.com/article/imdb/general-information/can-i-use-imdb-data-in-my-software/G5JTRESSHJBBHTGX) | Limits on public database reuse. |
-| [Wikidata introduction](https://www.wikidata.org/wiki/Wikidata:Introduction) | CC0 data, multilingual records, and references. |
-| [OMDb](https://www.omdbapi.com/) | API purpose and stated content license. |
+| [TMDB FAQ](https://developer.themoviedb.org/docs/faq) | Directly retrieved. Describes free noncommercial API use with attribution, defines commercial purpose by revenue intent, and directs commercial projects to sales. Requires approved branding and a nonendorsement notice in About/Credits. Disclaims ownership of supplied content and an SLA. |
+| [TMDB API terms](https://www.themoviedb.org/api-terms-of-use?language=en-CA) | Direct legal-page retrieval was blocked by robots. Official indexed text still identifies an October 20, 2023 update and a roughly 1.3-year-old crawl. It describes a six-month cache ceiling, purge on termination, written commercial agreement and a broad prohibition involving ML/AI applications. **This is historical indexed evidence, not verification of the current accepted contract.** |
+| [Movie details](https://developer.themoviedb.org/reference/movie-details), [translations](https://developer.themoviedb.org/reference/movie-translations), [alternative titles](https://developer.themoviedb.org/reference/movie-alternative-titles) | Directly retrieved API documentation. Details, translations and country-filterable alternate titles are distinct resources. Endpoint existence does not establish Persian coverage or reuse permission. |
+| [Release dates](https://developer.themoviedb.org/reference/movie-release-dates) | Directly retrieved. Digital is type 4; physical is type 5. The event vocabulary supplies no verified downloadable-file claim. |
+| [Image basics](https://developer.themoviedb.org/docs/image-basics) | Directly retrieved. Documents constructing image URLs; a technical URL recipe is not an image license. No images were fetched. |
+| [Wikidata licensing](https://www.wikidata.org/wiki/Wikidata:Licensing) | Directly retrieved. Structured data in its specified data namespaces is CC0. Other namespace text has different licensing. This distinction matters for prose copied from project pages or linked sites. |
+| [Wikidata data access](https://www.wikidata.org/wiki/Wikidata:Data_access) | Directly retrieved. Describes public access methods and access practices. Structured-data attribution is appreciated rather than required under CC0. Endpoint operation/limits and coverage remain separate questions. |
+| [Commons reuse guidance](https://commons.wikimedia.org/wiki/Commons:Reusing_content_outside_Wikimedia) | Directly retrieved. Individual media files can have different attribution and license requirements. A Wikidata image link does not transfer the structured-data license to the image. |
 
-## Licensing comes before a public catalog
+### Reconciling TMDB's FAQ and indexed terms
 
-TMDB says its API is free for noncommercial purposes with attribution. Its FAQ defines a commercial project by a primary purpose of creating revenue for its owner and directs commercial users to sales. A free pilot therefore needs classification against its actual purpose, not its current price alone. The FAQ also disclaims an SLA. [TMDB FAQ](https://developer.themoviedb.org/docs/faq)
+The FAQ's general noncommercial offer does not establish this operator's classification or override the applicable agreement. A free key, a free app, and attribution are each insufficient evidence of complete permission. The older restrictions must remain open questions until the owner obtains the current agreement and project-specific clarification. Do not implement a six-month cache merely because the old index mentions that ceiling; an applicable contract may require a shorter period, refresh or removal.
 
-The indexed official API terms require a written commercial agreement, limit caching to six months, require deletion on termination, and restrict API content in connection with ML or AI applications. The indexed document says it was updated on October 20, 2023. The search crawl was approximately 1.3 years old, and direct retrieval failed during this review. These are warning signals from an official indexed version, not confirmation of today's accepted contract. [TMDB API terms](https://www.themoviedb.org/api-terms-of-use?language=en-CA)
+The preferred candidate remains **TMDB, CONDITIONAL**. The fallback is **Wikidata structured facts, GO for its documented CC0 copyright permission only**, with product suitability and operator/access review still CONDITIONAL. A fallback would be a smaller factual catalog, potentially without ratings, posters, synopses or reliable release observations. Switching providers requires an owner decision; it is not automatic authorization to ingest.
 
-Before integration, record the current accepted terms and ask the provider to resolve applicable restrictions. Keep AI recommendations, embeddings, and training outside the proposed pilot until explicit rights cover that use. A paid key or a noncommercial label alone would not resolve broad AI wording.
+## Field-level comparison and recommendation
 
-TMDB requires an approved logo and a prominent nonendorsement notice in an About or Credits section. Its FAQ says TMDB does not claim ownership of the supplied images or data. Attribution therefore must not be treated as blanket ownership clearance. Confirm poster display, resizing, CDN use, storage, refresh, and takedown obligations for this product. [TMDB FAQ](https://developer.themoviedb.org/docs/faq)
+These are capability/rights distinctions, not measured coverage. All 40 provider matches and all twelve release comparisons remain NOT VERIFIED.
 
-The proposed implementation would retain source, retrieval time, and refresh deadline for imported values. It would separate product-authored text from provider content and support removal by provider ID. Those are design recommendations pending the current contract, not a claim that permanent local copies are permitted.
+| Field class | TMDB candidate | Wikidata fallback | Recommendation |
+| --- | --- | --- | --- |
+| Identity, year, runtime, broad genres, original language, production countries | Candidate detail fields under the applicable API agreement; public documentation is not a blanket reuse grant. | CC0 structured statements where present, with references and conflicting statements requiring review. | Audit identity first. Preserve source IDs and provenance; do not infer feature status from runtime or production countries from audience region. |
+| Persian/English titles and aliases | Translation and alternate-title resources need separate coverage and permitted-use review. A country-tagged alias is not automatically a preferred Persian title. | Structured labels/aliases fall within CC0 data scope; presence and preferred spelling are unmeasured. | Require bilingual review. Missing Persian text is a coverage gap, not evidence the film is absent. |
+| Synopses and translations of prose | Copyrighted expression may carry conditions or third-party rights not settled here. | Do not treat linked Wikipedia articles, external descriptions or other-namespace prose as CC0 structured facts. | Do not copy, translate with an LLM, or publish prose without its own permission. Retain a visible permitted English fallback if Persian coverage fails. |
+| Community ratings and vote counts | Use a clearly labeled TMDB score only if licensed; fields and counts require a coverage check. | No assumed equivalent score service; external rating links do not license the upstream rating database. | Record scores/votes independently. Unknown is not zero; never add an implicit vote floor. IMDb, Letterboxd and OMDb ratings remain outside this increment. |
+| Posters | Technical image access does not settle poster copyright, CDN use, resizing, storage or removal. | Each linked Commons/external file needs an individual license review. | Prefer owned placeholders until the specific asset rights and display conditions are documented. |
+| Country/type/date release evidence | Documented event types do not prove an event occurred, a file exists, or Iranian access. | Structured dates/qualifiers may be incomplete or refer to another event; verify meaning and reference. | Compare twelve fixed films with official studio/distributor or authorized-retailer evidence, recording territory and uncertainty. |
 
-## Field feasibility and bilingual behavior
+The only selected future provider sites remain Zarfilm, Avamovie, 30nama and Digimovie. Filimo and Namava are excluded. No provider offers, scraping, JustWatch integration, subgenre taxonomy, AI recommendation or external rating dependency is introduced. None of these deferred sources supplies permission for this PR.
 
-TMDB discovery documents filters for genres, keywords, runtime, original language, country of origin, votes, and release types. This supports a hypothesis that a small deterministic discovery flow is feasible. Endpoint availability does not measure completeness or relevance. [TMDB movie discovery](https://developer.themoviedb.org/reference/discover-movie)
+## Explicit decision gate
 
-| Product field | Proposed pilot treatment | Evidence still needed |
+**GO** means documented prerequisites for that specific use are satisfied; **CONDITIONAL** means an unresolved fact blocks that use; **NO-GO** means a denial, incompatible obligation or unsupported claim prevents proceeding. Unknown permission is not a legal finding of prohibition, but it does block this project's real-data work.
+
+| Gate | Current evidence / status | Required before GO; NO-GO condition |
 | --- | --- | --- |
-| Identity, title, and year | Use a provider ID. Check remakes and films with the same title. | Correct matches in the fixed sample. |
-| Runtime and broad genres | Offer a few filters with an explicit unknown state. | Missingness and useful results per audience segment. |
-| Rating | Use one clearly labeled TMDB score with its vote count, if licensed. | Adequate votes for the selected catalog. |
-| Persian title | Prefer a reviewed Persian value. Retain the original title. | Coverage and correctness, not merely a nonempty string. |
-| Persian synopsis | Show sourced Persian text when available, otherwise an explicit English fallback. | Coverage, translation quality, and reuse permission. |
-| Poster | Show only under confirmed rights and provider conditions. | Availability, broken links, and deletion handling. |
-| Subgenre or mood | Defer public filters. | A tested taxonomy and enough correctly tagged films. |
+| Operator jurisdiction and entity | NOT VERIFIED / CONDITIONAL | Owner supplies the actual operator/entity, residence and contracting/hosting facts; appropriate provider/legal confirmation covers those facts. NO-GO on an applicable restriction or refusal. No sanctions-law certainty is asserted here. |
+| Commercial classification and $0 pilot | NOT VERIFIED / CONDITIONAL | Owner states actual purpose including future monetization; provider confirms the applicable classification and free permitted scope. If required licensing costs exceed the approved $0 budget, NO-GO until an explicit budget/scope decision. |
+| Projection, storage/cache, refresh, removal | Current accepted agreement NOT VERIFIED / CONDITIONAL | Written evidence covers the searchable local projection, aliases/normalization, static HTML, backups, retained audit snapshots and aggregate reports. Record retention deadlines, refresh duties and removal/termination procedure. NO-GO if required storage or removal obligations cannot be met. |
+| Posters and prose | Specific rights NOT VERIFIED / CONDITIONAL | Identify permitted display, transformations, hosting/CDN and asset-specific conditions. NO-GO for unlicensed assets; a placeholder-only scope may proceed separately if approved. |
+| Iranian operator/audience/access | NOT VERIFIED / CONDITIONAL | Confirm operator eligibility, audience territory permissions, `IR` data coverage and actual target-network access separately. A country parameter or successful request proves neither eligibility nor legal access. NO-GO on a verified applicable restriction. |
+| API credentials | Not requested or used / CONDITIONAL for live access | Only the owner/authorized human obtains credentials under accepted terms and approves private audit use. Keep them out of git, audit files, screenshots and chat. A working key is technical access, not clearance. No key is required for this offline kit. |
+| Attribution | General TMDB instructions verified; implementation deferred / CONDITIONAL | Agree approved logo, notice placement, source labeling and bilingual wording before displaying permitted content. Attribution alone never clears other gates. Wikidata CC0 facts do not require attribution, but provenance is recommended. |
+| AI / LLM connection | Historical broad API restriction; applicability NOT VERIFIED / CONDITIONAL | Ask about deterministic apps built with AI-assisted coding as well as metadata sent to LLMs, embeddings, training, recommendations and natural-language filters. Keep actual provider payloads out of AI tools until explicitly covered. NO-GO for an incompatible AI use; no AI feature is needed for the pilot. |
+| Coverage and operational effort | NOT VERIFIED / CONDITIONAL | Complete the frozen audit and seven-day repeat; review the thresholds, disagreements and correction effort below. NO-GO for unsupported available-file assertions. Reduce scope explicitly when coverage fails. |
 
-Translations and alternative titles are distinct TMDB resources. Alternative titles can be filtered by country. Neither document promises that each film has a Persian translation or that an Iranian alternative title is the preferred Persian title. Measure both resources independently. [TMDB translations](https://developer.themoviedb.org/reference/movie-translations), [TMDB alternative titles](https://developer.themoviedb.org/reference/movie-alternative-titles)
+**Current project decision: GO for this offline M5a kit; no authorization for M5b access, ingestion or publication.** Numeric audit passes cannot change that decision. See the [copyable inquiry](provider-inquiry.md); it has not been sent.
 
-For the Persian interface, the proposed fallback order is reviewed Persian title, sourced Persian title, then English or original title. The English interface prefers English and then original titles. Label the displayed language. Translate buttons, filters, empty states, and source explanations into both interface languages even when catalog text falls back. Do not generate an unreviewed Persian synopsis and present it as provider metadata.
+## Fixed 40-film audit and unchanged decision rules
 
-Genres and keywords are separate filters. The API documentation does not establish that keywords form a consistent subgenre hierarchy. Treat a mapping such as a keyword to "psychological thriller" as an editorial hypothesis. A missing keyword must not mean the film lacks that characteristic. [TMDB movie discovery](https://developer.themoviedb.org/reference/discover-movie)
+The [audit runbook](../audit/README.md) and [frozen sample](../audit/sample.json) implement the approved method: five disjoint groups of eight; eight recent-mainstream and four Iranian/international release checks fixed before provider outcomes; and the same checks at least seven days later. The selection is purposive and editorial, not a claim of audience demand or a random estimate of catalog coverage. No observed provider results accompany the real-title sample. All test responses are self-authored synthetic observations in the audit tests.
 
-## Release events do not verify files
-
-TMDB distinguishes premiere, limited theatrical, theatrical, digital, physical, and TV events, using types 1 through 6 respectively. Physical is type 5. The type alone does not distinguish DVD, Blu-ray, or an Ultra HD edition. [TMDB release dates](https://developer.themoviedb.org/reference/movie-release-dates)
-
-A generic release date or a top-level "Released" status is insufficient evidence for digital availability. For regional discovery, TMDB documents that `region` changes which date applies. The order in `with_release_type` can change the selected date. Preserve the country and event type with the date instead of reducing all events to one "available" flag. [TMDB movie discovery](https://developer.themoviedb.org/reference/discover-movie)
-
-The distinction is an inference from the documented event schema. A recorded physical release date does not establish that a verified Blu-ray file exists. A digital event does not verify a WEB-DL file, its authenticity, quality, language, or accessibility in Iran. A planned date is not evidence that an event occurred, and a past date alone does not provide a fresh check.
-
-Use wording such as "TMDB records a digital release in the United States dated YYYY-MM-DD. Checked YYYY-MM-DD." Preserve unknown dates and disagreements. Reserve "confirmed by distributor" for evidence checked against that distributor. A database record about an official release is not itself an authoritative distributor confirmation.
-
-The reviewed sources describe metadata, release events, or provider offers. This review found no licensed feed with documented evidence that would justify a "verified WEB-DL file available" or "verified Blu-ray file available" badge. Keep those badges absent until a provider supplies suitable evidence and contractual reuse rights. An official disc listing would still establish the disc offer rather than a particular downloadable file.
-
-## Alternatives do not remove the rights question
-
-IMDb datasets include localized titles with language and region fields, runtime, up to three genres, a weighted rating, and vote count. The documented schema has no promise of Persian coverage and no digital or physical release-event dates. An AKA row marked `dvd` describes an alternative title type, not a dated disc-availability record. [IMDb datasets](https://data.imdb.com/non-commercial-datasets/)
-
-IMDb's software conditions restrict use to personal and noncommercial purposes and prohibit republishing or repurposing the data into a movie-information database, apart from individual personal use. They also prohibit website scraping. A public pilot cannot assume the downloadable datasets grant its intended reuse. Exclude an IMDb rating dependency unless a suitable agreement covers it. [IMDb reuse conditions](https://help.imdb.com/article/imdb/general-information/can-i-use-imdb-data-in-my-software/G5JTRESSHJBBHTGX)
-
-Wikidata permits commercial reuse of its structured data under CC0. Its multilingual items can connect labels, aliases, external identifiers, and referenced statements. It is useful for carefully checked enrichment. The community-maintained model supplies no catalog-wide Persian completeness or release-freshness guarantee. A linked image or external website requires its own rights review. [Wikidata introduction](https://www.wikidata.org/wiki/Wikidata:Introduction)
-
-OMDb accepts IMDb-ID lookups, but its site labels all content CC BY-NC 4.0 and disclaims affiliation with IMDb. It does not establish commercial redistribution rights for IMDb-branded ratings. Do not treat an OMDb subscription as proof of those rights. Keep OMDb optional pending provider clarification. Letterboxd ratings are also outside this pilot because this review establishes no reuse permission. [OMDb](https://www.omdbapi.com/)
-
-## Regional offers and country eligibility remain separate
-
-TMDB's JustWatch-powered endpoint reports streaming, rental, and purchase availability by country and provider. It requires JustWatch attribution and supplies a TMDB link rather than full content deep links. Such offers do not establish file availability or access for an Iranian resident. [TMDB watch providers](https://developer.themoviedb.org/reference/movie-watch-providers)
-
-Direct JustWatch partner API access follows a contract and uses a partner token. Its documentation requires branded links and publishes a locale table that did not list Iran during this review. That is a coverage gap to verify, not proof that Iranian contracting or service is categorically prohibited. Defer where-to-watch features and do not scrape a substitute feed. [JustWatch partner API](https://apis.justwatch.com/docs/api/)
-
-Four checks remain independent: developer-country eligibility, permitted audience countries, data coverage for `IR`, and actual network access. An accepted country parameter does not prove all four. Obtain official provider verification about Iran, contracting, payment, hosting, and applicable sanctions terms before commercial integration. Independent legal advice must resolve the legal position for the actual parties and services. This note reaches no sanctions-law conclusion.
-
-The only selected future movie-provider sites are Zarfilm, Avamovie, 30nama, and Digimovie. Filimo and Namava are explicitly excluded. No additional site is approved. No provider integration or automated provider scraping belongs in V1. Provider listings will remain separate from canonical metadata and official release observations.
-
-## Proposed repeatable 40-film audit
-
-No film audit has been run. The following sample and thresholds are proposed decision rules, not measured results.
-
-1. Freeze forty titles before querying the provider. Select eight recent mainstream films, eight older mainstream films, eight international films, eight Iranian films, and eight independent films or documentaries. Make the groups disjoint and record IDs, years, and selection reasons. Use audience requests and distributor catalogs to avoid selecting only well-populated provider records.
-2. Record title match, Persian and English titles, synopsis languages, runtime, genres, original language, production countries, score and vote count, poster, and missing values. Preserve each source URL and check time. Record a reviewed Persian title separately from a merely available translation. Original language and production countries must come from the matching detail fields, rather than assuming discovery's country-of-origin field is equivalent.
-3. Preselect twelve films for release checks. Use the eight recent mainstream films and four recent titles chosen from the Iranian and international groups when freezing the sample. Compare event country, type, and date against official distributor, studio, or authorized retailer evidence. Keep future announcements separate from observed offers. Mark unavailable evidence as unknown.
-4. Repeat the same checks seven days later. Record changed dates, disappearing offers, and manual correction time. Retain audit evidence only as the applicable terms permit. Record unknowns in the denominator instead of dropping difficult films.
-
-| Proposed criterion | Proposed action |
+| Existing criterion (unchanged) | Decision for an authorized reviewer |
 | --- | --- |
-| At least 38 of 40 identities correct, with no unresolved remake confusion | Continue the candidate import approach. |
-| At least 36 of 40 have usable title, year, runtime, and genre, and at least six of eight in each group | Continue broad discovery. Otherwise narrow the initial catalog and repeat. |
-| At least 36 of 40 have usable original-language and production-country values, with at least six of eight in each group | Keep those filters. Otherwise reduce the catalog or explicitly revisit their public scope. |
-| At least 32 of 40 have reviewer-accepted Persian titles | Continue provider-first Persian titles. Otherwise test whether a curated launch catalog is affordable. |
-| Persian synopsis absent or unreliable | Keep a visible English fallback. Bilingual interface support remains required. |
-| At least ten of twelve release checks agree on country, type, and date | Consider release observations after resolving every disagreement. This threshold grants no file-availability claim. |
-| Any unsupported available-file assertion | Remove the assertion and correct its rule before release. |
+| At least 38/40 correct identities, with no unresolved remake confusion | Continue candidate identity mapping only after resolving ambiguities. |
+| At least 36/40 usable title, year, runtime and genre, and at least 6/8 in each group | Continue broad discovery; otherwise narrow the catalog and repeat. |
+| At least 36/40 usable original language and production countries, and at least 6/8 in each group | Retain those filters; otherwise reduce catalog or explicitly revise public scope. |
+| At least 32/40 reviewer-accepted Persian titles | Continue provider-first titles; otherwise assess a permitted curated catalog and correction budget. |
+| Missing/unreliable Persian synopsis | Keep a permitted English fallback and bilingual interface. |
+| At least 10/12 country/type/date release agreements | Consider release observations only after resolving **every disagreement**. A numeric pass with disagreements is not readiness. |
+| Any unsupported available-file assertion | Remove it and correct the rule before publication. Digital is not WEB-DL; physical is not a verified Blu-ray file; neither implies access in Iran. |
+| Repeat after seven days | Review changed dates, disappearing offers, missing values, retention limits and correction minutes on the same sample. A copied first-round file is not a recheck. |
 
-A separate optional subgenre exercise can use twelve manually labeled examples. Measure whether a proposed keyword mapping finds the intended films and wrongly includes others. A large keyword list alone is not a passing result.
+Unknowns stay in the denominator. Presence, reviewer acceptance and permissions are separate. The optional subgenre exercise remains deferred.
 
-Proceed with bilingual interface planning and a small catalog experiment after obtaining the necessary access and rights. Gate live provider integration on current terms, eligibility, and the audit. Defer commercial monetization, AI use of provider content, IMDb and Letterboxd scores, subgenre promises, and verified-file claims until their specific evidence and permissions exist.
+## Exact handoff to M5b
+
+1. **Owner decision:** supply actual operator/jurisdiction and business purpose; select the candidate and intended field/asset scope; approve the provider inquiry or send it personally. The draft asks about both a private audit and a public catalog. No email or account action is implied by this PR.
+2. **External confirmation:** obtain the current accepted agreement and written responses covering unresolved gates, including Iran, retained evidence and AI-assisted tooling. Record a private permission reference, allowed fields, territories and deadlines. Resolve legal questions with qualified advice for the actual parties. If no compatible $0 path exists, choose a narrower approved fallback or stop.
+3. **Owner authorization for the private audit:** an authorized human uses their own credentials outside this CLI, fills the generated audit, repeats after seven days and reviews numeric results plus every disagreement. Keep snapshots/results private according to the approved retention policy; do not send provider payloads to this coding assistant without the relevant permission.
+4. **Owner review:** approve the resulting catalog/field scope, attribution, editorial owner, correction effort and fallback decisions. Coverage failure never triggers a silent provider or scope change.
+5. **Explicit M5b implementation approval:** then implement one bounded, idempotent import under confirmed rights, preserving IDs/provenance, missing values, refresh/removal and retention rules, with staging validation and atomic catalog-revision activation. Use owned placeholders where images are not licensed. No paid service, production change or deployment follows automatically; review and approve that PR separately.
+
+Codex can finish offline code, tests, documentation and PR review now. Operator facts, provider correspondence, credentials, legal assessment, real observations and M5b approval require the owner/authorized parties. This note requests no present access and grants no permission by itself.
