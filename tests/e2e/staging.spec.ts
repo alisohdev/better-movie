@@ -25,6 +25,7 @@ for (const locale of ['en', 'fa']) {
     await expect(page.locator('.detail-score')).toContainText('TMDB');
     await expect(page.locator('.synopsis')).toContainText(fa ? 'درج نشده' : 'not included');
     await expect(page.locator('.source-line').filter({ hasText: 'TMDB' })).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     await page.goBack();
     const input = page.getByRole('combobox', { name: fa ? 'جست‌وجوی عنوان فیلم' : 'Search movie titles' });
     await input.fill('FixtureAlias 13');

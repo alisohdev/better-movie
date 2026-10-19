@@ -1,7 +1,7 @@
 ---
 import Shell from '../../../layouts/Shell.astro';
 import { catalog } from '../../../lib/catalog.server';
-import { CATALOG_REVISION, copy, genreName, movieTitle, type Locale, type Movie } from '../../../lib/model';
+import { copy, genreName, movieTitle, type Locale, type Movie } from '../../../lib/model';
 export function getStaticPaths() {
   return catalog.movies.flatMap((movie) => ['en', 'fa'].map((locale) => ({ params: { locale, id: movie.id }, props: { locale, movie } })));
 }
@@ -37,7 +37,7 @@ const eventName = (event: Movie['releaseObservations'][number]['eventType']) => 
         {movie.releaseObservations.length ? <div class="release-observations">{movie.releaseObservations.map((observation) => <div class="release-observation"><div class="release-event"><strong>{eventName(observation.eventType)}</strong><span class="release-status">{observation.date && observation.date > today ? copy(locale, 'Scheduled · synthetic', 'برنامه‌ریزی‌شده · نمایشی') : copy(locale, 'Reported · synthetic', 'گزارش‌شده · نمایشی')}</span></div><p class="release-date">{observation.date ? <time datetime={observation.date}>{date(observation.date)}</time> : copy(locale, 'Date unrecorded', 'تاریخ ثبت نشده')}<span aria-hidden="true"> · </span>{countryName(observation.country)}</p><p class="source-line">{copy(locale, 'Source: ', 'منبع: ')}{observation.source}<span aria-hidden="true"> · </span>{copy(locale, 'Checked ', 'بررسی: ')}<time datetime={observation.checkedAt}>{date(observation.checkedAt)}</time></p></div>)}</div> : <p class="no-release">{copy(locale, 'No release information recorded.', 'اطلاعات انتشار ثبت نشده است.')}</p>}
       </section>
       {movie.provenance ? <p class="source-line"><a href={movie.provenance.sourceUrl}>TMDB</a> · {copy(locale, 'Retrieved ', 'دریافت: ')}<time datetime={movie.provenance.retrievedAt}>{date(movie.provenance.retrievedAt)}</time></p> : null}
-      <p class="detail-trust-note">{movie.synthetic ? copy(locale, 'This film, its score, and its release notes are fictional. Static catalog snapshot: synthetic-v1.', 'این فیلم، امتیاز و یادداشت‌های انتشار آن خیالی هستند. نسخهٔ ثابت فهرست: synthetic-v1.') : copy(locale, `Provider-reported metadata. Static snapshot: ${CATALOG_REVISION}.`, `اطلاعات گزارش‌شده توسط منبع. نسخهٔ ثابت فهرست: ${CATALOG_REVISION}.`)}</p>
+      <p class="detail-trust-note">{movie.synthetic ? copy(locale, 'This film, its score, and its release notes are fictional. Static catalog snapshot: synthetic-v1.', 'این فیلم، امتیاز و یادداشت‌های انتشار آن خیالی هستند. نسخهٔ ثابت فهرست: synthetic-v1.') : copy(locale, 'Provider-reported metadata. Titles and facts may be incomplete.', 'اطلاعات گزارش‌شده توسط منبع؛ عنوان‌ها و جزئیات ممکن است کامل نباشند.')}</p>
     </div>
   </article>
 </Shell>
