@@ -6,7 +6,7 @@ export function MovieCard({ movie, locale, priority = false }: { movie: Movie; l
     <a className="movie-link" data-movie-link href={`/${locale}/movies/${movie.id}/`}>
       <div className="poster-wrap">
         <img src={movie.poster} alt="" width={300} height={450} sizes="(max-width: 599px) calc((100vw - 52px) / 2), (max-width: 900px) 28vw, 18vw" loading={priority ? 'eager' : 'lazy'} fetchPriority={priority ? 'high' : 'auto'} decoding="async" />
-        {movie.rating !== null ? <span className="score"><span className="sr-only">{copy(locale, 'Synthetic score ', 'امتیاز نمایشی ')}</span><span aria-hidden="true">★</span> {movie.rating.toFixed(1)}<span className="sr-only">{copy(locale, ' out of 10', ' از ۱۰')}</span></span> : <span className="score score-unknown">{copy(locale, 'Unscored', 'بدون امتیاز')}</span>}
+        {movie.rating !== null ? <span className="score"><span className="sr-only">{movie.synthetic ? copy(locale, 'Synthetic score ', 'امتیاز نمایشی ') : copy(locale, 'TMDB community score ', 'امتیاز کاربران TMDB ')}</span><span aria-hidden="true">★</span> {movie.rating.toFixed(1)}<span className="sr-only">{copy(locale, ' out of 10', ' از ۱۰')}</span></span> : <span className="score score-unknown">{copy(locale, 'Unscored', 'بدون امتیاز')}</span>}
         <span className="poster-open" aria-hidden="true">↗</span>
       </div>
       <h3 dir="auto">{title}</h3>

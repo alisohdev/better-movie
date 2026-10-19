@@ -1,9 +1,9 @@
 ---
 import { ClientRouter } from 'astro:transitions';
 import '../styles/global.css';
-import { copy, type Locale } from '../lib/model';
+import { CATALOG_REVISION, IS_TMDB, copy, type Locale } from '../lib/model';
 interface Props { locale: Locale; title: string; description?: string; }
-const { locale, title, description = copy(locale, 'A small collection of fictional films. Find something for tonight.', 'مجموعه‌ای کوچک از فیلم‌های خیالی. برای امشب فیلمی پیدا کن.') } = Astro.props;
+const { locale, title, description = IS_TMDB ? copy(locale, 'A small TMDB movie sample.', 'نمونه‌ای کوچک از فیلم‌های TMDB.') : copy(locale, 'A small collection of fictional films. Find something for tonight.', 'مجموعه‌ای کوچک از فیلم‌های خیالی. برای امشب فیلمی پیدا کن.') } = Astro.props;
 const otherLocale = locale === 'en' ? 'fa' : 'en';
 const alternatePath = Astro.url.pathname.replace(`/${locale}/`, `/${otherLocale}/`);
 ---
@@ -13,6 +13,7 @@ const alternatePath = Astro.url.pathname.replace(`/${locale}/`, `/${otherLocale}
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta name="description" content={description} />
+    <meta name="catalog-revision" content={CATALOG_REVISION} />
     <meta name="robots" content="noindex,nofollow" />
     <meta name="theme-color" content="#101c2b" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
@@ -40,7 +41,8 @@ const alternatePath = Astro.url.pathname.replace(`/${locale}/`, `/${otherLocale}
     <footer class="site-footer page-width">
       <a class="footer-brand" href={`/${locale}/discover/`}>FRAME.</a>
       <p>{copy(locale, 'An independent place to find your next film.', 'جایی مستقل برای پیدا کردن فیلم بعدی شما.')}</p>
-      <p class="footer-notice">{copy(locale, 'Synthetic catalog · 32 fictional films · Original artwork', 'فهرست نمایشی · ۳۲ فیلم خیالی · پوسترهای اختصاصی')}</p>
+      <p class="footer-notice">{IS_TMDB ? copy(locale, 'TMDB metadata · Owned placeholder artwork', 'اطلاعات TMDB · تصویر جای‌نگهدار اختصاصی') : copy(locale, 'Synthetic catalog · 32 fictional films · Original artwork', 'فهرست نمایشی · ۳۲ فیلم خیالی · پوسترهای اختصاصی')}</p>
+      <a href={`/${locale}/credits/`}>{copy(locale, 'About / Credits', 'درباره / منابع')}</a>
     </footer>
     <script>
       import '../lib/navigation';
