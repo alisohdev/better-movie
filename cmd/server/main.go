@@ -20,8 +20,12 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
+	address := ":" + port
+	if os.Getenv("CATALOG_REVISION") != "" && os.Getenv("CATALOG_REVISION") != "synthetic-v1" && os.Getenv("TMDB_PUBLICATION_APPROVED") != "1" {
+		address = "127.0.0.1:" + port
+	}
 	server := &http.Server{
-		Addr: ":" + port, Handler: app,
+		Addr: address, Handler: app,
 		ReadHeaderTimeout: 5 * time.Second,
 		ReadTimeout:       10 * time.Second,
 		WriteTimeout:      10 * time.Second,

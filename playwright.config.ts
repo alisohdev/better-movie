@@ -4,6 +4,7 @@ const databaseURL = process.env.DATABASE_URL ?? 'postgres://movie@127.0.0.1:5543
 
 export default defineConfig({
   testDir: './tests/e2e',
+  testIgnore: '**/staging.spec.ts',
   fullyParallel: false,
   retries: process.env.CI ? 1 : 0,
   reporter: [['list'], ['html', { open: 'never' }]],

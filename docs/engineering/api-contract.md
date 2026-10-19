@@ -55,3 +55,15 @@ PostgreSQL normalizes both the parameter and all three available title fields: A
 Ranking is the best match across a film's available title fields: exact compact key, prefix, then other substring. Within each rank, immutable ID under C collation is the stable tie-breaker. Duplicate title fields cannot duplicate a suggestion. `strpos` uses a bound sqlc text parameter, so percent signs, underscores, quotes and SQL fragments are literal text, not wildcard patterns or SQL syntax.
 
 Lookup uses the existing revision-checked, read-only snapshot and bounded acquire/query deadlines. Failures return sanitized 503 errors, without fixture fallback. HTTP responses use `Cache-Control: no-store` so intermediary caches do not retain search text. No raw query logging or analytics is added.
+
+
+## M5b opt-in staging extension
+
+The default synthetic endpoints remain compatible with the original deployed schema; no Preview migration is required for this code. TMDB staging is an isolated, content-addressed schema, selected explicitly by `CATALOG_REVISION` and `TMDB_STAGING_DATABASE_URL`. The public API handler has no dependency on the TMDB HTTP client or frozen sample manifest.
+
+- Every browser request includes `X-Catalog-Revision`, pinned to the compiled static build. In real mode it is mandatory except for health. A mismatch returns 409 `catalog_revision_mismatch` before touching data; responses vary by that header. Both the database snapshot and response validators also require the exact revision. Real-mode responses use `no-store`; the synthetic cache policy stays unchanged.
+- IDs are `tmdb-N` in real mode, with `source: "TMDB"`, `synthetic: false`, optional `aliases`, and record `provenance` (provider ID, frozen sample ID, public TMDB link, retrieval time, retention deadline). Empty Persian titles normalize to null. Missing English title falls back to original title; missing runtime/ratings/votes/language remain null. Countries are actual production countries. No synopsis, mirrored image or release event is projected. The owned placeholder is `/posters/placeholder.svg`.
+- Genre vocabulary now supports all 18 standard theatrical/movie broad genres; TV Movie/unknown genre IDs reject the record. The former invalid-genre test now uses a truly unsupported slug. Additional bounded language/country choices used by the sample are exposed only in TMDB builds; URL v=1 grammar, AND/OR meaning and pagination are unchanged.
+- A ready staging manifest must match movie/extra counts and an unexpired UTC retention deadline. Static builds independently check artifact content/sample hashes and retention. Schema/revision mismatch, incomplete staging or expiry fails closed. Publication approval never follows from a readiness check.
+
+See [M5b runbook](tmdb-staging.md) for the migration, immutable-schema switch and rollback contract, including the static-file retention limitation.

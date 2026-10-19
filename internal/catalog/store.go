@@ -25,10 +25,16 @@ const (
 )
 
 type Store struct {
-	pool *pgxpool.Pool
+	pool     *pgxpool.Pool
+	revision string
 }
 
-func NewStore(pool *pgxpool.Pool) *Store { return &Store{pool: pool} }
+func NewStore(pool *pgxpool.Pool) *Store { return &Store{pool: pool, revision: Revision} }
+
+func NewStoreAtRevision(pool *pgxpool.Pool, revision string) *Store {
+	return &Store{pool: pool, revision: revision}
+}
+func (s *Store) CatalogRevision() string { return s.revision }
 
 func (s *Store) acquire(ctx context.Context) (*pgxpool.Conn, error) {
 	bounded, cancel := context.WithTimeout(ctx, AcquireTimeout)
@@ -48,8 +54,14 @@ func (s *Store) Health(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	if revision != Revision {
+	if revision != s.revision {
 		return ErrRevision
+	}
+	if s.revision != Revision {
+		ready, e := dbgen.New(conn).StagingReady(bounded)
+		if e != nil || !ready {
+			return ErrRevision
+		}
 	}
 	return nil
 }
@@ -77,8 +89,14 @@ func (s *Store) read(ctx context.Context, fn func(context.Context, *dbgen.Querie
 	if err != nil {
 		return err
 	}
-	if revision != Revision {
+	if revision != s.revision {
 		return ErrRevision
+	}
+	if s.revision != Revision {
+		ready, e := queries.StagingReady(bounded)
+		if e != nil || !ready {
+			return ErrRevision
+		}
 	}
 	if err = fn(bounded, queries); err != nil {
 		return err
@@ -87,7 +105,7 @@ func (s *Store) read(ctx context.Context, fn func(context.Context, *dbgen.Querie
 }
 
 func (s *Store) Search(ctx context.Context, f Filter) (Page, error) {
-	page := Page{Items: []Movie{}, Page: f.Page, PageSize: PageSize, CatalogRevision: Revision}
+	page := Page{Items: []Movie{}, Page: f.Page, PageSize: PageSize, CatalogRevision: s.revision}
 	params := dbgen.CountMoviesParams{
 		Languages: append([]string{}, f.Languages...), Countries: append([]string{}, f.Countries...), RatingMin: floatParam(f.RatingMin), VoteCountMin: intParam(f.VoteCountMin),
 		IncludeGenres: append([]string{}, f.Genres...), GenreMode: f.GenreMode,
@@ -118,13 +136,20 @@ func (s *Store) Search(ctx context.Context, f Filter) (Page, error) {
 			}
 			page.Items = append(page.Items, movie)
 		}
+		if s.revision != Revision {
+			pointers := []*Movie{}
+			for i := range page.Items {
+				pointers = append(pointers, &page.Items[i])
+			}
+			return loadExtras(ctx, queries, pointers)
+		}
 		return nil
 	})
 	return page, err
 }
 
 func (s *Store) Detail(ctx context.Context, id string) (Detail, error) {
-	result := Detail{CatalogRevision: Revision}
+	result := Detail{CatalogRevision: s.revision}
 	err := s.read(ctx, func(ctx context.Context, queries *dbgen.Queries) error {
 		row, err := queries.GetMovie(ctx, id)
 		if errors.Is(err, pgx.ErrNoRows) {
@@ -134,6 +159,9 @@ func (s *Store) Detail(ctx context.Context, id string) (Detail, error) {
 			return err
 		}
 		result.Movie, err = movieFromRow(row.Movie, row.Genres)
+		if err == nil && s.revision != Revision {
+			return loadExtras(ctx, queries, []*Movie{&result.Movie})
+		}
 		return err
 	})
 	return result, err
@@ -181,4 +209,30 @@ func floatParam(value *float64) pgtype.Float8 {
 		return pgtype.Float8{}
 	}
 	return pgtype.Float8{Float64: *value, Valid: true}
+}
+
+func loadExtras(ctx context.Context, q *dbgen.Queries, movies []*Movie) error {
+	ids := []string{}
+	byID := map[string]*Movie{}
+	for _, movie := range movies {
+		ids = append(ids, movie.ID)
+		byID[movie.ID] = movie
+	}
+	rows, err := q.GetMovieExtras(ctx, ids)
+	if err != nil {
+		return err
+	}
+	if len(rows) != len(movies) {
+		return ErrRevision
+	}
+	for _, row := range rows {
+		movie := byID[row.MovieID]
+		movie.Aliases = row.Aliases
+		var p Provenance
+		if json.Unmarshal(row.Provenance, &p) != nil {
+			return ErrRevision
+		}
+		movie.Provenance = &p
+	}
+	return nil
 }

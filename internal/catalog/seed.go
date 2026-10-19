@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"bettermovie/internal/dbgen"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -126,14 +127,24 @@ func Seed(ctx context.Context, pool *pgxpool.Pool, fixture Fixture) error {
 	if _, err = tx.Exec(ctx, "SELECT pg_advisory_xact_lock(737421407)"); err != nil {
 		return err
 	}
+	if err := WriteSnapshot(ctx, tx, fixture.Movies, fixture.CatalogRevision); err != nil {
+		return err
+	}
+	return tx.Commit(ctx)
+}
+
+// WriteSnapshot writes a validated projection into the caller's transaction/schema.
+// Seed validates ownership; TMDB staging validates the bounded private artifact.
+func WriteSnapshot(ctx context.Context, tx pgx.Tx, movies []Movie, revision string) error {
+	var err error
 	queries := dbgen.New(tx)
 	for _, genre := range genreSlugs {
 		if err = queries.UpsertGenre(ctx, genre); err != nil {
 			return err
 		}
 	}
-	ids := make([]string, 0, len(fixture.Movies))
-	for _, movie := range fixture.Movies {
+	ids := make([]string, 0, len(movies))
+	for _, movie := range movies {
 		observations, err := json.Marshal(movie.ReleaseObservations)
 		if err != nil {
 			return err
@@ -157,13 +168,22 @@ func Seed(ctx context.Context, pool *pgxpool.Pool, fixture Fixture) error {
 				return err
 			}
 		}
+		if movie.Provenance != nil {
+			provenance, e := json.Marshal(movie.Provenance)
+			if e != nil {
+				return e
+			}
+			if e = queries.UpsertMovieExtras(ctx, dbgen.UpsertMovieExtrasParams{MovieID: movie.ID, Aliases: movie.Aliases, Provenance: provenance}); e != nil {
+				return e
+			}
+		}
 		ids = append(ids, movie.ID)
 	}
 	if err = queries.DeleteAbsentMovies(ctx, ids); err != nil {
 		return err
 	}
-	if err = queries.SetCatalogRevision(ctx, fixture.CatalogRevision); err != nil {
+	if err = queries.SetCatalogRevision(ctx, revision); err != nil {
 		return err
 	}
-	return tx.Commit(ctx)
+	return nil
 }

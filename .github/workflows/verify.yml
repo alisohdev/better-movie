@@ -55,3 +55,13 @@ jobs:
       - run: npm run verify
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
+      - name: Verify isolated TMDB mode using only self-authored data
+        env:
+          TMDB_TEST_FIXTURE: '1'
+          TMDB_STAGING_DATABASE_URL: postgres://movie:local-development-only@127.0.0.1:55432/movie_discovery?sslmode=disable
+        run: |
+          go run ./tests/tmdb
+          export CATALOG_FILE=.local/tmdb-test-artifact.json
+          export CATALOG_REVISION="$(node -p 'JSON.parse(require("node:fs").readFileSync(".local/tmdb-test-artifact.json", "utf8")).catalogRevision')"
+          npm run build
+          npx playwright test --config playwright.staging.config.ts

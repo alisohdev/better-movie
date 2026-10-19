@@ -9,7 +9,17 @@ type ReleaseObservation struct {
 	Verification string  `json:"verification"`
 }
 
+type Provenance struct {
+	ProviderID  int64  `json:"providerId"`
+	SampleID    string `json:"sampleId"`
+	SourceURL   string `json:"sourceUrl"`
+	RetrievedAt string `json:"retrievedAt"`
+	RetainUntil string `json:"retainUntil"`
+}
+
 type Movie struct {
+	Aliases             []string             `json:"aliases,omitempty"`
+	Provenance          *Provenance          `json:"provenance,omitempty"`
 	ID                  string               `json:"id"`
 	TitleEn             string               `json:"titleEn"`
 	TitleFa             *string              `json:"titleFa"`

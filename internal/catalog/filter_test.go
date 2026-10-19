@@ -24,8 +24,8 @@ func TestFilterDomain(t *testing.T) {
 			f.RuntimeMax = number(600)
 			f.Page = 10000
 		}, true},
-		{"unknown genre", func(f *catalog.Filter) { f.Genres = []string{"western"} }, false},
-		{"unknown excluded genre", func(f *catalog.Filter) { f.ExcludeGenres = []string{"western"} }, false},
+		{"unknown genre", func(f *catalog.Filter) { f.Genres = []string{"not-a-genre"} }, false},
+		{"unknown excluded genre", func(f *catalog.Filter) { f.ExcludeGenres = []string{"not-a-genre"} }, false},
 		{"duplicate genre", func(f *catalog.Filter) { f.Genres = []string{"drama", "drama"} }, false},
 		{"genre conflict", func(f *catalog.Filter) { f.Genres = []string{"drama"}; f.ExcludeGenres = []string{"drama"} }, false},
 		{"unsupported genre mode", func(f *catalog.Filter) { f.GenreMode = "either" }, false},

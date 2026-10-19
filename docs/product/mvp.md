@@ -1,5 +1,7 @@
 # Movie discovery MVP brief
 
+M5b implementation decision, 2026-10-19: TMDB is selected for a bounded opt-in staging pipeline. The operator declares individual operation from Iran and a free, noncommercial purpose. Engineering with self-authored responses is approved now; the deployed synthetic catalog stays the default, and live account eligibility, accepted terms, retention and public publication remain gated. See [private activation and rollback](../engineering/tmdb-staging.md). References below to deferred provider integration concern public rollout and provider listings, not this authorized engineering work.
+
 Status: approved prototype direction, updated October 18, 2026 from the master engineering and performance requirements. The first vertical slice uses a clearly labeled synthetic catalog. A real public catalog remains subject to data rights and eligibility.
 
 Research date: October 18, 2026. Audience and usability assumptions below are untested. Effort ranges, catalog sizes, and acceptance thresholds are planning proposals, not measurements.
