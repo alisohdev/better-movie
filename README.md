@@ -50,3 +50,7 @@ Official digital, physical, verified-file, and provider availability are differe
 The target is one eligible Vercel Hobby project and Neon Free database. No paid service is enabled. Read [deployment compatibility](docs/deployment/compatibility.md) and the [Vercel/Neon steps](docs/deployment/vercel-neon.md). The app remains portable to a conventional Go server. A Vercel login alone does not prove a Go-to-Neon deployment. No remote database URL is configured, and no deployed end-to-end success is claimed.
 
 Next, verify remote routing, database TLS/pooling, and free-plan eligibility with a privately configured Neon connection. Then add one small V1 increment at a time, beginning with bilingual title lookup and its normalization tests. Real catalog ingestion/publication remains blocked on suitable rights. See [product brief](docs/product/mvp.md) and [data feasibility](docs/product/data-source-feasibility.md).
+
+## Optional TMDB staging (M5b)
+
+TMDB is selected for a bounded, private real-catalog pipeline. Development/tests use self-authored responses and require no provider credential. The deployed synthetic mode remains the default. Read [private import, staging, activation and rollback](docs/engineering/tmdb-staging.md) before using an eligible account's privately configured `TMDB_READ_ACCESS_TOKEN`. Live access, permitted retention and public publication are distinct gates; no inquiry is required to write/test the integration. No app request calls TMDB. Do not migrate or replace the protected Preview database to enable this code.

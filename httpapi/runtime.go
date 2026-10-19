@@ -24,10 +24,25 @@ func NewFromEnvironment() *Runtime { return &Runtime{} }
 func (rt *Runtime) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	rt.mu.Lock()
 	if rt.handler == nil {
-		pool, err := database.Open(context.Background(), os.Getenv("DATABASE_URL"))
-		if err == nil {
+		revision := os.Getenv("CATALOG_REVISION")
+		if revision == "" {
+			revision = catalog.Revision
+		}
+		var pool *pgxpool.Pool
+		var err error
+		if revision == catalog.Revision {
+			pool, err = database.Open(context.Background(), os.Getenv("DATABASE_URL"))
+		} else if catalog.ValidTMDBRevision(revision) && (os.Getenv("VERCEL") == "" || os.Getenv("TMDB_PUBLICATION_APPROVED") == "1") {
+			config, e := database.Config(os.Getenv("TMDB_STAGING_DATABASE_URL"))
+			err = e
+			if err == nil {
+				config.ConnConfig.RuntimeParams["search_path"] = catalog.StagingSchema(revision)
+				pool, err = pgxpool.NewWithConfig(context.Background(), config)
+			}
+		}
+		if err == nil && pool != nil {
 			rt.pool = pool
-			rt.handler = New(catalog.NewStore(pool))
+			rt.handler = New(catalog.NewStoreAtRevision(pool, revision))
 		}
 	}
 	handler := rt.handler

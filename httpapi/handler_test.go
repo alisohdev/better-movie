@@ -32,7 +32,7 @@ func (b *stubBackend) Detail(context.Context, string) (catalog.Detail, error) {
 func TestInvalidFiltersNeverReachTheDatabase(t *testing.T) {
 	for _, query := range []string{
 		"languages=xx", "languages=en,en", "languages=en&languages=fa", "languages=", "languages=EN", "countries=ZZ", "countries=ir", "countries=IR,", "countries=IR,IR", "countries=IR&countries=US", "ratingMin=NaN", "ratingMin=Infinity", "ratingMin=1e1", "ratingMin=-1", "ratingMin=10.01", "ratingMin=", "ratingMin=7&ratingMin=8", "voteCountMin=-1", "voteCountMin=2.5", "voteCountMin=2147483648", "voteCountMin=0&voteCountMin=1", "ratingMin=" + strings.Repeat("0", 4097),
-		"title=hello", "country=IR", "language=en", "pageSize=100", "scoreMin=8", "genres=western",
+		"title=hello", "country=IR", "language=en", "pageSize=100", "scoreMin=8", "genres=not-a-genre",
 		"genres=drama&excludeGenres=drama", "genreMode=either", "sort=random", "v=2", "v=1&v=1",
 		"page=1&page=2", "genres=drama&genres=comedy", "genres=drama,drama", "genres=drama,", "genres=",
 		"yearMin=2025&yearMax=2020", "runtimeMin=100&runtimeMax=99", "yearMin=1887", "yearMax=2101",

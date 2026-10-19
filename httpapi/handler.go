@@ -19,12 +19,25 @@ type Backend interface {
 }
 
 type Handler struct {
-	backend Backend
+	backend  Backend
+	revision string
 }
 
-func New(backend Backend) http.Handler { return &Handler{backend: backend} }
+func New(backend Backend) http.Handler {
+	revision := catalog.Revision
+	if source, ok := backend.(interface{ CatalogRevision() string }); ok {
+		revision = source.CatalogRevision()
+	}
+	return &Handler{backend: backend, revision: revision}
+}
 
 func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Vary", "X-Catalog-Revision")
+	expected := r.Header.Get("X-Catalog-Revision")
+	if r.URL.Path != "/api/health" && (expected != "" && expected != h.revision || h.revision != catalog.Revision && expected == "") {
+		writeError(w, r, http.StatusConflict, "catalog_revision_mismatch", "The page and API catalog revisions do not match.")
+		return
+	}
 	path := r.URL.Path
 	isDetail := strings.HasPrefix(path, "/api/movies/") && len(path) > len("/api/movies/") && !strings.Contains(strings.TrimPrefix(path, "/api/movies/"), "/")
 	if path != "/api/health" && path != "/api/movies" && path != "/api/titles" && !isDetail {
@@ -68,7 +81,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		w.Header().Set("Cache-Control", "no-store")
-		writeJSON(w, r, http.StatusOK, map[string]string{"status": "ok", "database": "connected", "catalogRevision": catalog.Revision})
+		writeJSON(w, r, http.StatusOK, map[string]string{"status": "ok", "database": "connected", "catalogRevision": h.revision})
 		return
 	}
 	if path == "/api/movies" {
@@ -78,6 +91,9 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		w.Header().Set("Cache-Control", "public, max-age=15, s-maxage=30")
+		if h.revision != catalog.Revision {
+			w.Header().Set("Cache-Control", "no-store")
+		}
 		writeJSON(w, r, http.StatusOK, page)
 		return
 	}
@@ -91,6 +107,9 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Cache-Control", "public, max-age=15, s-maxage=30")
+	if h.revision != catalog.Revision {
+		w.Header().Set("Cache-Control", "no-store")
+	}
 	writeJSON(w, r, http.StatusOK, detail)
 }
 

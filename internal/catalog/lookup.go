@@ -40,11 +40,21 @@ type TitleLookup struct {
 }
 
 func (s *Store) Lookup(ctx context.Context, query string) (TitleLookup, error) {
-	result := TitleLookup{Items: []TitleSuggestion{}, CatalogRevision: Revision}
+	result := TitleLookup{Items: []TitleSuggestion{}, CatalogRevision: s.revision}
 	if err := ValidateLookup(query); err != nil {
 		return result, err
 	}
 	err := s.read(ctx, func(ctx context.Context, queries *dbgen.Queries) error {
+		if s.revision != Revision {
+			rows, err := queries.LookupStagedTitles(ctx, query)
+			if err != nil {
+				return err
+			}
+			for _, row := range rows {
+				result.Items = append(result.Items, TitleSuggestion{ID: row.ID, TitleEn: row.TitleEn, TitleFa: nullable(row.TitleFa.String, row.TitleFa.Valid), OriginalTitle: row.OriginalTitle, Year: nullable(row.Year.Int32, row.Year.Valid)})
+			}
+			return nil
+		}
 		rows, err := queries.LookupTitles(ctx, query)
 		if err != nil {
 			return err

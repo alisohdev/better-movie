@@ -1,5 +1,7 @@
 # Real-catalog feasibility and permission gate
 
+M5b update, 2026-10-19: the owner has selected TMDB and declares a free, noncommercial project operated by an individual in Iran. Technical integration and synthetic-response tests are authorized now without waiting for the inquiry. These are owner-provided facts, not provider eligibility or field-rights clearance. [M5b runbook](../engineering/tmdb-staging.md) separates legitimate private access from public publication. The historical M5a assessment below remains evidence of unresolved provider questions; its earlier request for owner facts and implementation approval is superseded by this decision.
+
 Reviewed **2026-10-19** for Milestone 5a. This supersedes the October 18 research note; the fixed audit thresholds below are unchanged. **No provider eligibility or film coverage has been verified. M5a is not clearance for M5b.** No authenticated API requests, metadata imports, poster downloads, scraping, account registrations or outreach occurred. The app still uses 32 owned fictional films.
 
 Better Movie proposes a $0 validation pilot without ads or affiliate links, serving movie enthusiasts in Iran through Persian RTL and English LTR interfaces. The actual operator, jurisdiction, contracting entity and future business purpose require the owner's confirmation. Neither the audience's language nor this chat's timezone establishes those facts. See [PRODUCT.md](../../PRODUCT.md) and the [MVP brief](mvp.md).

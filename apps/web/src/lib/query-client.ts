@@ -39,7 +39,7 @@ export function movieQuery(filters: Filters) {
   return queryOptions({
     queryKey: ['movies', CATALOG_REVISION, canonical],
     queryFn: async ({ signal }) => {
-      const response = await fetch(`/api/movies?${canonical}`, { signal, headers: { Accept: 'application/json' } });
+      const response = await fetch(`/api/movies?${canonical}`, { signal, headers: { Accept: 'application/json', 'X-Catalog-Revision': CATALOG_REVISION } });
       if (!response.ok) throw new Error(response.status === 400 ? 'The server rejected these filters.' : 'The catalog could not be reached.');
       return resultsSchema.parse(await response.json());
     },
@@ -51,7 +51,7 @@ export function titleQuery(query: string) {
   return queryOptions({
     queryKey: ['titles', CATALOG_REVISION, query],
     queryFn: async ({ signal }) => {
-      const response = await fetch(`/api/titles?${new URLSearchParams({ q: query, v: '1' })}`, { signal, headers: { Accept: 'application/json' } });
+      const response = await fetch(`/api/titles?${new URLSearchParams({ q: query, v: '1' })}`, { signal, headers: { Accept: 'application/json', 'X-Catalog-Revision': CATALOG_REVISION } });
       if (!response.ok) throw new Error('Title lookup failed.');
       return titleLookupSchema.parse(await response.json());
     },

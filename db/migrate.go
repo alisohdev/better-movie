@@ -7,6 +7,7 @@ import (
 	"io/fs"
 	"time"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -24,6 +25,15 @@ func Migrate(ctx context.Context, pool *pgxpool.Pool) error {
 		defer cancel()
 		_ = tx.Rollback(cleanup)
 	}()
+	if err := MigrateTx(ctx, tx); err != nil {
+		return err
+	}
+	return tx.Commit(ctx)
+}
+
+// MigrateTx is used by isolated staging so schema creation and all rows commit together.
+func MigrateTx(ctx context.Context, tx pgx.Tx) error {
+	var err error
 	if _, err = tx.Exec(ctx, "SELECT pg_advisory_xact_lock(737421406)"); err != nil {
 		return fmt.Errorf("lock migrations: %w", err)
 	}
@@ -55,5 +65,5 @@ func Migrate(ctx context.Context, pool *pgxpool.Pool) error {
 			return fmt.Errorf("record migration: %w", err)
 		}
 	}
-	return tx.Commit(ctx)
+	return nil
 }

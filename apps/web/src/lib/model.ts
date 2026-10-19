@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
-export const CATALOG_REVISION = 'synthetic-v1';
+export const CATALOG_REVISION = import.meta.env.PUBLIC_CATALOG_REVISION ?? 'synthetic-v1';
+export const IS_TMDB = CATALOG_REVISION.startsWith('tmdb-');
 export const PAGE_SIZE = 12;
 export const localeSchema = z.enum(['en', 'fa']);
 export type Locale = z.infer<typeof localeSchema>;
@@ -21,8 +22,10 @@ export const movieSchema = z.object({
   originalLanguage: z.string().nullable(),
   countries: z.array(z.string()),
   poster: z.string().regex(/^\/posters\/[a-z0-9-]+\.svg$/),
-  source: z.literal('Synthetic studio'),
-  synthetic: z.literal(true),
+  source: z.enum(['Synthetic studio', 'TMDB']),
+  synthetic: z.boolean(),
+  aliases: z.array(z.string().min(1).max(200)).max(32).optional(),
+  provenance: z.object({ providerId: z.number().int().positive(), sampleId: z.string(), sourceUrl: z.string().regex(/^https:\/\/www\.themoviedb\.org\/movie\/[1-9]\d*$/), retrievedAt: z.iso.datetime(), retainUntil: z.string().regex(/^\d{4}-\d{2}-\d{2}$/) }).strict().optional(),
   releaseObservations: z.array(z.object({
     eventType: z.enum(['theatrical', 'digital', 'physical']),
     date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable(),
@@ -40,11 +43,11 @@ export const resultsSchema = z.object({
   page: z.number().int().positive(),
   pageSize: z.literal(PAGE_SIZE),
   catalogRevision: z.literal(CATALOG_REVISION),
-}).strict();
+}).strict().refine((page) => page.items.every((movie) => IS_TMDB ? movie.source === 'TMDB' && !movie.synthetic && !!movie.provenance && movie.poster === '/posters/placeholder.svg' && movie.synopsisEn === '' && movie.synopsisFa === null && movie.releaseObservations.length === 0 : movie.source === 'Synthetic studio' && movie.synthetic), 'Catalog source/mode mismatch');
 export type MovieResults = z.infer<typeof resultsSchema>;
 
 export function movieTitle(movie: Pick<Movie, 'titleEn' | 'titleFa'>, locale: Locale) {
-  return locale === 'fa' ? movie.titleFa ?? movie.titleEn : movie.titleEn;
+  return locale === 'fa' ? movie.titleFa?.trim() || movie.titleEn : movie.titleEn;
 }
 
 export function copy(locale: Locale, en: string, fa: string) {
@@ -63,6 +66,9 @@ export const genreNames: Record<string, { en: string; fa: string }> = {
   romance: { en: 'Romance', fa: 'عاشقانه' },
   'science-fiction': { en: 'Science fiction', fa: 'علمی‌تخیلی' },
   thriller: { en: 'Thriller', fa: 'دلهره‌آور' },
+  crime: { en: 'Crime', fa: 'جنایی' }, family: { en: 'Family', fa: 'خانوادگی' },
+  fantasy: { en: 'Fantasy', fa: 'فانتزی' }, history: { en: 'History', fa: 'تاریخی' },
+  music: { en: 'Music', fa: 'موسیقی' }, war: { en: 'War', fa: 'جنگی' }, western: { en: 'Western', fa: 'وسترن' },
 };
 
 export function genreName(slug: string, locale: Locale) {

@@ -10,7 +10,7 @@ Movie enthusiasts in Iran choosing international or Iranian films without a titl
 
 ## Confirmed constraints
 
-Go API, Astro public HTML, React discovery island, PostgreSQL, pgx, sqlc, TypeScript, Tailwind, and TanStack Query. Initial infrastructure costs must remain $0. Use only owned synthetic data and artwork until real-data rights are established. No provider integration, video, AI, accounts, billing, or external model providers.
+Go API, Astro public HTML, React discovery island, PostgreSQL, pgx, sqlc, TypeScript, Tailwind, and TanStack Query. Initial infrastructure costs must remain $0. TMDB is the selected real-film metadata provider. The owner declares a free, noncommercial project operated by an individual in Iran. Bounded integration development with self-authored test responses is authorized; live account eligibility, accepted terms, permitted retention and public real-data publication remain separate gates. The existing protected Preview continues using only 32 owned fictional films and original art. No video, Iranian provider-listing integration, AI, accounts, billing, or external model providers. See docs/engineering/tmdb-staging.md for private activation and rollback; no provider inquiry is required to write or test this code.
 
 ## Visual commitments and open assumptions
 

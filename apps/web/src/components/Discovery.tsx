@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type SubmitEvent } from 'react';
 import { keepPreviousData, QueryClientProvider, useQuery } from '@tanstack/react-query';
 import { navigate, type TransitionBeforePreparationEvent, type TransitionBeforeSwapEvent } from 'astro:transitions/client';
-import { copy, genreName, type Locale, type MovieResults } from '../lib/model';
+import { CATALOG_REVISION, IS_TMDB, copy, genreName, type Locale, type MovieResults } from '../lib/model';
 import { defaultFilters, filterErrorText, isDefaultFilters, modeSchema, parseFilters, parseRangeDraft, serializeFilters, sortSchema, type FilterResult, type Filters } from '../lib/filters';
 import { getQueryClient, movieQuery } from '../lib/query-client';
 import { recipes, recipeFilters, recoveryEdits } from '../lib/discovery-guidance';
@@ -163,14 +163,14 @@ function DiscoveryBody({ locale, genres, initialResults }: Props) {
       </div>
       <div className="starting-points">
         <p>{copy(locale, 'Not sure where to start?', 'نمی‌دانی از کجا شروع کنی؟')}</p>
-        <p id="recipe-explanation">{copy(locale, 'Start fresh: each shortcut replaces your filters in this fictional collection.', 'شروع تازه: هر میان‌بر، فیلترهای شما را در این مجموعهٔ خیالی جایگزین می‌کند.')}</p>
+        <p id="recipe-explanation">{IS_TMDB ? copy(locale, 'Start fresh: each shortcut replaces your filters in this small TMDB sample.', 'شروع تازه: هر میان‌بر فیلترها را در این نمونهٔ کوچک TMDB جایگزین می‌کند.') : copy(locale, 'Start fresh: each shortcut replaces your filters in this fictional collection.', 'شروع تازه: هر میان‌بر، فیلترهای شما را در این مجموعهٔ خیالی جایگزین می‌کند.')}</p>
         {recipes.map((recipe) => <button key={recipe.id} className="recipe" aria-describedby="recipe-explanation" aria-pressed={route.kind === 'valid' && canonical === serializeFilters(recipeFilters(recipe))} onClick={() => apply(recipeFilters(recipe), true)}><span>{recipe[locale]}</span><span aria-hidden="true">↗</span></button>)}
       </div>
     </section>
 
     <TitleSearch locale={locale} />
 
-    <div className="catalog-notice"><span className="notice-dot" aria-hidden="true" /><span>{copy(locale, 'A fictional film collection', 'مجموعه‌ای از فیلم‌های خیالی')}</span><span className="notice-explanation">{copy(locale, '32 original examples. All titles, scores and release notes are synthetic.', '۳۲ نمونهٔ اختصاصی؛ عنوان‌ها، امتیازها و تاریخ‌های انتشار، نمایشی هستند.')}</span></div>
+    <div className="catalog-notice"><span className="notice-dot" aria-hidden="true" /><span>{IS_TMDB ? copy(locale, 'TMDB sample catalog', 'نمونهٔ فهرست TMDB') : copy(locale, 'A fictional film collection', 'مجموعه‌ای از فیلم‌های خیالی')}</span><span className="notice-explanation">{IS_TMDB ? copy(locale, 'A bounded provider sample. Scores are TMDB community ratings. Owned placeholder art; no availability claims.', 'نمونه‌ای محدود از اطلاعات TMDB؛ امتیازها متعلق به کاربران TMDB هستند. تصویرها جای‌نگهدار اختصاصی‌اند؛ ادعای دسترسی وجود ندارد.') : copy(locale, '32 original examples. All titles, scores and release notes are synthetic.', '۳۲ نمونهٔ اختصاصی؛ عنوان‌ها، امتیازها و تاریخ‌های انتشار، نمایشی هستند.')}</span></div>
 
     {route.kind === 'invalid' ? <div className="feedback error-feedback" role="alert"><h2>{copy(locale, 'This filter link needs a correction', 'این پیوند فیلتر نیاز به اصلاح دارد')}</h2><p>{copy(locale, 'No search was sent. The starting sample below does not match this invalid link.', 'جست‌وجویی ارسال نشد. نمونه‌های زیر نتیجهٔ این پیوند نامعتبر نیستند.')}</p><ul lang={locale} dir={locale === 'fa' ? 'rtl' : 'ltr'}>{route.errors.map((error, index) => <li key={`${error}-${index}`}>{filterErrorText(error, locale)}</li>)}</ul><button className="text-button" onClick={reset}>{copy(locale, 'Reset invalid filters', 'پاک کردن فیلترهای نامعتبر')}</button></div> : null}
 
@@ -198,22 +198,22 @@ function DiscoveryBody({ locale, genres, initialResults }: Props) {
       </aside>
 
       <section className="results-section" aria-label={copy(locale, 'Movie results', 'نتایج فیلم‌ها')} aria-busy={pending} data-testid="results">
-        <div className="results-toolbar"><div><p className="section-label">{copy(locale, 'THE COLLECTION', 'مجموعهٔ فیلم‌ها')}</p><h2>{!hydrated ? copy(locale, 'A place to begin', 'جایی برای شروع') : matches ? copy(locale, `${data.total} films to explore`, `${data.total} فیلم برای کشف`) : copy(locale, 'Your previous selection', 'انتخاب قبلی شما')}</h2></div><label className="sort-control"><span>{copy(locale, 'Sort by', 'مرتب‌سازی')}</span><select aria-label={copy(locale, 'Sort movies', 'مرتب‌سازی فیلم‌ها')} value={filters.sort} onChange={(event) => apply({ ...filters, sort: sortSchema.parse(event.target.value), page: 1 })}><option value="popularity">{copy(locale, 'Popularity', 'محبوبیت')}</option><option value="rating">{copy(locale, 'Highest rated', 'بالاترین امتیاز')}</option><option value="newest">{copy(locale, 'Newest', 'جدیدترین')}</option><option value="runtime">{copy(locale, 'Shortest runtime', 'کوتاه‌ترین')}</option></select></label></div>
-        {activeCount ? <div className="active-filters" aria-label={copy(locale, 'Active filters', 'فیلترهای فعال')}><AdvancedChips filters={filters} locale={locale} onApply={apply} />{filters.genres.map((genre) => <button key={genre} onClick={() => toggleGenre(genre, 'genres')}>{genreName(genre, locale)}<span aria-hidden="true">×</span><span className="sr-only">{copy(locale, 'Remove included genre', 'حذف ژانر دلخواه')}</span></button>)}{filters.excludeGenres.map((genre) => <button className="exclude-chip" key={genre} onClick={() => toggleGenre(genre, 'excludeGenres')}>{copy(locale, 'No ', 'بدون ')}{genreName(genre, locale)}<span aria-hidden="true">×</span><span className="sr-only">{copy(locale, 'Remove exclusion', 'حذف محدودیت ژانر')}</span></button>)}{filters.runtimeMin !== null || filters.runtimeMax !== null ? <button onClick={() => apply({ ...filters, runtimeMin: null, runtimeMax: null, page: 1 }, true)}>{filters.runtimeMin ?? '…'}–{filters.runtimeMax ?? '…'} {copy(locale, 'min', 'دقیقه')}<span aria-hidden="true">×</span><span className="sr-only">{copy(locale, 'Remove runtime range', 'حذف بازهٔ زمان')}</span></button> : null}{filters.yearMin !== null || filters.yearMax !== null ? <button onClick={() => apply({ ...filters, yearMin: null, yearMax: null, page: 1 }, true)}>{filters.yearMin ?? '…'}–{filters.yearMax ?? '…'}<span aria-hidden="true">×</span><span className="sr-only">{copy(locale, 'Remove year range', 'حذف بازهٔ سال')}</span></button> : null}</div> : null}
-        <div className="result-status" role="status" aria-live="polite">{!hydrated ? copy(locale, 'Starting sample · 12 of 32 fictional films. Filtered links update after loading.', 'نمونهٔ آغازین · ۱۲ فیلم از ۳۲ فیلم خیالی. پیوندهای فیلترشده پس از بارگذاری به‌روز می‌شوند.') : pending ? <><span className="loading-dot" />{copy(locale, 'Updating your selection. Earlier cards stay visible until results arrive.', 'در حال به‌روزرسانی انتخاب شما؛ کارت‌های قبلی تا دریافت نتیجه نمایش داده می‌شوند.')}</> : matches && !query.isError ? copy(locale, `Showing ${data.items.length ? (data.page - 1) * 12 + 1 : 0}–${Math.min(data.page * 12, data.total)} of ${data.total}`, `نمایش ${data.items.length ? (data.page - 1) * 12 + 1 : 0} تا ${Math.min(data.page * 12, data.total)} از ${data.total}`) : copy(locale, 'These cards are an earlier sample, not results for the current filters.', 'این کارت‌ها نمونهٔ قبلی هستند و نتیجهٔ فیلترهای کنونی نیستند.')}</div>
-        {!online || query.isError ? <div className="feedback network-feedback" role="alert"><div><strong>{!online ? copy(locale, 'You’re offline', 'اتصال اینترنت قطع است') : copy(locale, 'The catalog is taking a break', 'دسترسی به فهرست ممکن نشد')}</strong><p>{copy(locale, 'Your earlier cards are still here. Reconnect and try the current filters again.', 'کارت‌های قبلی اینجا هستند. پس از اتصال، فیلترهای فعلی را دوباره امتحان کن.')}</p></div><button className="secondary-button" disabled={!online || query.isFetching} onClick={() => void query.refetch()}>{copy(locale, 'Try again', 'تلاش دوباره')}</button></div> : null}
-        {matches && data.items.length === 0 && !query.isError ? <div className="empty-state">
-          <span aria-hidden="true">↔</span>
-          <h3>{data.total > 0 ? copy(locale, 'No films on this page.', 'در این صفحه فیلمی نیست.') : copy(locale, 'No films fit this combination.', 'فیلمی با این ترکیب پیدا نشد.')}</h3>
-          <p>{copy(locale, 'Every preference is still applied. No matches in this fictional collection does not mean a film doesn’t exist; some metadata may be missing.', 'همهٔ فیلترها حفظ شده‌اند. نبود نتیجه در این مجموعهٔ خیالی به معنی نبودن فیلم نیست؛ ممکن است برخی اطلاعات نامشخص باشند.')}</p>
-          {!pending && online ? <div className="recovery-actions" role="group" aria-label={copy(locale, 'Try one explicit edit; Back undoes it', 'یک تغییر مشخص را امتحان کن؛ بازگشت آن را لغو می‌کند')}>
-            <p>{copy(locale, 'Try one edit. Other filters stay applied. Use Back to undo.', 'یک تغییر را امتحان کن. بقیهٔ فیلترها حفظ می‌شوند. برای لغو، بازگرد.')}</p>
-            {data.total > 0 ? <button className="secondary-button" onClick={() => apply({ ...filters, page: 1 }, true)}>{copy(locale, 'Return to first results page', 'بازگشت به صفحهٔ اول نتایج')}</button> : recoveryEdits(filters, locale).map((edit) => <button className="secondary-button" key={edit.id} onClick={() => apply(edit.filters, true)}>{edit.label}</button>)}
-          </div> : null}
-        </div> : <div className="movie-grid">{data.items.map((movie, index) => <MovieCard key={movie.id} movie={movie} locale={locale} priority={index === 0} />)}</div>}
-        <nav className="pagination" aria-label={copy(locale, 'Results pages', 'صفحه‌های نتایج')}><button className="secondary-button" disabled={filters.page <= 1 || pending || !matches} onClick={() => apply({ ...filters, page: filters.page - 1 })}><span aria-hidden="true">←</span>{copy(locale, 'Previous page', 'صفحهٔ قبل')}</button><span>{copy(locale, 'Page', 'صفحهٔ')} {filters.page} {copy(locale, 'of', 'از')} {matches ? Math.max(1, Math.ceil(data.total / 12)) : '…'}</span><button className="secondary-button" disabled={!matches || pending || filters.page * 12 >= data.total} onClick={() => apply({ ...filters, page: filters.page + 1 })}>{copy(locale, 'Next page', 'صفحهٔ بعد')}<span aria-hidden="true">→</span></button></nav>
-        <p className="scores-note">{copy(locale, 'Stars are fictional community scores from Synthetic studio, not personal recommendations.', 'ستاره‌ها امتیازهای خیالی از Synthetic studio هستند، نه پیشنهاد شخصی.')}</p>
-      </section>
-    </div>
-  </div>;
-}
+        <div className="results-toolbar"><div><p className="section-label">{copy(locale, 'THE COLLECTION', 'مجموعهٔ فیلم‌ها')}</p><h2>{!hydrated ? copy(locale, 'A place to begin', 'جایی برای شروع') : matches ? copy(locale, `${data.total} films to explore`, `${data.total} فیلم برای کشف`) : copy(locale, 'Your previous selection', 'انتخاب قبلی شما')}</h2></div><label className="sort-control"><span>{copy(locale, 'Sort by', 'مرتب‌سازی')}</span><select aria-label={copy(locale, 'Sort movies', 'مرتب‌سازی فیلم‌ها')} value={filters.sort} onChange={(event) => apply({ ...filters, sort: sortSchema.parse(event.target.value), page: 1 })}><option value="popularity">{copy(locale, 'Popularity', 'محبوبیت')}</option><option value="rating">{copy(locale, 'Highest rated', 'بالاترین امتیاز')}</option><option value="newest">{copy(locale, 'Newest', 'جدیدترین')}</option><option value="runtime">{copy(locale, 'Shortest runtime', 'کوتاه‌…3017 tokens truncated…n        <span class="header-note">{copy(locale, 'A little less scrolling. A little more cinema.', 'کمی کمتر گشتن، کمی بیشتر سینما.')}</span>
+        <a class="locale-link" data-locale-toggle href={alternatePath} lang={otherLocale} hreflang={otherLocale} aria-label={copy(locale, 'Switch to Persian', 'Switch to English')}>
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8" stroke="currentColor"/><ellipse cx="10" cy="10" rx="3.5" ry="8" stroke="currentColor"/><path d="M2 10h16" stroke="currentColor"/></svg>
+          {copy(locale, 'فارسی', 'English')}
+        </a>
+      </nav>
+    </header>
+    <main id="main" class="page-width"><slot /></main>
+    <footer class="site-footer page-width">
+      <a class="footer-brand" href={`/${locale}/discover/`}>FRAME.</a>
+      <p>{copy(locale, 'An independent place to find your next film.', 'جایی مستقل برای پیدا کردن فیلم بعدی شما.')}</p>
+      <p class="footer-notice">{IS_TMDB ? copy(locale, 'TMDB metadata · Owned placeholder artwork', 'اطلاعات TMDB · تصویر جای‌نگهدار اختصاصی') : copy(locale, 'Synthetic catalog · 32 fictional films · Original artwork', 'فهرست نمایشی · ۳۲ فیلم خیالی · پوسترهای اختصاصی')}</p>
+      <a href={`/${locale}/credits/`}>{copy(locale, 'About / Credits', 'درباره / منابع')}</a>
+    </footer>
+    <script>
+      import '../lib/navigation';
+    </script>
+  </body>
+</html>

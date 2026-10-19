@@ -1,0 +1,18 @@
+---
+import Shell from '../../../layouts/Shell.astro';
+import { IS_TMDB, copy, type Locale } from '../../../lib/model';
+export function getStaticPaths() { return ['en', 'fa'].map(locale => ({params:{locale},props:{locale}})); }
+const {locale} = Astro.props as {locale:Locale};
+const hasLogo = !!process.env.TMDB_APPROVED_LOGO;
+---
+<Shell locale={locale} title={copy(locale, 'About / Credits — Frame', 'درباره / منابع — فریم')}>
+  <section class="synopsis-section">
+    <h1>{copy(locale, 'About / Credits', 'درباره / منابع')}</h1>
+    {IS_TMDB ? <>
+      {hasLogo ? <a href="https://www.themoviedb.org"><img src="/tmdb-logo.svg" alt="TMDB" width="96" height="32" style="width:96px;height:auto" /></a> : <a href="https://www.themoviedb.org">TMDB</a>}
+      <p lang="en" dir="ltr">This product uses the TMDB API but is not endorsed or certified by TMDB.</p>
+      {locale === 'fa' ? <p>این محصول از API سرویس TMDB استفاده می‌کند؛ TMDB آن را تأیید یا گواهی نکرده است.</p> : null}
+      <p>{copy(locale, 'Metadata and community scores: TMDB. Poster art is an owned placeholder. Missing information remains unknown. No synopsis or release-event import is enabled.', 'اطلاعات و امتیازهای کاربران از TMDB است. تصویرها جای‌نگهدار اختصاصی‌اند. اطلاعات ناموجود نامشخص باقی می‌ماند. ورود خلاصهٔ داستان یا رویدادهای انتشار فعال نیست.')}</p>
+    </> : <p>{copy(locale, 'All 32 films, scores, synopses, release observations and poster artwork are owned fictional examples.', 'هر ۳۲ فیلم، امتیاز، خلاصهٔ داستان، اطلاعات انتشار و پوستر، نمونه‌های خیالی اختصاصی هستند.')}</p>}
+  </section>
+</Shell>

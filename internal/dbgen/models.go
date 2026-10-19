@@ -13,6 +13,12 @@ type CatalogMetadatum struct {
 	Revision  string `json:"revision"`
 }
 
+type CatalogStagingManifest struct {
+	Singleton   bool        `json:"singleton"`
+	MovieCount  int32       `json:"movie_count"`
+	RetainUntil pgtype.Date `json:"retain_until"`
+}
+
 type Genre struct {
 	Slug string `json:"slug"`
 }
@@ -35,6 +41,12 @@ type Movie struct {
 	Source              string        `json:"source"`
 	Synthetic           bool          `json:"synthetic"`
 	ReleaseObservations []byte        `json:"release_observations"`
+}
+
+type MovieExtra struct {
+	MovieID    string   `json:"movie_id"`
+	Aliases    []string `json:"aliases"`
+	Provenance []byte   `json:"provenance"`
 }
 
 type MovieGenre struct {

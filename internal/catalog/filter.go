@@ -8,13 +8,13 @@ import (
 
 var genreSlugs = []string{
 	"action", "adventure", "animation", "comedy", "documentary", "drama",
-	"horror", "mystery", "romance", "science-fiction", "thriller",
+	"horror", "mystery", "romance", "science-fiction", "thriller", "crime", "family", "fantasy", "history", "music", "war", "western",
 }
 
 func KnownGenre(slug string) bool { return slices.Contains(genreSlugs, slug) }
 
-var LanguageCodes = []string{"de", "en", "es", "fa", "fr", "it", "ja", "ko", "no", "sv", "tr"}
-var CountryCodes = []string{"AU", "BE", "CA", "DE", "ES", "FR", "GB", "IR", "IT", "JP", "KR", "MX", "NO", "SE", "TR", "US"}
+var LanguageCodes = []string{"da", "mk", "zh", "de", "en", "es", "fa", "fr", "it", "ja", "ko", "no", "sv", "tr"}
+var CountryCodes = []string{"AT", "DK", "HU", "MK", "NL", "NZ", "PL", "CN", "AU", "BE", "CA", "DE", "ES", "FR", "GB", "IR", "IT", "JP", "KR", "MX", "NO", "SE", "TR", "US"}
 
 type Filter struct {
 	Languages     []string
