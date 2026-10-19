@@ -253,3 +253,10 @@ summary::-webkit-details-marker { display: none; }
 .advanced-filters .genre-option > span { min-block-size: 48px; display: inline-flex; align-items: center; }
 .advanced-options > summary { display: flex; align-items: center; justify-content: space-between; gap: .75rem; font-size: 13px; font-weight: 600; list-style: none; }
 .advanced-options > summary > span { color: var(--accent); }
+
+/* Compact guidance reuses existing controls and logical RTL layout. */
+#recipe-explanation { line-height: 1.7; max-width: 34em; }
+.recipe[aria-pressed="true"] { color: var(--accent); }
+.recovery-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; max-width: 100%; }
+.recovery-actions p { flex-basis: 100%; margin-block: 0 6px; }
+.recovery-actions .secondary-button { min-height: 48px; white-space: normal; overflow-wrap: anywhere; text-align: start; }
