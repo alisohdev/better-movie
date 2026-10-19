@@ -11,7 +11,8 @@
     "check": "npm run check --workspace @frame/web",
     "test:unit": "npm run test:unit --workspace @frame/web",
     "test:e2e": "playwright test",
-    "verify": "npm run check && npm run test:unit && npm run build"
+    "test:audit": "node --test --test-isolation=none tests/audit/*.test.mjs",
+    "verify": "npm run check && npm run test:unit && npm run test:audit && npm run build"
   },
   "devDependencies": {
     "@playwright/test": "1.64.1",
